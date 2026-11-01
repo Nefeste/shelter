@@ -1,15 +1,19 @@
 // Итог (спецификация, раздел 3): звёзды, исход, разбор с числами и источником, «Мой список».
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { T } from '../i18n';
 import { Button, Card, Txt } from '../ui/kit';
 import { review, stars } from '../engine';
 import { type Game, RESERVE, world } from '../state/game';
+import { play } from '../audio/sound';
+import { Scene } from '../ui/Scene';
 
 export function ResultScreen({ game }: { game: Game }) {
   const o = game.outcome;
   const [copied, setCopied] = useState(false);
+  const evacuated = !!o?.evacuated;
+  useEffect(() => { play(evacuated ? 'evac' : 'done'); }, [evacuated]);
   if (!o) return null;
   const s = game.prep;
   const sc = world.scenario(s.scenario);
@@ -24,6 +28,8 @@ export function ResultScreen({ game }: { game: Game }) {
   return (
     <ScrollView contentContainerStyle={styles.wrap}>
       <Txt title>{T.result.title}</Txt>
+      {/* все дома — свет в окне и тихо; эвакуация — дом пустой, а непогода ещё идёт */}
+      <Scene lit={!evacuated} smoke={false} cold={false} night={false} ice={false} away={evacuated} calm={!evacuated} />
       <Txt testID="stars" style={styles.stars}>{'★'.repeat(got)}{'☆'.repeat(3 - got)}</Txt>
       <Txt testID="stayed">{T.result.stayed(o.stayed, sc.eventDays)}</Txt>
       {o.evacuated ? <Txt testID="evacuated">{T.result.evacuated(o.evacuated.day, o.evacuated.reason)}</Txt> : null}

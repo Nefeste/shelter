@@ -1,6 +1,6 @@
 // Общие элементы экранов: текст, кнопка, карточка — на токенах студии (src/ui/theme.ts).
 import React from 'react';
-import { Pressable, StyleSheet, Text, type TextStyle, View, type ViewStyle } from 'react-native';
+import { Pressable, type StyleProp, StyleSheet, Text, type TextStyle, View, type ViewStyle } from 'react-native';
 import { C, R, S } from './theme';
 
 export function Txt({ children, style, dim, title, testID }: { children: React.ReactNode; style?: TextStyle; dim?: boolean; title?: boolean; testID?: string }) {
@@ -20,7 +20,7 @@ export function Button({ label, onPress, kind = 'primary', disabled, testID }: {
   );
 }
 
-export function Card({ children, style, onPress, testID }: { children: React.ReactNode; style?: ViewStyle; onPress?: () => void; testID?: string }) {
+export function Card({ children, style, onPress, testID }: { children: React.ReactNode; style?: StyleProp<ViewStyle>; onPress?: () => void; testID?: string }) {
   if (!onPress) return <View testID={testID} style={[styles.card, style]}>{children}</View>;
   return (
     <Pressable testID={testID} onPress={onPress} style={({ pressed }) => [styles.card, style, pressed && styles.pressed]}>

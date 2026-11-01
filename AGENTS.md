@@ -89,5 +89,9 @@ tag by `android.yml`, with the kit's signing and contents actions).
 - `src/engine/` — `prep.ts` (choose, replace/upgrade, money, hours, place, shop trips, delivery),
   `days.ts` (14 days, integers, seeded risks and thaw, evacuation instead of death), `review.ts`.
 - `src/state/game.ts` — the run; `src/screens/` — title, intro, prep, days, result, about;
-  `src/ui/` — tokens from the studio brand, kit, the house drawn by code; `src/i18n/` — all UI text.
-- `tools/test/` — engine, content, guardrails, i18n; `tools/e2e/browser.ts` — the browser scenario.
+  `src/ui/` — tokens from the studio brand, kit, drawings in `react-native-svg` (`Scene.tsx` — the
+  house of the 14 days and the result, `icons.tsx` — trouble icons, `Snow.tsx`); `src/audio/sound.ts`
+  — expo-audio, sound on/off in settings; `src/i18n/` — all UI text.
+- `assets/audio/` — synthesized sounds, made by `npm run sound` (`tools/sound/gen.ts`, byte-exact
+  test); never edit or add recordings by hand.
+- `tools/test/` — engine, content, guardrails, i18n, sound; `tools/e2e/browser.ts` — the browser scenario.

@@ -1,6 +1,6 @@
 {
   "name": "shelter",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "main": "index.ts",
   "private": true,
   "description": "Убежище — подготовка к чрезвычайным ситуациям",
@@ -13,12 +13,14 @@
     "lint": "expo lint src App.tsx --max-warnings 0",
     "test": "bun tools/content/build.ts && bun test tools/test",
     "export:web": "bun tools/content/build.ts && expo export -p web --output-dir dist-web",
-    "e2e": "bun tools/e2e/browser.ts"
+    "e2e": "bun tools/e2e/browser.ts",
+    "sound": "bun tools/sound/gen.ts"
   },
   "dependencies": {
     "@expo/metro-runtime": "~57.0.16",
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~57.0.24",
+    "expo-audio": "~57.0.5",
     "expo-clipboard": "~57.0.2",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
