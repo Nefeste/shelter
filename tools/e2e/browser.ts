@@ -45,8 +45,12 @@ async function run(p: Page, plan: string[][][], label: string) {
   for (let day = 0; day < 3; day++) {
     for (const [t, sid] of plan[day] ?? []) await pick(p, t, sid);
     if (day === 0) {
-      // после выбора откликается семья
+      // после выбора откликается семья, кладовая показывает, чем занято место
       await p.getByTestId('voice').waitFor();
+      await p.getByTestId('pantry').waitFor();
+      // коробки появляются с пружинкой — дать им встать
+      await p.waitForTimeout(1200);
+      await snap(p, `${label}-pantry`);
       await tap(p, 'trouble-water');
       // «Что входит»: состав решения — то, что попадёт в «Мой список»
       await tap(p, 'more-water-canisters');
@@ -57,6 +61,10 @@ async function run(p: Page, plan: string[][][], label: string) {
     await tap(p, day < 2 ? 'next-day' : 'storm');
   }
   await snap(p, `${label}-days`);
+  // районное радио — только с приёмником
+  const radio = await p.getByTestId('radio-day-0').count();
+  if (label === 'good' && !radio) throw new Error('хороший план с приёмником: радио молчит');
+  if (label === 'cheap' && radio) throw new Error('без приёмника играет радио');
   await tap(p, 'faster');
   await tap(p, 'to-result');
   await snap(p, `${label}-result`);

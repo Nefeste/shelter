@@ -103,10 +103,12 @@ tag by `android.yml`, with the kit's signing and contents actions).
   house of the 14 days and the result, `icons.tsx` — trouble icons, `Snow.tsx`); `src/audio/sound.ts`
   — expo-audio, sound on/off in settings; `src/i18n/` — all UI text. `src/state/checklist.ts` —
   «Мой список» by category with prices and totals; `src/state/voices.ts` + `src/ui/Bubble.tsx` — the
-  family's lines from `content/voices.yaml` (flavour, not facts: no numbers, no sources).
+  family's lines from `content/voices.yaml` (flavour, not facts: no numbers, no sources);
+  `src/state/radio.ts` — district radio lines from `content/radio.yaml` when a receiver arrived in time;
+  `src/state/pantry.ts` + `src/ui/Pantry.tsx` — the pantry shelves on the prep screen.
 - `assets/audio/` — synthesized sounds, made by `npm run sound` (`tools/sound/gen.ts`, byte-exact
   test); never edit or add recordings by hand.
-- `tools/test/` — engine, content, guardrails, i18n, sound, version; `tools/e2e/browser.ts` — the browser scenario.
+- `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world; `tools/e2e/browser.ts` — the browser scenario.
 - `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes): every combination of
   solutions, four ordering habits, seeds 1…30; writes `docs/reports/2026-11-virtual-player.md`. Any
   change to content numbers, prices or the engine re-runs it, and the report goes into the same PR.

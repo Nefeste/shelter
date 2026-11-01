@@ -67,6 +67,8 @@ export interface Good {
   needsCooking?: boolean;
   /** аптечка: мелкая травма или простуда не становится трудным днём */
   firstAid?: boolean;
+  /** приёмник: в днях события слышно районное радио (content/radio.yaml) */
+  radio?: boolean;
   sources: Source[];
   review: Review;
 }
@@ -175,6 +177,16 @@ export interface Voice {
   text: string;
 }
 
+/**
+ * Районное радио сценария — вымышленные новости по дням события, без настоящих СМИ, чисел и советов
+ * (проверяет сборка); слышно, только если приёмник есть и пришёл до события.
+ */
+export interface Radio {
+  scenario: string;
+  /** строка на каждый день события */
+  days: string[];
+}
+
 export interface Bundle {
   shops: Shop[];
   goods: Good[];
@@ -182,4 +194,5 @@ export interface Bundle {
   solutions: Solution[];
   scenarios: Scenario[];
   voices: Voice[];
+  radio: Radio[];
 }

@@ -13,6 +13,7 @@ import { fnv1a } from '../engine/core/hash';
 import { TroubleIcon } from '../ui/icons';
 import { play } from '../audio/sound';
 import { Bubble } from '../ui/Bubble';
+import { Pantry } from '../ui/Pantry';
 import { type Said, voice } from '../state/voices';
 import { type Game, world } from '../state/game';
 
@@ -42,6 +43,7 @@ export function PrepScreen({ game }: { game: Game }) {
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
           {said ? <Bubble said={said} testID="voice" /> : null}
+          <Pantry world={world} prep={s} />
           {troubles.map(t => {
             const chosen = s.chosen[t];
             return (

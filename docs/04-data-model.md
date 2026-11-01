@@ -14,12 +14,14 @@
 |---|---|---|
 | Источник | `content/sources.yaml` | ключ → `title`, `url`. В записи источник — ключ, `{ assumption: "…" }` (допущение игры, видно в «Об игре») или `{ todo: "…" }` (не сверен, в выпуск не идёт) |
 | Магазин | `content/shops.yaml` | `id`, `name` (обычное место, без сети), `travelMin` (туда и обратно), `deliveryDays` (только маркетплейс) |
-| Товар | `content/goods.yaml` | `id`, `name` (без марки), `shop`, `price {rub, basis: rosstat\|estimate, note}`, `volumeL`, `provides {waterDl, kcal, lightH, commsDays, medsDays, fuelH, sanitationDays}`, `category` (раздел «Моего списка»: `water`, `food`, `heat`, `light`, `comms`, `health`, `hygiene`, `safety`), `spoilsInThaw`, `cooks` (печь, горелка), `needsCooking` (крупа), `firstAid` (аптечка), `sources`, `review` |
+| Товар | `content/goods.yaml` | `id`, `name` (без марки), `shop`, `price {rub, basis: rosstat\|estimate, note}`, `volumeL`, `provides {waterDl, kcal, lightH, commsDays, medsDays, fuelH, sanitationDays}`, `category` (раздел «Моего списка»: `water`, `food`, `heat`, `light`, `comms`, `health`, `hygiene`, `safety`), `spoilsInThaw`, `cooks` (печь, горелка), `needsCooking` (крупа), `firstAid` (аптечка), `radio` (приёмник), `sources`, `review` |
 | Беда | `content/troubles/<id>.yaml`, блок `trouble` | `id` (= имя файла), `name`, `text` |
 | Решение | там же, `solutions` — ровно четыре | `id`, `tier` (`cheap`, `mid`, `right`, `trap`), `name`, `text`, `goods [{good, qty}]`, `workMin`, `beforeEvent`, `heatC`, `fuelHPerDay`, `heatLossC`, `keepsPct`, `risks`, `guards [{risk, stopsPct}]`, `creates`, `after [{trouble, extraMin}]`, `why`, `sources`, `review` |
 | Сценарий | `content/scenarios/<id>.yaml` | `id`, `name`, `text`, `family [{id, name, kind: adult\|child\|elder}]`, `prepDays`, `minutesPerDay`, `money [по дням]`, `pantryL`, `porchL`, `eventDays`, `outdoorC [по дням]`, `houseC`, `troubles` (начальные), `norms {waterDl, drinkDl по виду человека; kcal; lightH; coldC; coldEvacC; maxC}`, `needsMeds`, `injury {pct, from, to}` (порез или простуда), `sources`, `review` |
 
 | Реплика семьи | `content/voices.yaml` | `scenario`, `who` (id из семьи), `when` (`intro`, `choose:<решение>`, `day:<повод>`, `result:home\|evac`), `text` — без чисел, без источника (не факт) |
+
+| Районное радио | `content/radio.yaml` | `scenario`, `days` — строка новостей на каждый день события; без чисел, без источника (не факт) |
 
 Риски (`Risk`) — `co` (угарный газ), `fire` (пожар), `clog` (забитая канализация).
 
