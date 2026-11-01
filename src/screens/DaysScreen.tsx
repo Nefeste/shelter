@@ -1,26 +1,42 @@
 // 14 дней (спецификация, раздел 3): день за днём, 3 секунды на день, «Быстрее» — вчетверо.
-// Расчёт уже сделан движком; экран только показывает его по порядку.
+// Расчёт уже сделан движком; экран только показывает его по порядку: сцена с домом, запасы
+// полосками, ветер и ледяной дождь — звуком, треск — если топится печь.
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { T } from '../i18n';
 import { Button, Card, Txt } from '../ui/kit';
-import { House } from '../ui/House';
+import { Scene } from '../ui/Scene';
+import { C, R } from '../ui/theme';
+import { play, setLoop } from '../audio/sound';
 import type { Game } from '../state/game';
 
 const DAY_MS = 3000;
-/** Дым из трубы — только если стоит печь. */
+/** Дым и треск — только если стоит печь. */
 const STOVE = 'heat-stove';
+/** Первые дни — ледяной дождь, дальше — снег и мороз. */
+const ICE_DAYS = 2;
 
 export function DaysScreen({ game }: { game: Game }) {
   const o = game.outcome;
   const [shown, setShown] = useState(1);
+  const [night, setNight] = useState(false);
   const [fast, setFast] = useState(false);
   const total = o?.days.length ?? 0;
+  const stove = game.prep.chosen.heat === STOVE;
+  const step = fast ? DAY_MS / 4 : DAY_MS;
+
   useEffect(() => {
-    if (shown >= total) return;
-    const id = setTimeout(() => setShown(n => n + 1), fast ? DAY_MS / 4 : DAY_MS);
-    return () => clearTimeout(id);
-  }, [shown, total, fast]);
+    setLoop('storm', true);
+    setLoop('crackle', stove);
+    return () => { setLoop('storm', false); setLoop('crackle', false); };
+  }, [stove]);
+  useEffect(() => {
+    play('day');
+    const dusk = setTimeout(() => setNight(true), step * 0.6);
+    if (shown >= total) return () => clearTimeout(dusk);
+    const next = setTimeout(() => { setNight(false); setShown(n => n + 1); }, step);
+    return () => { clearTimeout(dusk); clearTimeout(next); };
+  }, [shown, total, step]);
   if (!o) return null;
   const days = o.days.slice(0, shown);
   const today = days[days.length - 1];
@@ -28,10 +44,14 @@ export function DaysScreen({ game }: { game: Game }) {
   return (
     <View style={styles.screen}>
       <View style={styles.top}>
-        <House lit={!today.short.includes('light')} smoke={game.prep.chosen.heat === STOVE} size={160} />
+        <Scene lit={!today.short.includes('light')} smoke={stove} cold={today.short.includes('cold')} night={night} ice={today.day < ICE_DAYS} />
         <Txt title testID="days-day">{T.days.day(today.day)}</Txt>
         <Txt>{[T.days.outdoor(today.outdoorC), T.days.indoor(today.indoorC)].join(' · ')}</Txt>
-        <Txt dim>{[T.days.water(today.waterDl), T.days.food(today.kcal)].join(' · ')}</Txt>
+        <View style={styles.bars}>
+          <Bar label={T.days.water(today.waterDl)} part={today.waterDl} of={o.start.waterDl} />
+          <Bar label={T.days.food(today.kcal)} part={today.kcal} of={o.start.kcal} />
+          <Bar label={T.days.light(today.lightH)} part={today.lightH} of={o.start.lightH} />
+        </View>
       </View>
       <ScrollView contentContainerStyle={styles.list}>
         {[...days].reverse().map(d => (
@@ -51,9 +71,26 @@ export function DaysScreen({ game }: { game: Game }) {
   );
 }
 
+/** Запас полоской: сколько осталось от того, что было в начале. */
+function Bar({ label, part, of }: { label: string; part: number; of: number }) {
+  const share = of > 0 ? Math.max(0, Math.min(1, part / of)) : 0;
+  return (
+    <View style={styles.bar}>
+      <Txt dim>{label}</Txt>
+      <View style={styles.track}>
+        <View style={[styles.fill, { width: `${Math.round(share * 100)}%`, backgroundColor: share < 0.2 ? C.kumach : C.spruce }]} />
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   screen: { flex: 1, maxWidth: 560, width: '100%', alignSelf: 'center' },
-  top: { alignItems: 'center', padding: 16, gap: 4 },
+  top: { alignItems: 'center', padding: 16, gap: 6 },
+  bars: { alignSelf: 'stretch', gap: 6 },
+  bar: { gap: 2 },
+  track: { height: 8, borderRadius: R.pill, backgroundColor: C.line, overflow: 'hidden' },
+  fill: { height: 8, borderRadius: R.pill },
   list: { padding: 16, gap: 8 },
   buttons: { padding: 16, gap: 8 },
 });

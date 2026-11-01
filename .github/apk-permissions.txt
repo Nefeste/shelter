@@ -3,3 +3,5 @@
 # Сети нет (ADR студии 0005; INTERNET вырезает plugins/with-release-no-internet.js). Нужное — сюда и
 # в политику, ненужное — в blockedPermissions в app.json. Файл — путь владельца.
 games.gornitsa.shelter.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+# Звук (expo-audio, 0.2.0): обычное разрешение без запроса у игрока — как в «Анамнезе».
+android.permission.MODIFY_AUDIO_SETTINGS

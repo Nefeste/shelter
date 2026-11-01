@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KEY = 'shelter.best.v1';
 const RUN = 'shelter.run.v1';
+const SETTINGS = 'shelter.settings.v1';
 
 export async function loadBest(): Promise<Record<string, number>> {
   try {
@@ -36,5 +37,25 @@ export async function saveRun(raw: string | null): Promise<void> {
     else await AsyncStorage.setItem(RUN, raw);
   } catch {
     // не сохранилось — партия продолжится, пока приложение открыто
+  }
+}
+
+export interface Settings { sound: boolean }
+
+export async function loadSettings(): Promise<Settings> {
+  try {
+    const raw = await AsyncStorage.getItem(SETTINGS);
+    const s = raw ? (JSON.parse(raw) as Partial<Settings>) : {};
+    return { sound: s.sound !== false };
+  } catch {
+    return { sound: true };
+  }
+}
+
+export async function saveSettings(s: Settings): Promise<void> {
+  try {
+    await AsyncStorage.setItem(SETTINGS, JSON.stringify(s));
+  } catch {
+    // не сохранилось — настройка действует, пока приложение открыто
   }
 }

@@ -2,13 +2,13 @@
   "expo": {
     "name": "Shelter",
     "slug": "shelter",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "backgroundColor": "#ECEDE6",
     "android": {
       "package": "games.gornitsa.shelter",
-      "versionCode": 3,
+      "versionCode": 4,
       "allowBackup": false,
       "predictiveBackGestureEnabled": false,
       "blockedPermissions": [
@@ -37,7 +37,16 @@
     },
     "plugins": [
       "./plugins/with-release-signing",
-      "./plugins/with-release-no-internet"
+      "./plugins/with-release-no-internet",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false
+        }
+      ]
     ]
   }
 }

@@ -9,6 +9,8 @@ export const C = {
   kumach: '#b3162f',
   kumachInk: '#ffffff',
   spruce: '#1f3c34',
+  /** свой цвет игры: тёплый свет в окне (не из брендбука) */
+  lamp: '#f2d38a',
 } as const;
 
 export const R = { button: 6, card: 10, pill: 999 } as const;

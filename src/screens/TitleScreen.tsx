@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { T } from '../i18n';
 import { Button, Card, Txt } from '../ui/kit';
 import { House } from '../ui/House';
+import { Snow } from '../ui/Snow';
 import type { Game } from '../state/game';
 
 export function TitleScreen({ game }: { game: Game }) {
@@ -11,7 +12,10 @@ export function TitleScreen({ game }: { game: Game }) {
   return (
     <View style={styles.wrap}>
       <Txt title style={styles.name}>{T.app.title}</Txt>
-      <House lit smoke />
+      <View>
+        <House lit smoke />
+        <Snow height={176} />
+      </View>
       {game.best ? <Txt dim testID="best">{T.title.best(game.best)}</Txt> : null}
       <View style={styles.buttons}>
         {game.phase ? (
@@ -31,6 +35,7 @@ export function TitleScreen({ game }: { game: Game }) {
           <Button testID="play" label={T.title.play} onPress={game.start} />
         )}
         <Button testID="about" kind="ghost" label={T.title.about} onPress={() => game.setScreen('about')} />
+        <Button testID="sound" kind="ghost" label={T.title.sound(game.sound)} onPress={game.toggleSound} />
       </View>
     </View>
   );

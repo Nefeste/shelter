@@ -50,6 +50,7 @@ export const T = {
   },
   title: {
     play: 'Играть',
+    sound: (on: boolean) => (on ? 'Звук: включён' : 'Звук: выключен'),
     resume: { intro: 'Продолжить', prep: 'Продолжить подготовку', days: 'Продолжить: две недели', result: 'Итог прошлой игры' },
     restart: 'Начать заново',
     restartText: 'Начать заново? Всё, что выбрано в подготовке, пропадёт.',
@@ -96,6 +97,7 @@ export const T = {
     outdoor: (c: number) => `на улице ${deg(c)}`,
     water: (dl: number) => `вода ${water(dl)}`,
     food: (kcal: number) => `еда ${Math.round(kcal / 1000)}${nb}тыс.${nb}ккал`,
+    light: (h: number) => `свет ${h}${nb}ч`,
     short: SHORT,
     thaw: 'Оттепель: замороженное на веранде оттаяло',
     clog: 'Канализацию забило',

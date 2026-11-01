@@ -8,6 +8,8 @@ import { Button, Card, Txt } from '../ui/kit';
 import { C } from '../ui/theme';
 import { canChoose, costOf, minutesLeft, minutesToday, openTroubles, placeTotal, usedPlace } from '../engine';
 import { fnv1a } from '../engine/core/hash';
+import { TroubleIcon } from '../ui/icons';
+import { play } from '../audio/sound';
 import { type Game, world } from '../state/game';
 
 export function PrepScreen({ game }: { game: Game }) {
@@ -37,9 +39,12 @@ export function PrepScreen({ game }: { game: Game }) {
           {troubles.map(t => {
             const chosen = s.chosen[t];
             return (
-              <Card key={t} testID={`trouble-${t}`} onPress={() => setOpen(t)} style={chosen ? undefined : styles.unsolved}>
-                <Txt style={styles.troubleName}>{world.trouble(t).name}</Txt>
-                <Txt dim>{chosen ? world.solution(chosen).name : T.prep.notChosen}</Txt>
+              <Card key={t} testID={`trouble-${t}`} onPress={() => { play('tap'); setOpen(t); }} style={chosen ? styles.row : [styles.row, styles.unsolved]}>
+                <TroubleIcon id={t} />
+                <View style={styles.rowText}>
+                  <Txt style={styles.troubleName}>{world.trouble(t).name}</Txt>
+                  <Txt dim>{chosen ? world.solution(chosen).name : T.prep.notChosen}</Txt>
+                </View>
               </Card>
             );
           })}
@@ -58,7 +63,10 @@ function TroubleCard({ game, trouble, onClose }: { game: Game; trouble: string; 
   const current = s.chosen[trouble];
   return (
     <ScrollView contentContainerStyle={styles.list}>
-      <Txt title>{t.name}</Txt>
+      <View style={styles.row}>
+        <TroubleIcon id={trouble} size={48} />
+        <Txt title>{t.name}</Txt>
+      </View>
       <Txt>{t.text}</Txt>
       {options.map(id => {
         const sol = world.solution(id);
@@ -76,7 +84,7 @@ function TroubleCard({ game, trouble, onClose }: { game: Game; trouble: string; 
             ) : why ? (
               <Txt dim style={styles.warn}>{T.prep.refusal[why]}</Txt>
             ) : (
-              <Button testID={`choose-${id}`} label={current ? T.prep.replace : T.prep.choose} onPress={() => { game.choose(id); onClose(); }} />
+              <Button testID={`choose-${id}`} label={current ? T.prep.replace : T.prep.choose} onPress={() => { play('choose'); game.choose(id); onClose(); }} />
             )}
           </Card>
         );
@@ -92,6 +100,8 @@ const styles = StyleSheet.create({
   barMain: { fontWeight: '700' },
   list: { padding: 16, gap: 10 },
   troubleName: { fontWeight: '700' },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  rowText: { flex: 1, gap: 2 },
   unsolved: { borderColor: C.kumach },
   current: { borderColor: C.spruce, borderWidth: 2 },
   warn: { color: C.kumach },

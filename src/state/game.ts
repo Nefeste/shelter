@@ -6,7 +6,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { bundle } from '../content';
 import { type PrepState, World, choose as chooseCmd, nextDay as nextDayCmd, runDays, startPrep, stars } from '../engine';
 import { type Phase, packRun, unpackRun } from './run';
-import { loadBest, loadRun, saveBest, saveRun } from './storage';
+import { loadBest, loadRun, loadSettings, saveBest, saveRun, saveSettings } from './storage';
+import { setSoundOn } from '../audio/sound';
 
 export const world = new World(bundle);
 export const SCENARIO = 'ice-rain';
@@ -23,9 +24,11 @@ export function useGame() {
   const [phase, setPhase] = useState<Phase | null>(null);
   const [best, setBest] = useState<Record<string, number>>({});
   const [loaded, setLoaded] = useState(false);
+  const [sound, setSound] = useState(true);
 
   useEffect(() => {
     void loadBest().then(setBest);
+    void loadSettings().then(st => { setSound(st.sound); setSoundOn(st.sound); });
     void loadRun().then(raw => {
       const run = unpackRun(world, raw);
       if (run) {
@@ -67,13 +70,20 @@ export function useGame() {
     }
     go('days');
   }, [prep, attempt, best, go]);
+  const toggleSound = useCallback(() => {
+    setSound(v => {
+      setSoundOn(!v);
+      void saveSettings({ sound: !v });
+      return !v;
+    });
+  }, []);
   const again = useCallback(() => {
     setAttempt(a => a + 1);
     start();
   }, [start]);
 
-  return useMemo(() => ({ screen, setScreen: go, prep, outcome, phase, best: best[SCENARIO] ?? 0, start, resume, choose, nextDay, storm, again }),
-    [screen, go, prep, outcome, phase, best, start, resume, choose, nextDay, storm, again]);
+  return useMemo(() => ({ screen, setScreen: go, prep, outcome, phase, best: best[SCENARIO] ?? 0, sound, toggleSound, start, resume, choose, nextDay, storm, again }),
+    [screen, go, prep, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again]);
 }
 
 export type Game = ReturnType<typeof useGame>;
