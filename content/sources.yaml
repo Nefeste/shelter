@@ -103,3 +103,18 @@ meteoinfo-2010:
 rosstat-prices-2026-09:
   title: "Росстат, «Средние потребительские цены (тарифы) на товары и услуги по Российской Федерации…», сентябрь 2026, строка «Российская Федерация» (числа сняты с зеркала roschart.ru; сверить с файлом Росстата)"
   url: https://rosstat.gov.ru/storage/mediabank/sred_potreb_cen_09-2026.xlsx
+mchs-ugra-stuck:
+  title: "ГУ МЧС России по ХМАО — Югре, «Если автомобиль застрял на зимней дороге»: аварийный комплект — зарядка и запасной аккумулятор, тёплая одежда и одеяла, лопата, фонарь с батарейками, аптечка, еда и питьё; выхлопную трубу очищать от снега"
+  url: https://86.mchs.gov.ru/deyatelnost/poleznaya-informaciya/rekomendacii-naseleniyu/esli-avtomobil-zastryal-na-zimney-doroge
+mchs-volgograd-winter-driver:
+  title: "ГУ МЧС России по Волгоградской области, «Памятка водителю в зимний период»: при неблагоприятном прогнозе по возможности отложить поездку"
+  url: https://34.mchs.gov.ru/deyatelnost/poleznaya-informaciya/rekomendacii-naseleniyu/pamyatka-voditelyu-v-zimniy-period
+mchs-krasnoyarsk-roads:
+  title: "ГУ МЧС России по Красноярскому краю, «Будьте осторожны на дорогах»: в дальнюю поездку — тёплые вещи, лопату, трос и воду; сообщить близким маршрут"
+  url: https://24.mchs.gov.ru/deyatelnost/press-centr/novosti/5849869
+mchs-adygea-stove:
+  title: "ГУ МЧС России по Республике Адыгея, «Проверьте печь в преддверии отопительного сезона!»: холодную печь после долгого перерыва выводить на рабочую температуру плавно"
+  url: https://01.mchs.gov.ru/deyatelnost/press-centr/vse_novosti/1456480
+mchs-crimea-co:
+  title: "ГУ МЧС России по Республике Крым, «Осторожно — угарный газ!»: перед каждым розжигом проверять тягу, дымоходы очищать от сажи"
+  url: https://82.mchs.gov.ru/deyatelnost/poleznaya-informaciya/rekomendacii-naseleniyu/ostorozhno-ugarnyy-gaz

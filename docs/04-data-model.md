@@ -17,13 +17,13 @@
 | Товар | `content/goods.yaml` | `id`, `name` (без марки), `shop`, `price {rub, basis: rosstat\|estimate, note}`, `volumeL`, `provides {waterDl, kcal, lightH, commsDays, medsDays, fuelH, sanitationDays}`, `category` (раздел «Моего списка»: `water`, `food`, `heat`, `light`, `comms`, `health`, `hygiene`, `safety`), `spoilsInThaw`, `cooks` (печь, горелка), `needsCooking` (крупа), `firstAid` (аптечка), `radio` (приёмник), `clicks` (фонарь с кнопкой — щелчок в сумерки), `sources`, `review` |
 | Беда | `content/troubles/<id>.yaml`, блок `trouble` | `id` (= имя файла), `name`, `text` |
 | Решение | там же, `solutions` — ровно четыре | `id`, `tier` (`cheap`, `mid`, `right`, `trap`), `name`, `text`, `goods [{good, qty}]`, `workMin`, `beforeEvent`, `heatC`, `fuelHPerDay`, `heatLossC`, `keepsPct`, `risks`, `guards [{risk, stopsPct}]`, `creates`, `after [{trouble, extraMin}]`, `why`, `sources`, `review` |
-| Сценарий | `content/scenarios/<id>.yaml` | `id`, `name`, `text`, `family [{id, name, kind: adult\|child\|elder}]`, `prepDays`, `minutesPerDay`, `money [по дням]`, `pantryL`, `porchL`, `eventDays`, `outdoorC [по дням]`, `houseC`, `troubles` (начальные), `norms {waterDl, drinkDl по виду человека; kcal; lightH; coldC; coldEvacC; maxC}`, `needsMeds`, `injury {pct, from, to}` (порез или простуда), `sources`, `review` |
+| Сценарий | `content/scenarios/<id>.yaml` | `id`, `name`, `text`, `family [{id, name, kind: adult\|child\|elder}]`, `prepDays`, `minutesPerDay`, `money [по дням]`, `pantryL`, `porchL`, `eventDays`, `outdoorC [по дням]`, `houseC`, `troubles` (начальные), `norms {waterDl, drinkDl по виду человека; kcal; lightH; coldC; coldEvacC; maxC}`, `needsMeds`, `injury {pct, from, to}` (порез или простуда), `stuck {pct, day}` (машину заносит — поездки), `iceDays` (дни ледяного дождя для сцены), `order` (место в линейке), `words {until, start, place, card}` (слова интерфейса), `norms.comms`/`norms.sanitation` (`false` — не считать), `sources`, `review` |
 
 | Реплика семьи | `content/voices.yaml` | `scenario`, `who` (id из семьи), `when` (`intro`, `choose:<решение>`, `day:<повод>`, `result:home\|evac`), `text` — без чисел, без источника (не факт) |
 
 | Районное радио | `content/radio.yaml` | `scenario`, `days` — строка новостей на каждый день события; без чисел, без источника (не факт) |
 
-Риски (`Risk`) — `co` (угарный газ), `fire` (пожар), `clog` (забитая канализация).
+Риски (`Risk`) — `co` (угарный газ), `fire` (пожар), `clog` (забитая канализация), `stuck` (машину занесло в дороге).
 
 **Проверка `review`.** Каждая запись с фактами — `review: draft`; `checked` ставит только
 человек (устав). Сборка не пускает другие значения.
@@ -53,7 +53,7 @@
 `start` и `need` (было и нужно: вода, калории, свет, связь, туалет), `moneyLeft`, `hardDays`.
 
 **Разбор — `ReviewLine`:** `evacuated`, `trap`, `unfinished`, `late`, `ranOut {what, day, had,
-need}` (вода, еда, свет, связь, туалет), `injury {day}` (не было аптечки), `allGood`. Слова — в `src/i18n`, источник —
+need}` (вода, еда, свет, связь, туалет), `injury {day}` (не было аптечки), `stuck {day}` (застряли и ждали помощи), `allGood`. Слова — в `src/i18n`, источник —
 `sourceOf(world, prep, line)`.
 
 ## 3. Сохранение

@@ -68,6 +68,7 @@ const SHORT: Record<Shortage, string> = {
   sanitation: 'нет туалета',
   cold: 'холодно',
   care: 'нечем обработать порез или простуду',
+  road: 'застряли в дороге',
 };
 
 export const T = {
@@ -80,15 +81,16 @@ export const T = {
     sound: (on: boolean) => (on ? 'Звук: включён' : 'Звук: выключен'),
     resume: { intro: 'Продолжить', prep: 'Продолжить подготовку', days: 'Продолжить: две недели', result: 'Итог прошлой игры' },
     restart: 'Начать заново',
-    restartText: 'Начать заново? Всё, что выбрано в подготовке, пропадёт.',
+    restartText: 'Начать новую игру? Всё, что выбрано в подготовке, пропадёт.',
     cancel: 'Отмена',
     about: 'Об игре',
     best: (stars: number) => `Лучший результат: ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}`,
+    notPlayed: 'Ещё не пробовали',
   },
   intro: {
-    money: (first: number, second: number) => `Деньги: ${rub(first)} сейчас и ${rub(second)} утром второго дня.`,
+    money: (first: number, second: number) => (second ? `Деньги: ${rub(first)} сейчас и ${rub(second)} утром второго дня.` : `Деньги: ${rub(first)}.`),
     hours: (perDay: number, days: number) => `Свободного времени — ${minutes(perDay)} в каждый из ${days} дней.`,
-    place: (pantry: number, porch: number) => `Место: кладовая на ${litres(pantry)} и холодная веранда на ${litres(porch)}.`,
+    place: (where: string, l: number) => `Место: ${where} на ${litres(l)}.`,
     family: (names: string[]) => `Семья: ${names.join(', ')}.`,
     start: 'Готовиться',
   },
@@ -96,12 +98,12 @@ export const T = {
     day: (d: number, of: number) => `День подготовки ${d + 1} из ${of}`,
     money: (n: number) => rub(n),
     today: (m: number) => `сегодня ${minutes(m)}`,
-    total: (m: number) => `до дождя ${minutes(m)}`,
+    total: (m: number, until: string) => `${until} ${minutes(m)}`,
     place: (used: number, total: number) => `место ${used}/${litres(total)}`,
     notChosen: 'не решено',
     cost: (r: number, m: number, l: number) => [rub(r), minutes(m), l ? litres(l) : ''].filter(Boolean).join(' · '),
     free: 'ничего покупать не нужно',
-    late: 'заказ не успеет прийти до дождя',
+    late: (until: string) => `заказ не успеет прийти ${until}`,
     choose: 'Выбрать',
     replace: 'Заменить',
     chosen: 'Выбрано',
@@ -110,7 +112,7 @@ export const T = {
     item: (name: string, qty: number, price: number) => `${name} — ${qty} × ${rub(price)}`,
     itemShop: (shop: string, sum: number) => `${shop.toLowerCase()} · ${rub(sum)}`,
     itemHome: 'уже дома',
-    pantry: (used: number, total: number) => `Кладовая и веранда — ${litres(used)} из ${litres(total)}`,
+    pantry: (where: string, used: number, total: number) => `${where[0].toUpperCase()}${where.slice(1)} — ${litres(used)} из ${litres(total)}`,
     pantryEmpty: 'Пока пусто. Каждая коробка — десять литров.',
     shelf: (what: string, l: number) => `${what.toLowerCase()} ${litres(l)}`,
     /** что даёт товар в этом количестве: «воды 180 л · 25 тыс. ккал» */
@@ -129,14 +131,13 @@ export const T = {
     close: 'Назад',
     refusal: {
       money: 'не хватает денег',
-      time: 'не успеть до дождя',
+      time: 'не успеть',
       place: 'некуда положить',
       closed: 'беда закрыта',
       same: 'уже выбрано',
       unknown: 'нет такого решения',
     } satisfies Record<Refusal, string>,
     nextDay: 'Закончить день',
-    storm: 'Начался ледяной дождь',
     open: (n: number) => (n ? `Не решено: ${n}` : 'Все беды решены'),
   },
   days: {
@@ -149,6 +150,7 @@ export const T = {
     short: SHORT,
     thaw: 'Оттепель: замороженное на веранде оттаяло',
     injury: 'Кто-то порезался или простыл',
+    stuck: 'Машину занесло в сугроб',
     radio: 'Радио',
     clog: 'Канализацию забило',
     faster: 'Быстрее',
@@ -164,10 +166,11 @@ export const T = {
       switch (l.kind) {
         case 'evacuated': return `${dayN(l.day)} — эвакуация: ${EVAC[l.reason]}.`;
         case 'trap': return `Ловушка: «${name(l.solution)}».`;
-        case 'late': return `Не пришло до дождя: ${l.goods.map(name).join(', ')}.`;
-        case 'unfinished': return `Не успели до дождя: «${name(l.solution)}».`;
+        case 'late': return `Не пришло вовремя: ${l.goods.map(name).join(', ')}.`;
+        case 'unfinished': return `Не успели доделать: «${name(l.solution)}».`;
         case 'allGood': return `Всё сработало. Осталось ${rub(l.moneyLeft)}.`;
         case 'injury': return `${dayN(l.day)} — порез или простуда, а аптечки дома не было.`;
+        case 'stuck': return `${dayN(l.day)} — машину занесло в сугроб, полдня ждали помощи в холодной машине.`;
         case 'ranOut':
           if (l.what === 'water') return `Вода на готовку и умывание кончилась на ${l.day + 1}-й день: было ${water(l.had)}, на две недели нужно ${water(l.need)}.`;
           if (l.what === 'food') return `Еда кончилась на ${l.day + 1}-й день: было ${Math.round(l.had / 1000)} тыс. ккал, нужно ${Math.round(l.need / 1000)} тыс.`;

@@ -10,7 +10,10 @@ import { loadBest, loadRun, loadSettings, saveBest, saveRun, saveSettings } from
 import { setSoundOn } from '../audio/sound';
 
 export const world = new World(bundle);
+/** Сценарий по умолчанию — первый в линейке. */
 export const SCENARIO = 'ice-rain';
+/** Сценарии по порядку линейки (`order` в записи). */
+export const SCENARIOS = [...bundle.scenarios].sort((a, b) => a.order - b.order).map(s => s.id);
 
 export type Screen = 'title' | Phase | 'about';
 
@@ -51,8 +54,8 @@ export function useGame() {
     setScreen(s);
     if (s === 'intro' || s === 'prep' || s === 'days' || s === 'result') setPhase(s);
   }, []);
-  const start = useCallback(() => {
-    setPrep(startPrep(world, SCENARIO));
+  const start = useCallback((scenario: string = SCENARIO) => {
+    setPrep(startPrep(world, scenario));
     go('intro');
   }, [go]);
   /** вернуться туда, где игрок остановился */
@@ -61,8 +64,8 @@ export function useGame() {
   const nextDay = useCallback(() => setPrep(s => nextDayCmd(world, s)), []);
   const storm = useCallback(() => {
     const got = stars(runDays(world, prep, attempt));
-    if (got > (best[SCENARIO] ?? 0)) {
-      const next = { ...best, [SCENARIO]: got };
+    if (got > (best[prep.scenario] ?? 0)) {
+      const next = { ...best, [prep.scenario]: got };
       setBest(next);
       void saveBest(next);
     }
@@ -77,10 +80,10 @@ export function useGame() {
   }, []);
   const again = useCallback(() => {
     setAttempt(a => a + 1);
-    start();
-  }, [start]);
+    start(prep.scenario);
+  }, [start, prep.scenario]);
 
-  return useMemo(() => ({ screen, setScreen: go, prep, outcome, phase, best: best[SCENARIO] ?? 0, sound, toggleSound, start, resume, choose, nextDay, storm, again }),
+  return useMemo(() => ({ screen, setScreen: go, prep, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again }),
     [screen, go, prep, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again]);
 }
 

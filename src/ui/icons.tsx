@@ -8,14 +8,27 @@ export function TroubleIcon({ id, size = 36 }: { id: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 36 36">
       <Circle cx={18} cy={18} r={17} fill={C.linen} stroke={C.line} strokeWidth={1} />
-      {draw(id)}
+      {draw(ALIAS[id] ?? id)}
     </Svg>
   );
 }
 
+/** Беды сценариев поездок рисуются теми же значками, что и домашние. */
+const ALIAS: Record<string, string> = { 'dacha-heat': 'heat', 'dacha-water': 'water', 'dacha-food': 'food' };
+
 function draw(id: string) {
   const ink = C.ink;
   switch (id) {
+    case 'road': // машина
+      return (
+        <>
+          <Path d="M8 22 L10 15 a2 2 0 0 1 2-1.5 H24 a2 2 0 0 1 2 1.5 L28 22 z" fill={C.kumach} stroke={ink} strokeWidth={1.5} />
+          <Rect x={7} y={21} width={22} height={5} rx={2} fill={C.kumach} stroke={ink} strokeWidth={1.5} />
+          <Rect x={13} y={16} width={10} height={4} fill={C.paper} />
+          <Circle cx={12} cy={27} r={2.5} fill={ink} />
+          <Circle cx={24} cy={27} r={2.5} fill={ink} />
+        </>
+      );
     case 'heat': // термометр
       return (
         <>

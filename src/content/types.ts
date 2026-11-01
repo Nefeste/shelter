@@ -79,7 +79,8 @@ export type Tier = 'cheap' | 'mid' | 'right' | 'trap';
 export const TIERS: readonly Tier[] = ['cheap', 'mid', 'right', 'trap'];
 
 /** Беда, которую решение может создать или от которой защищает. */
-export type Risk = 'co' | 'fire' | 'clog';
+/** `stuck` — машину занесло в дороге (сценарии поездок, `Scenario.stuck`). */
+export type Risk = 'co' | 'fire' | 'clog' | 'stuck';
 
 export interface Solution {
   id: string;
@@ -153,6 +154,9 @@ export interface Scenario {
     coldEvacC: number;
     /** теплее не топят */
     maxC: number;
+    /** считать ли связь и туалет (на даче со светом и туалетом во дворе — нет); по умолчанию да */
+    comms?: boolean;
+    sanitation?: boolean;
   };
   /** у кого постоянные лекарства */
   needsMeds: string[];
@@ -161,6 +165,18 @@ export interface Scenario {
    * (с нуля, `from`…`to`, по зерну). Без аптечки этот день — трудный.
    */
   injury?: { pct: number; from: number; to: number };
+  /**
+   * Случай в дороге (поездки): в день `day` машину заносит с вероятностью `pct` (с решением,
+   * у которого `risks: [stuck]`, — наверняка); защита (`guards` от `stuck`) решает, станет ли
+   * это трудным днём.
+   */
+  stuck?: { pct: number; day: number };
+  /** сколько первых дней события идёт ледяной дождь — для сцены; нет — снег */
+  iceDays?: number;
+  /** место в линейке: на первом экране сценарии идут по возрастанию */
+  order: number;
+  /** слова сценария в интерфейсе: «до дождя» / «до отъезда», кнопка начала, чем названо место */
+  words: { until: string; start: string; place: string; card: string };
   sources: Source[];
   review: Review;
 }

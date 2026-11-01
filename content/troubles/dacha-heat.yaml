@@ -1,0 +1,50 @@
+trouble:
+  id: dacha-heat
+  name: Тепло на даче
+  text: Дом простоял пустым с осени и промёрз. Печь есть, дрова — под навесом.
+solutions:
+  - id: dacha-blankets
+    tier: cheap
+    name: Одеяла и тёплые вещи
+    text: Привезти одеяла, спать в одежде.
+    goods: [{ good: blanket, qty: 2 }]
+    workMin: 0
+    heatC: 6
+    why: Тёплые вещи помогают, но промёрзший дом без печи не согреть.
+    sources: [mchs-tyva-utilities, { assumption: "на сколько градусов одеяла и закрытая комната теплее нетопленого дома — допущение игры" }]
+    review: draft
+  - id: dacha-oil-heater
+    tier: mid
+    name: Масляный обогреватель
+    goods: [{ good: oil-heater, qty: 1 }]
+    workMin: 0
+    heatC: 34
+    text: Электрический обогреватель в одну комнату — свет на даче есть.
+    why: Обогреватель греет сразу и без угарного газа, но занимает место в багажнике, а еду на нём не сваришь.
+    sources: [{ assumption: "масляный обогреватель держит одну комнату не холоднее +18 °C при −20 °C на улице — допущение игры" }]
+    review: draft
+  - id: dacha-stove
+    tier: right
+    name: Прочистить дымоход и протопить печь
+    text: Перед первой топкой — ёрш в дымоход и проверить тягу, топить понемногу.
+    goods: [{ good: dacha-oven, qty: 1 }, { good: chimney-brush, qty: 1 }, { good: dacha-firewood, qty: 8 }]
+    workMin: 60
+    heatC: 38
+    fuelHPerDay: 24
+    risks: [co]
+    creates: [co]
+    why: Тягу проверяют перед каждой растопкой, а холодную печь после долгого перерыва разогревают постепенно.
+    sources: [mchs-crimea-co, mchs-adygea-stove, ppr-1479, { assumption: "прибавка температуры от печи — та же, что в «Ледяном дожде»" }]
+    review: draft
+  - id: dacha-stove-hot
+    tier: trap
+    name: Сразу протопить печь посильнее
+    text: Дом промёрз — сразу набить печь дровами, чтобы быстрее согреться.
+    goods: [{ good: dacha-oven, qty: 1 }, { good: dacha-firewood, qty: 8 }]
+    workMin: 0
+    heatC: 38
+    fuelHPerDay: 24
+    risks: [co]
+    why: Дымоход после зимы может быть забит сажей и снегом; тягу проверяют перед каждой растопкой, а холодную печь разогревают постепенно.
+    sources: [mchs-crimea-co, mchs-adygea-stove]
+    review: draft

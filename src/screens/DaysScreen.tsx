@@ -1,6 +1,6 @@
 // 14 дней (спецификация, раздел 3): день за днём, 3 секунды на день, «Быстрее» — вчетверо.
 // Расчёт уже сделан движком; экран только показывает его по порядку: сцена с домом, запасы
-// полосками, ветер и ледяной дождь — звуком, треск — если топится печь.
+// полосками, ветер и непогода — звуком, треск — если топится печь.
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { T } from '../i18n';
@@ -18,8 +18,6 @@ import { TroubleIcon } from '../ui/icons';
 const DAY_MS = 3000;
 /** Дым и треск — только если стоит печь. */
 const STOVE = 'heat-stove';
-/** Первые дни — ледяной дождь, дальше — снег и мороз. */
-const ICE_DAYS = 2;
 
 export function DaysScreen({ game }: { game: Game }) {
   const o = game.outcome;
@@ -51,29 +49,31 @@ export function DaysScreen({ game }: { game: Game }) {
   if (!o) return null;
   const days = o.days.slice(0, shown);
   const radio = radioLines(world, game.prep, o);
+  const sc = world.scenario(game.prep.scenario);
   const today = days[days.length - 1];
   const done = shown >= total;
   return (
     <View style={styles.screen}>
       <View style={styles.top}>
-        <Scene lit={!today.short.includes('light')} smoke={stove} cold={today.short.includes('cold')} night={night} ice={today.day < ICE_DAYS} windows={neighbours(today.day, world.scenario(game.prep.scenario).eventDays, night)} />
+        <Scene lit={!today.short.includes('light')} smoke={stove} cold={today.short.includes('cold')} night={night} ice={today.day < (sc.iceDays ?? 0)} windows={sc.norms.lightH > 0 ? neighbours(today.day, sc.eventDays, night) : night ? 'lit' : 'dark'} />
         <Txt title testID="days-day">{T.days.day(today.day)}</Txt>
         <Txt>{[T.days.outdoor(today.outdoorC), T.days.indoor(today.indoorC)].join(' · ')}</Txt>
         <View style={styles.bars}>
           <Bar label={T.days.water(today.waterDl)} part={today.waterDl} of={o.start.waterDl} />
           <Bar label={T.days.food(today.kcal)} part={today.kcal} of={o.start.kcal} />
-          <Bar label={T.days.light(today.lightH)} part={today.lightH} of={o.start.lightH} />
+          {sc.norms.lightH > 0 ? <Bar label={T.days.light(today.lightH)} part={today.lightH} of={o.start.lightH} /> : null}
         </View>
       </View>
       <ScrollView contentContainerStyle={styles.list}>
         {[...days].reverse().map(d => {
-          const said = voice(world, game.prep.scenario, dayWhen(o.days, d.day, total), String(d.day));
+          const said = voice(world, game.prep.scenario, dayWhen(o.days, d.day, total, sc.stuck?.day), String(d.day));
           return (
           <Card key={d.day}>
             <Txt>{T.days.day(d.day)}</Txt>
             {d.event === 'thaw' ? <Txt dim>{T.days.thaw}</Txt> : null}
             {d.event === 'clog' ? <Txt dim>{T.days.clog}</Txt> : null}
             {d.event === 'injury' ? <Txt dim>{T.days.injury}</Txt> : null}
+            {d.event === 'stuck' ? <Txt dim>{T.days.stuck}</Txt> : null}
             {d.short.length ? <Txt dim>{d.short.map(x => T.days.short[x]).join(', ')}</Txt> : null}
             {radio?.[d.day] ? (
               <View style={styles.radio} testID={`radio-day-${d.day}`}>

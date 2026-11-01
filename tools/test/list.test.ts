@@ -33,7 +33,7 @@ describe('«Мой список»', () => {
 
 describe('реплики семьи', () => {
   test('после выбора решения кто-то из семьи откликается', () => {
-    for (const sid of world.bundle.solutions.map(x => x.id)) expect({ sid, said: !!voice(world, SCENARIO, `choose:${sid}`) }).toEqual({ sid, said: true });
+    for (const sid of world.bundle.solutions.map(x => x.id)) expect({ sid, said: world.bundle.voices.some(v => v.when === `choose:${sid}`) }).toEqual({ sid, said: true });
   });
 
   test('у каждого дня — повод: случай, новая нехватка, спокойный или последний день', () => {

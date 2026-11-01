@@ -36,7 +36,7 @@ export function PrepScreen({ game }: { game: Game }) {
     <View style={styles.screen}>
       <View style={styles.bar} testID="prep-bar">
         <Txt style={styles.barMain}>{T.prep.day(s.day, sc.prepDays)}</Txt>
-        <Txt dim testID="prep-money">{[T.prep.money(s.money), T.prep.today(minutesToday(world, s)), T.prep.total(minutesLeft(world, s)), T.prep.place(usedPlace(world, s), placeTotal(world, s))].join(' · ')}</Txt>
+        <Txt dim testID="prep-money">{[T.prep.money(s.money), T.prep.today(minutesToday(world, s)), T.prep.total(minutesLeft(world, s), sc.words.until), T.prep.place(usedPlace(world, s), placeTotal(world, s))].join(' · ')}</Txt>
       </View>
       {open ? (
         <TroubleCard game={game} trouble={open} onClose={() => setOpen(null)} onChosen={id => setSaid(voice(world, s.scenario, `choose:${id}`))} />
@@ -57,7 +57,7 @@ export function PrepScreen({ game }: { game: Game }) {
             );
           })}
           <Txt dim testID="prep-open">{T.prep.open(unsolved)}</Txt>
-          <Button testID={last ? 'storm' : 'next-day'} label={last ? T.prep.storm : T.prep.nextDay} onPress={last ? game.storm : game.nextDay} />
+          <Button testID={last ? 'storm' : 'next-day'} label={last ? sc.words.start : T.prep.nextDay} onPress={last ? game.storm : game.nextDay} />
         </ScrollView>
       )}
     </View>
@@ -93,7 +93,7 @@ function TroubleCard({ game, trouble, onClose, onChosen }: { game: Game; trouble
               </Pressable>
             ) : null}
             {more === id ? <Contents id={id} /> : null}
-            {!isCurrent && c.late.length ? <Txt dim style={styles.warn}>{T.prep.late}</Txt> : null}
+            {!isCurrent && c.late.length ? <Txt dim style={styles.warn}>{T.prep.late(world.scenario(s.scenario).words.until)}</Txt> : null}
             {isCurrent ? (
               <Txt dim>{T.prep.chosen}</Txt>
             ) : why ? (

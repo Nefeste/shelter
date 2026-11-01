@@ -1,0 +1,42 @@
+trouble:
+  id: dacha-food
+  name: Еда и праздничный стол
+  text: Магазин в посёлке на праздники закрыт. Нужно 2300 ккал на человека в сутки.
+solutions:
+  - id: dacha-food-cold
+    tier: cheap
+    name: Хлеб и консервы
+    text: То, что можно есть холодным.
+    goods: [{ good: bread, qty: 6 }, { good: canned-meat, qty: 20 }]
+    workMin: 0
+    why: Холодная еда не требует плиты, но на пять дней её нужно много, а хлеб черствеет.
+    sources: [mchs-norms, skurikhin-2002]
+    review: draft
+  - id: dacha-food-stove
+    tier: mid
+    name: Консервы и гречка
+    text: Консервы и гречка — варить на печи, без горелки.
+    goods: [{ good: canned-meat, qty: 20 }, { good: buckwheat, qty: 12 }]
+    workMin: 0
+    why: Гречка даёт много калорий на рубль, но её нужно варить — без печи останутся одни консервы.
+    sources: [mchs-norms, skurikhin-2002, mchs-kaluga-stove]
+    review: draft
+  - id: dacha-food-burner
+    tier: right
+    name: Консервы, гречка и горелка
+    text: Консервы, гречка и туристическая горелка — готовить на крыльце.
+    goods: [{ good: canned-meat, qty: 20 }, { good: buckwheat, qty: 12 }, { good: camp-burner, qty: 1 }]
+    workMin: 0
+    why: "Норма — 2300 ккал на человека в сутки; горелка выручит, если печь не задалась, — но только на улице."
+    sources: [mchs-norms, skurikhin-2002, cdc-co]
+    review: draft
+  - id: dacha-food-indoor
+    tier: trap
+    name: Горелка на кухне
+    text: На крыльце холодно — горелку поставить прямо на кухне.
+    goods: [{ good: canned-meat, qty: 20 }, { good: buckwheat, qty: 12 }, { good: camp-burner, qty: 1 }]
+    workMin: 0
+    risks: [co]
+    why: Туристическую горелку в доме не зажигают — в закрытом помещении от неё копится угарный газ.
+    sources: [cdc-co, cpsc-co]
+    review: draft

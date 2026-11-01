@@ -28,7 +28,7 @@ export const SCHEDULE = /раз[аы]?\s+в\s+(день|сутки)|утром\s
 export const LATIN = /[a-z]/i;
 
 /** Поводы реплик в днях — те, что выбирает `dayWhen` в src/state/voices.ts. */
-const DAY = ['cold', 'food', 'water', 'light', 'comms', 'sanitation', 'care', 'injury', 'thaw', 'clog', 'ok', 'last'];
+const DAY = ['cold', 'food', 'water', 'light', 'comms', 'sanitation', 'care', 'injury', 'thaw', 'clog', 'road', 'stuck', 'drive', 'ok', 'last'];
 
 /** Что не так с репликой семьи: человек, повод, число в тексте. */
 export function voiceErrors(v: Voice, scenarios: Scenario[], solutions: Solution[]): string[] {

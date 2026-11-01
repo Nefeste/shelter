@@ -37,14 +37,19 @@ const GOOD = [
   [['heat', 'heat-stove'], ['comms', 'comms-radio'], ['co', 'co-detector-airing'], ['light', 'light-lanterns'], ['toilet', 'toilet-full']],
   [['water', 'water-full'], ['food', 'food-stove'], ['meds', 'meds-kit']],
 ];
+// тот же план, что DACHA_GOOD в tools/test/dacha.test.ts
+const DACHA = [
+  [['road', 'road-kit'], ['dacha-heat', 'dacha-stove'], ['co', 'co-detector-airing']],
+  [['dacha-water', 'dacha-water-full'], ['dacha-food', 'dacha-food-stove']],
+];
 const CHEAP = [[['heat', 'heat-one-room'], ['water', 'water-drink'], ['food', 'food-cold'], ['light', 'light-candles'], ['fire', 'fire-holders'], ['comms', 'comms-saving'], ['meds', 'meds-home'], ['toilet', 'toilet-bucket']]];
 
-async function run(p: Page, plan: string[][][], label: string) {
+async function run(p: Page, plan: string[][][], label: string, prepDays = 3) {
   await tap(p, 'start-prep');
   await snap(p, `${label}-prep`);
-  for (let day = 0; day < 3; day++) {
+  for (let day = 0; day < prepDays; day++) {
     for (const [t, sid] of plan[day] ?? []) await pick(p, t, sid);
-    if (day === 0) {
+    if (day === 0 && label !== 'dacha') {
       // после выбора откликается семья, кладовая показывает, чем занято место
       await p.getByTestId('voice').waitFor();
       await p.getByTestId('pantry').waitFor();
@@ -58,7 +63,7 @@ async function run(p: Page, plan: string[][][], label: string) {
       await snap(p, `${label}-card`);
       await tap(p, 'card-back');
     }
-    await tap(p, day < 2 ? 'next-day' : 'storm');
+    await tap(p, day < prepDays - 1 ? 'next-day' : 'storm');
   }
   await snap(p, `${label}-days`);
   if (label === 'good') {
@@ -82,10 +87,10 @@ try {
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', e => errors.push(String(e)));
   await page.goto(`http://localhost:${server.port}/`);
-  await page.getByTestId('play').waitFor();
+  await page.getByTestId('play-ice-rain').waitFor();
   await snap(page, 'title');
   // прогресс не теряется: выбрать, перезагрузить страницу, «Продолжить подготовку» — выбранное на месте
-  await tap(page, 'play');
+  await tap(page, 'play-ice-rain');
   await tap(page, 'start-prep');
   await pick(page, 'heat', 'heat-one-room');
   await page.reload();
@@ -93,7 +98,7 @@ try {
   if (!(await page.getByTestId('trouble-heat').innerText()).includes('Одна комната')) throw new Error('после перезагрузки выбор пропал');
   await snap(page, 'resumed');
   await page.reload();
-  await tap(page, 'restart');
+  await tap(page, 'play-ice-rain');
   await tap(page, 'restart-yes');
   await snap(page, 'intro');
   const good = await run(page, GOOD, 'good');
@@ -109,12 +114,18 @@ try {
   if (cheap !== '☆☆☆') throw new Error(`всё дешёвое: ждали эвакуацию, вышло «${cheap}»`);
   if (!(await page.getByTestId('evacuated').isVisible())) throw new Error('нет строки об эвакуации');
   if (!(await page.getByTestId('review').innerText()).includes('Источник:')) throw new Error('в разборе нет источника');
+  // сборы в дорогу: «Новогодние на даче» — выбрать на первом экране и пройти целиком
+  await tap(page, 'home');
+  await tap(page, 'play-dacha-new-year');
+  await snap(page, 'dacha-intro');
+  const dacha = await run(page, DACHA, 'dacha', 2);
+  if (dacha !== '★★★') throw new Error(`дача, хороший план: ждали ★★★, вышло «${dacha}»`);
   await tap(page, 'home');
   await tap(page, 'about');
   await page.getByTestId('assumptions').waitFor();
   await snap(page, 'about');
   if (errors.length) throw new Error(`ошибки в консоли:\n${errors.join('\n')}`);
-  console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}; снимков ${shot} в tools/e2e/out/`);
+  console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}, дача ${dacha}; снимков ${shot} в tools/e2e/out/`);
 } finally {
   await browser.close();
   server.stop();

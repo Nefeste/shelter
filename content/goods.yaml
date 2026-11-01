@@ -296,3 +296,56 @@
     - mchs-yakutia-outage
     - { assumption: "заряженный телефон в экономном режиме держится около 3 дней — зависит от модели" }
   review: draft
+- id: shovel
+  name: Лопата снеговая автомобильная
+  shop: hardware
+  category: safety
+  price: { rub: 800, basis: estimate, note: "оценка: обычно 500–1200 ₽" }
+  volumeL: 8
+  sources: [mchs-ugra-stuck]
+  review: draft
+- id: tow-rope
+  name: Трос буксировочный
+  shop: hardware
+  category: safety
+  price: { rub: 700, basis: estimate, note: "оценка: обычно 500–1000 ₽" }
+  volumeL: 2
+  sources: [mchs-krasnoyarsk-roads]
+  review: draft
+- id: chimney-brush
+  name: Ёрш для чистки дымохода
+  shop: hardware
+  category: heat
+  price: { rub: 900, basis: estimate, note: "оценка: обычно 600–1500 ₽" }
+  volumeL: 3
+  sources: [mchs-crimea-co]
+  review: draft
+- id: oil-heater
+  name: Масляный обогреватель
+  shop: hardware
+  category: heat
+  price: { rub: 3500, basis: estimate, note: "оценка: обычно 2500–5000 ₽" }
+  volumeL: 25
+  sources: [{ assumption: "масляный обогреватель — обычный бытовой электрический, продаётся в любом строительном магазине" }]
+  review: draft
+- id: dacha-firewood
+  name: Дрова под навесом на даче
+  shop: home
+  category: heat
+  price: { rub: 0, basis: estimate, note: "уже на даче" }
+  # лежат под навесом на даче — в багажник не грузятся
+  volumeL: 0
+  provides: { fuelH: 16 }
+  sources:
+    - bse-firewood
+    - { assumption: "охапка дров под навесом держит тепло в доме около 16 часов — как мешок дров в «Ледяном дожде»" }
+  review: draft
+- id: dacha-oven
+  name: Печь на даче
+  shop: home
+  category: heat
+  cooks: true
+  price: { rub: 0, basis: estimate, note: "уже на даче" }
+  volumeL: 0
+  sources: [mchs-adygea-stove]
+  review: draft
