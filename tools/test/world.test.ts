@@ -4,6 +4,7 @@ import { CATEGORIES } from '../../src/content/types';
 import { nextDay, runDays, startPrep, usedPlace, choose } from '../../src/engine';
 import { pantry } from '../../src/state/pantry';
 import { radioLines } from '../../src/state/radio';
+import { neighbours } from '../../src/state/scene';
 import { CHEAP_PLAN, GOOD_PLAN, SCENARIO, prep, world } from './plans';
 
 describe('кладовая', () => {
@@ -43,5 +44,17 @@ describe('районное радио', () => {
     s = nextDay(world, s);
     s = choose(world, s, 'comms-radio');
     expect(radioLines(world, s, runDays(world, s, 1))).toBeNull();
+  });
+});
+
+describe('соседние окна', () => {
+  const days = world.scenario(SCENARIO).eventDays;
+  test('в первый день свет есть, вечером гаснет; дальше ночами — свечи; в последнюю ночь свет возвращается', () => {
+    expect(neighbours(0, days, false)).toBe('lit');
+    expect(neighbours(0, days, true)).toBe('dark');
+    expect(neighbours(1, days, true)).toBe('candle');
+    expect(neighbours(5, days, false)).toBe('dark');
+    expect(neighbours(days - 1, days, false)).toBe('dark');
+    expect(neighbours(days - 1, days, true)).toBe('lit');
   });
 });

@@ -1,11 +1,12 @@
 // Сцена 14 дней (спецификация, «Жизнь мира»): небо по времени суток, столбы с обледеневшими
-// проводами, дом, свет в окне, дым из трубы, если топится печь, семья в окне — укутана, если холодно.
-// Всё — рисунок кодом.
+// проводами, соседние дома и их окна, дом, свет в окне, дым из трубы, если топится печь, семья в
+// окне — укутана, если холодно, ночью спит. Всё — рисунок кодом.
 import React, { useEffect, useMemo } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Polygon, Rect } from 'react-native-svg';
 import { C } from './theme';
 import { Snow } from './Snow';
+import type { Windows } from '../state/scene';
 
 const H = 200;
 /** ширина рисунка: сцена по центру, земля и небо — на всю ширину */
@@ -13,8 +14,15 @@ const W = 320;
 /** где труба: дым поднимается из неё */
 const CHIMNEY = { x: 196, y: 66 };
 
-/** `away` — семья уехала: окно тёмное и пустое; `calm` — непогода кончилась, снега нет. */
-export function Scene({ lit, smoke, cold, night, ice, away = false, calm = false }: { lit: boolean; smoke: boolean; cold: boolean; night: boolean; ice: boolean; away?: boolean; calm?: boolean }) {
+/** Соседние дома поодаль: левый и правый, между столбом и нашим домом. */
+const NEIGHBOURS = [38, 262];
+
+/**
+ * `away` — семья уехала: окно тёмное и пустое; `calm` — непогода кончилась, снега нет;
+ * `windows` — окна соседей; ночью семья спит, а свет в окне приглушён.
+ */
+export function Scene({ lit, smoke, cold, night, ice, away = false, calm = false, windows = 'dark' }: { lit: boolean; smoke: boolean; cold: boolean; night: boolean; ice: boolean; away?: boolean; calm?: boolean; windows?: Windows }) {
+  const asleep = night && !away;
   // днём — пасмурное небо бури, ночью — тёмное: снег и дом видны на обоих
   const sky = night ? C.spruce : C.line;
   const puff = useMemo(() => new Animated.Value(0), []);
@@ -29,6 +37,15 @@ export function Scene({ lit, smoke, cold, night, ice, away = false, calm = false
       <View style={styles.ground} />
       <View style={styles.stage}>
         <Svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+          {/* соседние дома — поодаль, за столбами */}
+          {NEIGHBOURS.map(cx => (
+            <React.Fragment key={cx}>
+              <Polygon points={`${cx - 26},140 ${cx},118 ${cx + 26},140`} fill={C.inkSoft} />
+              <Rect x={cx - 22} y={140} width={44} height={40} fill={C.paper} stroke={C.inkSoft} strokeWidth={1.5} />
+              <Rect x={cx - 8} y={150} width={16} height={12} fill={windows === 'lit' ? C.lamp : night ? C.ink : C.line} stroke={C.inkSoft} strokeWidth={1.5} />
+              {windows === 'candle' ? <Circle cx={cx} cy={157} r={2.5} fill={C.lamp} opacity={0.8} /> : null}
+            </React.Fragment>
+          ))}
           {/* столбы и провода, обросшие льдом */}
           <Rect x={18} y={60} width={5} height={120} fill={C.ink} />
           <Rect x={296} y={60} width={5} height={120} fill={C.ink} />
@@ -43,8 +60,19 @@ export function Scene({ lit, smoke, cold, night, ice, away = false, calm = false
           <Polygon points="90,110 160,62 230,110" fill="none" stroke={C.paper} strokeWidth={3} strokeDasharray="6 5" />
           <Rect x={102} y={110} width={116} height={70} fill={C.paper} stroke={C.ink} strokeWidth={2} />
           {/* окно с семьёй */}
-          <Rect x={116} y={124} width={48} height={34} fill={lit && !away ? C.lamp : night ? C.inkSoft : C.line} stroke={C.ink} strokeWidth={2} />
-          {(away ? [] : [124, 136, 148, 158]).map((x, i) => (
+          <Rect x={116} y={124} width={48} height={34} fill={night ? C.inkSoft : C.line} stroke={C.ink} strokeWidth={2} />
+          {/* свет: днём — во всё окно, ночью — приглушённый ночник */}
+          {lit && !away ? <Rect x={117} y={125} width={46} height={32} fill={C.lamp} opacity={asleep ? 0.45 : 1} /> : null}
+          {/* ночью семья спит: четверо лёжа, головы на подушках */}
+          {asleep
+            ? [120, 143].flatMap(x => [0, 1].map(k => (
+              <React.Fragment key={`${x}-${k}`}>
+                <Rect x={x + 4} y={146 + k * 6} width={14} height={5} rx={2.5} fill={cold ? C.kumach : C.ink} />
+                <Circle cx={x + 2} cy={148.5 + k * 6} r={2.5} fill={C.ink} />
+              </React.Fragment>
+            )))
+            : null}
+          {(away || asleep ? [] : [124, 136, 148, 158]).map((x, i) => (
             <React.Fragment key={x}>
               <Circle cx={x} cy={i === 3 ? 144 : 141} r={i === 3 ? 3 : 3.5} fill={C.ink} />
               <Rect x={x - 4} y={i === 3 ? 147 : 145} width={8} height={11} rx={3} fill={cold ? C.kumach : C.ink} />
