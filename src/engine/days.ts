@@ -8,7 +8,7 @@ import { type PrepState, type World } from './prep';
 export type EvacReason = 'cold' | 'thirst' | 'hunger' | 'meds' | 'co' | 'fire';
 
 /** Чего не хватило в день — для разбора. */
-export type Shortage = 'water' | 'drink' | 'food' | 'light' | 'comms' | 'sanitation' | 'cold' | 'care';
+export type Shortage = 'water' | 'drink' | 'food' | 'light' | 'comms' | 'sanitation' | 'cold' | 'care' | 'road';
 
 export interface DayLog {
   day: number;
@@ -19,7 +19,7 @@ export interface DayLog {
   lightH: number;
   short: Shortage[];
   /** событие дня, если было */
-  event?: 'thaw' | 'clog' | 'injury';
+  event?: 'thaw' | 'clog' | 'injury' | 'stuck';
 }
 
 export interface Outcome {
@@ -122,8 +122,21 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
   // день, а не в первый: так игрок видит, что она была
   const riskDay: Partial<Record<Risk, number>> = {};
   for (const r of [...risks].sort()) {
+    if (r === 'stuck') continue;
     const branch = rng.fork(`risk:${r}`);
     if (branch.chance((remains[r] ?? 100) * 100)) riskDay[r] = branch.range(1, 3);
+  }
+
+  // случай в дороге: машину заносит в день `stuck.day` (с ловушкой — наверняка); защита решает,
+  // станет ли он трудным днём или откопались и поехали дальше
+  let stuckDay = -1;
+  let stuckHard = false;
+  if (sc.stuck) {
+    const road = rng.fork('stuck');
+    if (road.chance((risks.has('stuck') ? 100 : sc.stuck.pct) * 100)) {
+      stuckDay = sc.stuck.day;
+      stuckHard = road.chance((remains.stuck ?? 100) * 100);
+    }
   }
 
   const start = { waterDl: stock.waterDl, kcal: stock.kcal, lightH: stock.lightH, commsDays: stock.commsDays, sanitationDays: stock.sanitationDays };
@@ -159,16 +172,28 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
     if (stock.kcal >= kcalDay) { stock.kcal -= kcalDay; hungerRun = 0; }
     else { stock.kcal = 0; short.push('food'); hungerRun += 1; }
 
-    if (stock.lightH >= sc.norms.lightH) stock.lightH -= sc.norms.lightH;
-    else { stock.lightH = 0; short.push('light'); }
+    // свет, связь и туалет — если сценарий их считает (на даче со светом — нет)
+    if (sc.norms.lightH > 0) {
+      if (stock.lightH >= sc.norms.lightH) stock.lightH -= sc.norms.lightH;
+      else { stock.lightH = 0; short.push('light'); }
+    }
 
-    if (stock.commsDays > 0) stock.commsDays -= 1;
-    else short.push('comms');
+    if (sc.norms.comms !== false) {
+      if (stock.commsDays > 0) stock.commsDays -= 1;
+      else short.push('comms');
+    }
 
     // забитая канализация (ловушка «смывать снегом»): туалета нет до конца события
     const clogged = riskDay.clog !== undefined && d >= riskDay.clog;
-    if (stock.sanitationDays > 0 && !clogged) stock.sanitationDays -= 1;
-    else short.push('sanitation');
+    if (sc.norms.sanitation !== false) {
+      if (stock.sanitationDays > 0 && !clogged) stock.sanitationDays -= 1;
+      else short.push('sanitation');
+    }
+
+    if (d === stuckDay) {
+      event = 'stuck';
+      if (stuckHard) short.push('road');
+    }
 
     if (indoorC < sc.norms.coldC) short.push('cold');
     coldRun = indoorC < sc.norms.coldEvacC ? coldRun + 1 : 0;

@@ -11,6 +11,7 @@ export type ReviewLine =
   | { kind: 'late'; goods: string[] }
   | { kind: 'unfinished'; solution: string }
   | { kind: 'injury'; day: number }
+  | { kind: 'stuck'; day: number }
   | { kind: 'allGood'; moneyLeft: number };
 
 /** Первый день, когда не хватило `what`. */
@@ -35,6 +36,8 @@ export function review(s: PrepState, o: Outcome): ReviewLine[] {
   if (comms !== null) lines.push({ kind: 'ranOut', what: 'comms', day: comms, had: o.start.commsDays, need: o.need.commsDays });
   const sanitation = firstShort(o, ['sanitation']);
   if (sanitation !== null) lines.push({ kind: 'ranOut', what: 'sanitation', day: sanitation, had: o.start.sanitationDays, need: o.need.sanitationDays });
+  const road = firstShort(o, ['road']);
+  if (road !== null) lines.push({ kind: 'stuck', day: road });
   const care = firstShort(o, ['care']);
   if (care !== null) lines.push({ kind: 'injury', day: care });
   if (!lines.length) lines.push({ kind: 'allGood', moneyLeft: s.money });
@@ -44,7 +47,7 @@ export function review(s: PrepState, o: Outcome): ReviewLine[] {
 /** О какой беде строка разбора: по ней ищется источник. */
 const TROUBLE: Record<string, string> = {
   water: 'water', food: 'food', light: 'light', comms: 'comms', sanitation: 'toilet',
-  cold: 'heat', thirst: 'water', hunger: 'food', meds: 'meds', co: 'co', fire: 'fire', injury: 'meds',
+  cold: 'heat', thirst: 'water', hunger: 'food', meds: 'meds', co: 'co', fire: 'fire', injury: 'meds', stuck: 'road',
 };
 
 /**
@@ -58,6 +61,8 @@ export function sourceOf(w: World, s: PrepState, line: ReviewLine): Extract<Sour
   else if (line.kind === 'injury') {
     // о пользе аптечки говорит источник правильного решения, а не выбранного
     sid = w.trouble('meds').solutions.find(x => w.solution(x).tier === 'right');
+  } else if (line.kind === 'stuck') {
+    sid = s.chosen.road ?? w.trouble('road').solutions.find(x => w.solution(x).tier === 'right');
   } else if (line.kind === 'ranOut' || line.kind === 'evacuated') {
     const t = TROUBLE[line.kind === 'ranOut' ? line.what : line.reason];
     // угарный газ без беды «угарный газ» — от ловушки, которая его не показывает: источник — у неё

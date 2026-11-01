@@ -1,5 +1,5 @@
 // из nardy: src/version.ts @ 3b5b4ce — номер версии для «Об игре»; тест сверит его с app.json,
 // package.json и STATUS.md (docs/05-process.md, «Версии»).
-export const APP_VERSION = '0.8.0';
+export const APP_VERSION = '0.9.0';
 /** Номер сборки — `android.versionCode` в app.json. */
-export const APP_BUILD = 11;
+export const APP_BUILD = 12;

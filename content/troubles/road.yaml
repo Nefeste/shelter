@@ -1,0 +1,45 @@
+trouble:
+  id: road
+  name: Дорога
+  text: Полторы сотни километров по зимней трассе. В снегопад машину может занести в сугроб.
+solutions:
+  - id: road-phone
+    tier: cheap
+    name: Заправиться и зарядить телефоны
+    text: Заправиться накануне и зарядить телефоны — если что, позвонить по номеру 112.
+    goods: [{ good: own-phone, qty: 1 }]
+    workMin: 30
+    guards: [{ risk: stuck, stopsPct: 20 }]
+    why: Телефон поможет вызвать помощь, но ждать её в холодной машине придётся долго.
+    sources: [mchs-ugra-stuck, { assumption: "с одним телефоном четыре застревания из пяти оборачиваются долгим ожиданием помощи — допущение игры" }]
+    review: draft
+  - id: road-shovel
+    tier: mid
+    name: Лопата и трос
+    text: Лопата — откопать колёса, трос — чтобы вытянула попутная машина.
+    goods: [{ good: shovel, qty: 1 }, { good: tow-rope, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: stuck, stopsPct: 60 }]
+    why: Лопатой откапывают колёса и выхлопную трубу, трос нужен, чтобы вытянули; но ждать на морозе без тёплых вещей тяжело.
+    sources: [mchs-krasnoyarsk-roads, mchs-ugra-stuck, { assumption: "лопата и трос выручают в трёх застреваниях из пяти — допущение игры" }]
+    review: draft
+  - id: road-kit
+    tier: right
+    name: Аварийный набор
+    text: Лопата, трос, одеяло, фонарь с батарейками и аптечка — всё в багажнике.
+    goods: [{ good: shovel, qty: 1 }, { good: tow-rope, qty: 1 }, { good: blanket, qty: 1 }, { good: headlamp, qty: 1 }, { good: batteries, qty: 1 }, { good: first-aid, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: stuck, stopsPct: 95 }]
+    why: Так собирают аварийный комплект по памятке МЧС — с ним откапываются, греются и ждут помощи спокойно, а аптечка пригодится и на даче.
+    sources: [mchs-ugra-stuck, mchs-krasnoyarsk-roads, mchs-kit, { assumption: "с аварийным набором застревание почти никогда не становится трудным днём — допущение игры: 95 %" }]
+    review: draft
+  - id: road-storm
+    tier: trap
+    name: Ехать, не глядя на прогноз
+    text: Праздник ждать не будет — выезжаем, какая бы ни была погода.
+    goods: []
+    workMin: 0
+    risks: [stuck]
+    why: При неблагоприятном прогнозе поездку советуют по возможности отложить — в метель застревают даже подготовленные.
+    sources: [mchs-volgograd-winter-driver]
+    review: draft

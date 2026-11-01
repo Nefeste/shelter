@@ -2,11 +2,11 @@ import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { T } from '../i18n';
 import { Button, Card, Txt } from '../ui/kit';
-import { type Game, SCENARIO, world } from '../state/game';
+import { type Game, world } from '../state/game';
 import { Bubble } from '../ui/Bubble';
 
 export function IntroScreen({ game }: { game: Game }) {
-  const sc = world.scenario(SCENARIO);
+  const sc = world.scenario(game.prep.scenario);
   return (
     <ScrollView contentContainerStyle={styles.wrap}>
       <Txt title>{sc.name}</Txt>
@@ -15,7 +15,7 @@ export function IntroScreen({ game }: { game: Game }) {
         <Txt>{T.intro.family(sc.family.map(p => p.name))}</Txt>
         <Txt>{T.intro.money(sc.money[0] ?? 0, sc.money[1] ?? 0)}</Txt>
         <Txt>{T.intro.hours(sc.minutesPerDay, sc.prepDays)}</Txt>
-        <Txt>{T.intro.place(sc.pantryL, sc.porchL)}</Txt>
+        <Txt>{T.intro.place(sc.words.place, sc.pantryL + sc.porchL)}</Txt>
       </Card>
       {world.bundle.voices
         .filter(v => v.scenario === sc.id && v.when === 'intro')

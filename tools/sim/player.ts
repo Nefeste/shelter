@@ -2,7 +2,8 @@
 // бед — семи начальных и тех, что они создают, — и для каждого сочетания проходит подготовку тремя
 // привычками порядка, затем 14 дней на нескольких зёрнах. Пишет отчёт в docs/reports/.
 //
-//   bun tools/sim/player.ts               — весь перебор, отчёт в docs/reports/2026-11-virtual-player.md
+//   bun tools/sim/player.ts               — весь перебор «Ледяного дождя», отчёт в docs/reports/2026-11-virtual-player.md
+//   bun tools/sim/player.ts --scenario dacha-new-year — другой сценарий, отчёт …-virtual-player-<сценарий>.md
 //   bun tools/sim/player.ts --seeds 3     — быстрее: меньше зёрен
 //   bun tools/sim/player.ts --print       — отчёт на экран, без записи
 //
@@ -20,7 +21,9 @@ import { type Outcome, type PrepState, World, canChoose, choose, nextDay, review
 import { T } from '../../src/i18n';
 
 export const world = new World(bundle);
-export const SCENARIO = 'ice-rain';
+/** Сценарий перебора: `--scenario <id>`, по умолчанию «Ледяной дождь». */
+const argScenario = process.argv.indexOf('--scenario');
+export const SCENARIO = argScenario >= 0 ? process.argv[argScenario + 1] : 'ice-rain';
 
 export type Policy = 'list' | 'plan' | 'reverse' | 'upgrade';
 export const POLICIES: Policy[] = ['list', 'plan', 'reverse', 'upgrade'];
@@ -36,6 +39,13 @@ const cheapOf = (t: string) => options(t).find(sid => tierOf(sid) === 'cheap')!;
 function created(ids: string[]): string[] {
   const out: string[] = [];
   for (const sid of ids) for (const t of world.solution(sid).creates ?? []) if (!sc.troubles.includes(t) && !out.includes(t)) out.push(t);
+  return out;
+}
+
+/** Беды, которые могут создать решения начальных бед этого сценария. */
+function allCreated(): string[] {
+  const out: string[] = [];
+  for (const t of sc.troubles) for (const sid of options(t)) for (const c of world.solution(sid).creates ?? []) if (!sc.troubles.includes(c) && !out.includes(c)) out.push(c);
   return out;
 }
 
@@ -189,11 +199,11 @@ const best = (r: Row) => Math.max(...POLICIES.map(p => mean(r.by[p].got)));
 export function report(rows: Row[], seeds: number): string {
   const L: string[] = [];
   const total = rows.length;
-  L.push('# Отчёт «виртуального игрока»: «Ледяной дождь»');
+  L.push(`# Отчёт «виртуального игрока»: «${sc.name}»`);
   L.push('');
   L.push(`Собран \`bun tools/sim/player.ts\` (перебор детерминирован: тот же код и то же содержание — тот же отчёт): ${total.toLocaleString('ru-RU')} сочетаний решений, четыре привычки порядка, зёрна 1…${seeds} (в игре зерно — номер попытки).`);
   L.push('');
-  L.push('Сочетание — по одному решению на каждую из семи начальных бед и на беды, которые создали выбранные решения («угарный газ» — от обогревателя, печи и машины в гараже; «пожар» — от свечей). Звёзды — как в игре: 1 — продержались 14 дней дома, 2 — без ловушек и без дней без питья, еды и тепла, 3 — ни одного дня, когда чего-то не хватало.');
+  L.push(`Сочетание — по одному решению на каждую из начальных бед (${sc.troubles.length}) и на беды, которые создали выбранные решения (${allCreated().map(t => `«${world.trouble(t).name}»`).join(', ') || 'нет'}). Звёзды — как в игре: 1 — продержались все ${sc.eventDays} дней, 2 — без ловушек и без дней без питья, еды и тепла, 3 — ни одного дня, когда чего-то не хватало.`);
   L.push('');
 
   // 1. распределение
@@ -247,7 +257,7 @@ export function report(rows: Row[], seeds: number): string {
   L.push('');
   L.push('| Беда | Решение | Вид | Средние ★ | ★★★, сочетаний | Не собрать |');
   L.push('|---|---|---|---|---|---|');
-  for (const t of [...sc.troubles, 'co', 'fire']) {
+  for (const t of [...sc.troubles, ...allCreated()]) {
     for (const sid of options(t)) {
       const rs = rows.filter(r => r.ids.includes(sid));
       if (!rs.length) continue;
@@ -388,7 +398,7 @@ export function dominance(rows: Row[]): string[] {
     }
     check(t, contexts);
   });
-  for (const t of ['co', 'fire']) {
+  for (const t of allCreated()) {
     const contexts = new Map<string, Map<string, number>>();
     for (const [k, v] of createdValue) {
       const ids = k.split(',');
@@ -450,8 +460,9 @@ if (import.meta.main) {
   else {
     const dir = join(import.meta.dir, '../../docs/reports');
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, '2026-11-virtual-player.md'), text);
-    console.log(`отчёт: docs/reports/2026-11-virtual-player.md (${rows.length} сочетаний, ${Math.round(ms / 1000)} с)`);
+    const file = SCENARIO === 'ice-rain' ? '2026-11-virtual-player.md' : `2026-11-virtual-player-${SCENARIO}.md`;
+    writeFileSync(join(dir, file), text);
+    console.log(`отчёт: docs/reports/${file} (${rows.length} сочетаний, ${Math.round(ms / 1000)} с)`);
   }
 }
 

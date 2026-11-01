@@ -19,11 +19,13 @@
    решения владельца.
 7. [`specs/2026-11-prototype.md`](specs/2026-11-prototype.md) — живая спецификация прототипа:
    критерии, решения агента, журнал проверок.
+   Сборы в дорогу — [`specs/2026-11-trips.md`](specs/2026-11-trips.md).
 8. [`10-money.md`](10-money.md), [`11-market.md`](11-market.md) — деньги и рынок.
 9. [`adr/`](adr/) — решения, которые дорого менять; [`adr/0001-studio-adrs.md`](adr/0001-studio-adrs.md)
    — как здесь применяются ADR студии.
 10. [`reports/`](reports/) — отчёты, которые собирает код: [`2026-11-virtual-player.md`](reports/2026-11-virtual-player.md)
-    — «виртуальный игрок», все сочетания решений (`npm run sim`; руками не править).
+    — «виртуальный игрок», все сочетания решений (`npm run sim`; руками не править); по даче —
+    [`2026-11-virtual-player-dacha-new-year.md`](reports/2026-11-virtual-player-dacha-new-year.md).
 11. [`journal/`](journal/) — журнал по месяцам: [`2026-11.md`](journal/2026-11.md).
 
 Замысел и решения владельца, из которых выросла игра, — `Nefeste/uprava`,

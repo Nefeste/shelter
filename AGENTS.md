@@ -111,7 +111,10 @@ tag by `android.yml`, with the kit's signing and contents actions).
   texts in `assets/fonts/`), applied by `Txt` in `src/ui/kit.tsx`.
 - `assets/audio/` — synthesized sounds, made by `npm run sound` (`tools/sound/gen.ts`, byte-exact
   test); never edit or add recordings by hand.
-- `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world; `tools/e2e/browser.ts` — the browser scenario.
-- `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes): every combination of
-  solutions, four ordering habits, seeds 1…30; writes `docs/reports/2026-11-virtual-player.md`. Any
+- Scenarios: «Ледяной дождь» (home) and «Новогодние на даче» (the first «Сборы в дорогу» trip, own
+  troubles `road`, `dacha-*`, shared `co`); a scenario carries its own words, order and checks.
+- `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world, dacha; `tools/e2e/browser.ts` — the browser scenario.
+- `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes; `--scenario <id>` for
+  another scenario): every combination of solutions, four ordering habits, seeds 1…30; writes
+  `docs/reports/2026-11-virtual-player[-<scenario>].md`. Any
   change to content numbers, prices or the engine re-runs it, and the report goes into the same PR.

@@ -1,0 +1,42 @@
+trouble:
+  id: dacha-water
+  name: Вода на даче
+  text: Водопровод на зиму слит, колодец замёрз. Воду везти с собой.
+solutions:
+  - id: dacha-water-drink
+    tier: cheap
+    name: Питьевая вода
+    text: Бутилированная вода.
+    goods: [{ good: water-5l, qty: 13 }]
+    workMin: 0
+    why: "Норма на питьё — 2,5 л взрослому и 5 л ребёнку в сутки; на готовку и умывание нужно ещё 7,5 л на человека."
+    sources: [mchs-norms]
+    review: draft
+  - id: dacha-water-more
+    tier: mid
+    name: Побольше бутылок
+    text: Бутилированная вода — и на питьё, и на готовку.
+    goods: [{ good: water-5l, qty: 24 }]
+    workMin: 0
+    why: Бутылок хватит на питьё и на часть готовки, но на пять дней семье нужно больше.
+    sources: [mchs-norms]
+    review: draft
+  - id: dacha-water-full
+    tier: right
+    name: Вода и канистры из дома
+    text: Бутилированная вода и канистры, наполненные дома из крана.
+    goods: [{ good: water-5l, qty: 13 }, { good: canister-20l, qty: 8 }, { good: tap-water, qty: 8 }]
+    workMin: 45
+    why: Воду из-под крана набирают дома — это почти ничего не стоит, нужны только канистры и место в багажнике.
+    sources: [mchs-norms, mchs-kaluga-outage]
+    review: draft
+  - id: dacha-water-car
+    tier: trap
+    name: Канистры оставить в машине
+    text: Дом маленький — канистры пусть ночуют в багажнике.
+    goods: [{ good: water-5l, qty: 13 }, { good: canister-20l, qty: 8 }, { good: tap-water, qty: 8 }]
+    workMin: 45
+    keepsPct: 60
+    why: На морозе вода в машине замерзает — быстро её не достать, а полная канистра может лопнуть.
+    sources: [ready-list, { assumption: "сколько воды теряется на морозе — допущение игры: 40 %" }]
+    review: draft

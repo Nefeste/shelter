@@ -1,0 +1,47 @@
+id: dacha-new-year
+name: Новогодние на даче
+order: 2
+words: { until: до отъезда, start: В путь, place: багажник, card: багажник }
+text: >-
+  Тридцатое декабря. Семья едет на дачу за полторы сотни километров — встретить Новый год и пожить
+  до третьего января. Дом стоит пустой с осени: печь холодная, вода на зиму слита. Дрова под
+  навесом есть, всё остальное — везти с собой. На сборы — вечер и утро, место — только багажник.
+family:
+  - { id: dad, name: Папа, kind: adult }
+  - { id: mom, name: Мама, kind: adult }
+  - { id: son, name: Сын, kind: child }
+  - { id: gran, name: Бабушка, kind: elder }
+prepDays: 2
+minutesPerDay: 240
+money: [16000, 8000]
+# багажник; веранды нет
+pantryL: 320
+porchL: 0
+eventDays: 5
+outdoorC: [-14, -18, -20, -16, -12]
+houseC: 4
+troubles: [road, dacha-heat, dacha-water, dacha-food]
+norms:
+  waterDl: { adult: 100, child: 125, elder: 100 }
+  drinkDl: { adult: 25, child: 50, elder: 25 }
+  kcal: 2300
+  # на даче есть свет, связь, туалет во дворе — это не беды
+  lightH: 0
+  comms: false
+  sanitation: false
+  coldC: 18
+  coldEvacC: 8
+  maxC: 22
+# свои лекарства бабушка берёт с собой — на пять дней хватает
+needsMeds: []
+injury: { pct: 50, from: 1, to: 4 }
+stuck: { pct: 40, day: 0 }
+sources:
+  - mchs-norms
+  - mchs-evacuation
+  - pp-354
+  - mchs-ugra-stuck
+  - { assumption: "погода, багажник на 320 л, деньги и часы на сборы — допущения игры" }
+  - { assumption: "в зимнюю метель на трассе машину заносит в сугроб с вероятностью 40 % — допущение игры" }
+  - { assumption: "за пять дней на даче кто-то порежется или простынет с вероятностью 50 % — допущение игры" }
+review: draft

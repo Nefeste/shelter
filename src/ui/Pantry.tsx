@@ -28,7 +28,7 @@ export function Pantry({ world, prep }: { world: World; prep: PrepState }) {
   const empty = Math.max(0, p.boxes - filled.length);
   return (
     <Card testID="pantry">
-      <Txt style={styles.head}>{T.prep.pantry(p.usedL, p.totalL)}</Txt>
+      <Txt style={styles.head}>{T.prep.pantry(world.scenario(prep.scenario).words.card, p.usedL, p.totalL)}</Txt>
       <View style={styles.grid}>
         {filled.map(b => <Box key={b.key} color={b.color} />)}
         {Array.from({ length: empty }, (_, i) => <View key={`empty-${i}`} style={[styles.box, styles.empty]} />)}

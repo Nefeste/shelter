@@ -22,9 +22,11 @@ const FIRST: DayLog['short'] = ['cold', 'food', 'water', 'light', 'comms', 'sani
  * О чём говорят в этот день: случай дня; новая нехватка (которой не было вчера); последний день;
  * иначе — спокойный день.
  */
-export function dayWhen(days: DayLog[], i: number, total: number): string {
+export function dayWhen(days: DayLog[], i: number, total: number, roadDay?: number): string {
   const d = days[i];
   const prev = i > 0 ? days[i - 1].short : [];
+  if (d.short.includes('road')) return 'day:road';
+  if (d.event === 'stuck') return 'day:stuck';
   if (d.short.includes('care')) return 'day:care';
   if (d.event === 'injury') return 'day:injury';
   if (d.event === 'thaw') return 'day:thaw';
@@ -32,5 +34,7 @@ export function dayWhen(days: DayLog[], i: number, total: number): string {
   const fresh = FIRST.find(x => d.short.includes(x) && !prev.includes(x));
   if (fresh) return `day:${fresh}`;
   if (i === total - 1) return 'day:last';
+  // день дороги в поездке — о дороге и говорят
+  if (i === roadDay) return 'day:drive';
   return d.short.length ? '' : 'day:ok';
 }

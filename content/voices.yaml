@@ -81,3 +81,43 @@
 # итог
 - { scenario: ice-rain, who: gran, when: "result:home", text: "Все дома, все целы. Молодцы." }
 - { scenario: ice-rain, who: dad, when: "result:evac", text: "Ничего, переждём у людей. В другой раз подготовимся лучше." }
+
+# «Новогодние на даче»
+- { scenario: dacha-new-year, who: dad, when: intro, text: "Вечер и утро на сборы. Что не влезет в багажник — остаётся дома." }
+- { scenario: dacha-new-year, who: son, when: intro, text: "Ёлку там нарядим? А снеговика слепим?" }
+- { scenario: dacha-new-year, who: dad, when: "choose:road-phone", text: "Заправлюсь вечером, а телефоны — на зарядку." }
+- { scenario: dacha-new-year, who: son, when: "choose:road-shovel", text: "Лопату — мне! Буду откапывать." }
+- { scenario: dacha-new-year, who: mom, when: "choose:road-kit", text: "Одеяло, фонарь, аптечка — как в памятке. Спокойнее ехать." }
+- { scenario: dacha-new-year, who: dad, when: "choose:road-storm", text: "Да что там метель — прорвёмся." }
+- { scenario: dacha-new-year, who: gran, when: "choose:dacha-blankets", text: "Под двумя одеялами и в шерстяных носках — ничего." }
+- { scenario: dacha-new-year, who: mom, when: "choose:dacha-oil-heater", text: "Обогреватель в спальню — хоть там будет тепло." }
+- { scenario: dacha-new-year, who: dad, when: "choose:dacha-stove", text: "Сначала дымоход, потом огонь. Не торопимся." }
+- { scenario: dacha-new-year, who: gran, when: "choose:dacha-stove-hot", text: "Накидаем полную — к вечеру будет жарко." }
+- { scenario: dacha-new-year, who: son, when: "choose:dacha-water-drink", text: "А чай из чего?" }
+- { scenario: dacha-new-year, who: mom, when: "choose:dacha-water-more", text: "Бутылки — по всем углам багажника." }
+- { scenario: dacha-new-year, who: dad, when: "choose:dacha-water-full", text: "Канистры наберу дома — вода из крана почти бесплатная." }
+- { scenario: dacha-new-year, who: dad, when: "choose:dacha-water-car", text: "Пусть в машине стоят — в доме и так тесно." }
+- { scenario: dacha-new-year, who: son, when: "choose:dacha-food-cold", text: "Бутерброды на Новый год? Ну ладно." }
+- { scenario: dacha-new-year, who: gran, when: "choose:dacha-food-stove", text: "Гречку на печке сварю — объеденье." }
+- { scenario: dacha-new-year, who: mom, when: "choose:dacha-food-burner", text: "Горелку — на крыльцо, и всё успеем к столу." }
+- { scenario: dacha-new-year, who: dad, when: "choose:dacha-food-indoor", text: "На кухне и сготовим, на улице мороз." }
+- { scenario: dacha-new-year, who: mom, when: "choose:co-airing", text: "Форточку — по будильнику." }
+- { scenario: dacha-new-year, who: son, when: "choose:co-sensor", text: "А он запищит, если что?" }
+- { scenario: dacha-new-year, who: dad, when: "choose:co-detector-airing", text: "Датчик у кроватей, форточку — по часам." }
+- { scenario: dacha-new-year, who: gran, when: "choose:co-seal", text: "Щели заткнём — тепло не уйдёт." }
+- { scenario: dacha-new-year, who: dad, when: "day:road", text: "Ну вот, засели. Ждём помощи." }
+- { scenario: dacha-new-year, who: son, when: "day:drive", text: "Едем! Я считаю фуры — уже целая куча." }
+- { scenario: dacha-new-year, who: gran, when: "day:drive", text: "Снег-то какой. Хорошо, что выехали засветло." }
+- { scenario: dacha-new-year, who: son, when: "day:stuck", text: "Застряли — и откопались! Я помогал!" }
+- { scenario: dacha-new-year, who: gran, when: "day:cold", text: "Внучек, неси второе одеяло." }
+- { scenario: dacha-new-year, who: dad, when: "day:food", text: "Делим, что осталось, поровну." }
+- { scenario: dacha-new-year, who: mom, when: "day:water", text: "Умываемся по очереди и по чуть-чуть." }
+- { scenario: dacha-new-year, who: mom, when: "day:care", text: "Чем бы заклеить? Пластыря-то нет." }
+- { scenario: dacha-new-year, who: mom, when: "day:injury", text: "Пластырь — и до свадьбы заживёт." }
+- { scenario: dacha-new-year, who: son, when: "day:ok", text: "Слепили снеговика! С морковкой!" }
+- { scenario: dacha-new-year, who: gran, when: "day:ok", text: "Печка трещит, чай горячий. Хорошо." }
+- { scenario: dacha-new-year, who: dad, when: "day:ok", text: "Тишина какая. Слышно, как снег падает." }
+- { scenario: dacha-new-year, who: mom, when: "day:ok", text: "С наступающим! Мандарины на столе." }
+- { scenario: dacha-new-year, who: mom, when: "day:last", text: "Пора собираться. Хорошо отдохнули." }
+- { scenario: dacha-new-year, who: gran, when: "result:home", text: "Вот это праздник. На следующий год — опять сюда." }
+- { scenario: dacha-new-year, who: dad, when: "result:evac", text: "Ничего, вернёмся. В другой раз соберёмся лучше." }
