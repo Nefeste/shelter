@@ -11,8 +11,8 @@ solutions:
     workMin: 0
     risks: [fire]
     creates: [fire]
-    why: Свечи дают свет, но открытый огонь в доме — риск пожара.
-    sources: [{ todo: "памятка МЧС: пожарная безопасность при использовании свечей" }]
+    why: Свечи дают свет, но открытый огонь в доме — риск пожара; без присмотра их не оставляют.
+    sources: [mchs-khabarovsk-candles, ppr-1479]
     review: draft
   - id: light-headlamps
     tier: mid
@@ -20,8 +20,8 @@ solutions:
     text: Два налобных фонаря и запас батареек.
     goods: [{ good: headlamp, qty: 2 }, { good: batteries, qty: 4 }]
     workMin: 0
-    why: Фонари безопасны, но батареек нужно столько, чтобы хватило на все вечера.
-    sources: [mchs-kit]
+    why: Фонари безопасны, но батареек нужно столько, чтобы хватило на все вечера, — а на холоде они садятся быстрее.
+    sources: [mchs-kit, ready-outage]
     review: draft
   - id: light-lanterns
     tier: right
@@ -29,8 +29,8 @@ solutions:
     text: Фонарь на стол и налобные — с батарейками на все две недели.
     goods: [{ good: lantern, qty: 1 }, { good: headlamp, qty: 2 }, { good: batteries, qty: 4 }]
     workMin: 0
-    why: "Свет на все вечера без огня: батареек — по часам, а не на глаз."
-    sources: [mchs-kit]
+    why: Свет на все вечера без огня — батареек по часам, а не на глаз.
+    sources: [mchs-kit, ready-outage]
     review: draft
   - id: light-car
     tier: trap
@@ -40,6 +40,6 @@ solutions:
     workMin: 0
     risks: [co]
     creates: [co]
-    why: Работающий двигатель в закрытом гараже — частая причина отравления угарным газом.
-    sources: [{ todo: "памятка МЧС об угарном газе от автомобиля в гараже" }]
+    why: Работающий двигатель в гараже — частая причина отравления угарным газом; у пристроенного к дому гаража — даже с открытыми воротами.
+    sources: [mchs-voronezh-co, mchs-kuzbass-co, cdc-co]
     review: draft

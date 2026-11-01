@@ -8,7 +8,13 @@ import type { Game } from '../state/game';
 
 export function AboutScreen({ game }: { game: Game }) {
   const titles = new Set<string>();
-  for (const x of [...bundle.scenarios, ...bundle.solutions, ...bundle.goods]) for (const s of x.sources) if ('title' in s) titles.add(s.title);
+  const assumptions = new Set<string>();
+  for (const x of [...bundle.scenarios, ...bundle.solutions, ...bundle.goods]) {
+    for (const s of x.sources) {
+      if ('title' in s) titles.add(s.title);
+      if ('assumption' in s) assumptions.add(s.assumption);
+    }
+  }
   return (
     <ScrollView contentContainerStyle={styles.wrap}>
       <Txt title>{T.about.title}</Txt>
@@ -22,6 +28,10 @@ export function AboutScreen({ game }: { game: Game }) {
       <Card>
         <Txt style={styles.head}>{T.about.sources}</Txt>
         {[...titles].sort().map(t => <Txt key={t} dim>{t}</Txt>)}
+      </Card>
+      <Card testID="assumptions">
+        <Txt style={styles.head}>{T.about.assumptions}</Txt>
+        {[...assumptions].sort().map(t => <Txt key={t} dim>{t}</Txt>)}
       </Card>
       <Button testID="about-back" kind="ghost" label={T.about.back} onPress={() => game.setScreen('title')} />
     </ScrollView>

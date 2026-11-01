@@ -6,37 +6,39 @@ solutions:
   - id: heat-one-room
     tier: cheap
     name: Одна комната и одеяла
-    text: Собраться всем в одной комнате, тепло одеться, закрыть двери.
+    text: Собраться всем в одной комнате, тепло одеться, закрыть остальные комнаты.
     goods: [{ good: blanket, qty: 2 }]
     workMin: 30
     heatC: 8
     why: Одна закрытая комната остывает медленнее всего дома, но в сильный мороз этого мало.
-    sources: [ready-list]
+    sources: [mchs-tyva-utilities, { assumption: "на сколько градусов одна закрытая комната теплее улицы — допущение игры" }]
     review: draft
   - id: heat-gas-heater
     tier: mid
     name: Туристический газовый обогреватель
-    text: Греет быстро, но сжигает воздух в комнате. Нужны баллоны на каждый день.
-    goods: [{ good: gas-heater, qty: 1 }, { good: gas-cartridge, qty: 14 }, { good: window-film, qty: 1 }]
+    text: "Греет одну комнату 6 часов в сутки: баллона хватает на 2 часа. Запасные баллоны хранят вне дома."
+    goods: [{ good: gas-heater, qty: 1 }, { good: gas-cartridge, qty: 42 }, { good: window-film, qty: 1 }]
     workMin: 60
     heatC: 22
+    fuelHPerDay: 6
     risks: [co]
     creates: [co]
-    why: Обогреватель держит тепло, пока есть газ, но в закрытой комнате копится угарный газ.
-    sources: [{ todo: "памятка о газовых обогревателях в помещении" }]
+    why: Обогреватель греет, пока горит газ, но в закрытой комнате копится угарный газ.
+    sources: [mchs-kuzbass-co, cpsc-co, mchs-gas-help, { assumption: "6 часов в сутки и прибавка температуры — допущение игры" }]
     review: draft
   - id: heat-stove
     tier: right
     name: Печь с дымоходом и дрова
-    text: Поставить печь с выводом трубы наружу и запасти дров на две недели. Ставить долго — надо успеть до дождя.
-    goods: [{ good: stove, qty: 1 }, { good: firewood, qty: 14 }, { good: window-film, qty: 1 }]
+    text: Заводская печь с дымоходом наружу, по инструкции, с негорючим листом перед топкой, и дрова под навесом. Ставить долго — надо успеть до дождя.
+    goods: [{ good: stove, qty: 1 }, { good: firewood, qty: 21 }, { good: window-film, qty: 1 }]
     workMin: 480
     beforeEvent: true
-    heatC: 34
+    heatC: 38
+    fuelHPerDay: 24
     risks: [co]
     creates: [co]
-    why: Печь с дымоходом греет весь дом и не зависит от света, но и у печи бывает угарный газ — если рано закрыть заслонку.
-    sources: [{ todo: "правила печного отопления МЧС" }]
+    why: Печь с дымоходом греет жилую часть дома и не зависит от света. Угарный газ бывает и у печи — заслонку закрывают, только когда над углями исчезнут синие огоньки.
+    sources: [ppr-1479, sp-7-13130, mchs-kaluga-stove, { assumption: "прибавка температуры от печи — допущение игры" }]
     review: draft
   - id: heat-gas-stove
     tier: trap
@@ -46,6 +48,6 @@ solutions:
     workMin: 0
     heatC: 18
     risks: [co]
-    why: Газовая плита не предназначена для обогрева — в закрытой кухне копится угарный газ, а пламя может погаснуть.
-    sources: [mchs-gas]
+    why: Газовая плита не для обогрева — в закрытой кухне копится угарный газ, а пламя может погаснуть.
+    sources: [mchs-gas, mchs-kuzbass-co]
     review: draft

@@ -9,8 +9,8 @@ solutions:
     text: Лекарства, которые есть в аптечке.
     goods: [{ good: home-meds, qty: 1 }]
     workMin: 0
-    why: Обычно дома лекарств на несколько дней, а не на две недели.
-    sources: [{ todo: "оценка: остаток постоянных лекарств дома" }]
+    why: Запас назначенных лекарств советуют держать хотя бы на неделю, а лучше на месяц — дома его обычно меньше.
+    sources: [krisinfo-home, ready-outage]
     review: draft
   - id: meds-stock
     tier: mid
@@ -19,7 +19,7 @@ solutions:
     goods: [{ good: home-meds, qty: 1 }, { good: meds-14, qty: 1 }]
     workMin: 0
     why: Запас назначенных лекарств — первое, что советуют положить в тревожный набор.
-    sources: [mchs-kit]
+    sources: [mchs-kit, krisinfo-home]
     review: draft
   - id: meds-kit
     tier: right
@@ -36,6 +36,6 @@ solutions:
     text: Без рецепта взять «что-нибудь похожее».
     goods: [{ good: home-meds, qty: 1 }, { good: random-pills, qty: 1 }]
     workMin: 0
-    why: Чужое лекарство не заменяет назначенное — бабушке нужны её таблетки.
-    sources: [{ todo: "памятка: нельзя заменять назначенные лекарства без врача" }]
+    why: Чужое лекарство не заменяет назначенное — менять лечение можно только с врачом.
+    sources: [minzdrav-2023-01-20]
     review: draft

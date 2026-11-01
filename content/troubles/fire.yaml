@@ -6,32 +6,32 @@ solutions:
   - id: fire-holders
     tier: cheap
     name: Подставки и присмотр
-    text: Свечи — только в устойчивых негорючих подставках, не оставлять без присмотра.
+    text: Свечи — только в устойчивых подсвечниках, подальше от штор и постели, не оставлять без присмотра.
     goods: []
     workMin: 15
     guards: [{ risk: fire, stopsPct: 60 }]
     why: Подставка и присмотр снижают риск, но ночью и с ребёнком в доме его не убрать совсем.
-    sources: [{ todo: "памятка МЧС: свечи и пожарная безопасность" }]
+    sources: [mchs-khabarovsk-candles, ppr-1479, { assumption: "подставки и присмотр защищают на 60 %" }]
     review: draft
   - id: fire-extinguisher
     tier: mid
     name: Огнетушитель
-    text: Огнетушитель на кухне и в комнате со свечами.
+    text: Порошковый огнетушитель на видном месте, вдали от печи и от детей.
     goods: [{ good: extinguisher, qty: 1 }]
     workMin: 15
     guards: [{ risk: fire, stopsPct: 80 }]
-    why: Огнетушитель гасит начавшийся пожар, если он под рукой.
-    sources: [{ todo: "памятка МЧС: огнетушитель дома" }]
+    why: Огнетушитель гасит пожар в самом начале, если он под рукой.
+    sources: [mchs-pskov-extinguisher, mchs-bashkiria-extinguisher, { assumption: "огнетушитель защищает на 80 %" }]
     review: draft
   - id: fire-both
     tier: right
     name: Подставки, присмотр и огнетушитель
-    text: Свечи в подставках под присмотром и огнетушитель рядом.
+    text: Свечи в подсвечниках под присмотром и огнетушитель рядом.
     goods: [{ good: extinguisher, qty: 1 }]
     workMin: 30
     guards: [{ risk: fire, stopsPct: 100 }]
-    why: Огонь под присмотром и средство потушить — так свечи безопасны.
-    sources: [{ todo: "памятка МЧС: свечи и пожарная безопасность" }]
+    why: Огонь под присмотром и огнетушитель рядом — так риск от свечей самый низкий.
+    sources: [mchs-khabarovsk-candles, mchs-pskov-extinguisher, ppr-1479]
     review: draft
   - id: fire-window
     tier: trap
@@ -39,6 +39,6 @@ solutions:
     text: На подоконнике светлее и не мешают.
     goods: []
     workMin: 0
-    why: Шторы у свечи загораются за секунды.
-    sources: [{ todo: "памятка МЧС: свечи и пожарная безопасность" }]
+    why: У окна сквозняк клонит пламя, а рядом шторы — свечи держат подальше от окон и занавесок.
+    sources: [mchs-khabarovsk-candles]
     review: draft

@@ -73,6 +73,10 @@ try {
   const cheap = await run(page, CHEAP, 'cheap');
   if (cheap !== '☆☆☆') throw new Error(`всё дешёвое: ждали эвакуацию, вышло «${cheap}»`);
   if (!(await page.getByTestId('evacuated').isVisible())) throw new Error('нет строки об эвакуации');
+  await tap(page, 'home');
+  await tap(page, 'about');
+  await page.getByTestId('assumptions').waitFor();
+  await snap(page, 'about');
   if (errors.length) throw new Error(`ошибки в консоли:\n${errors.join('\n')}`);
   console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}; снимков ${shot} в tools/e2e/out/`);
 } finally {
