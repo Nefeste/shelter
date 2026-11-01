@@ -3,11 +3,12 @@
 import { type AudioPlayer, createAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import { Platform } from 'react-native';
 
-export type SoundName = 'tap' | 'choose' | 'day' | 'done' | 'evac';
+export type SoundName = 'tap' | 'click' | 'choose' | 'day' | 'done' | 'evac';
 export type LoopName = 'storm' | 'crackle';
 
 const SOUNDS: Record<SoundName, number> = {
   tap: require('../../assets/audio/tap.wav'),
+  click: require('../../assets/audio/click.wav'),
   choose: require('../../assets/audio/choose.wav'),
   day: require('../../assets/audio/day.wav'),
   done: require('../../assets/audio/done.wav'),

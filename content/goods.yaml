@@ -156,6 +156,7 @@
   name: Фонарь налобный
   shop: super
   category: light
+  clicks: true
   price: { rub: 800, basis: estimate, note: "оценка: 300–1500 ₽" }
   volumeL: 1
   sources: [mchs-kit, ready-outage]
@@ -175,6 +176,7 @@
   name: Фонарь кемпинговый
   shop: hardware
   category: light
+  clicks: true
   price: { rub: 1000, basis: estimate, note: "оценка: обычно 500–1500 ₽" }
   volumeL: 2
   provides: { lightH: 30 }

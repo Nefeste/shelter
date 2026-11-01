@@ -106,7 +106,9 @@ tag by `android.yml`, with the kit's signing and contents actions).
   family's lines from `content/voices.yaml` (flavour, not facts: no numbers, no sources);
   `src/state/radio.ts` — district radio lines from `content/radio.yaml` when a receiver arrived in time;
   `src/state/pantry.ts` + `src/ui/Pantry.tsx` — the pantry shelves on the prep screen;
-  `src/state/scene.ts` — what the neighbours' windows show by day and night.
+  `src/state/scene.ts` — what the neighbours' windows show by day and night, and whether a torch
+  clicks at dusk; `src/ui/fonts.ts` — the studio fonts (Kurale for titles, Onest for the rest; OFL
+  texts in `assets/fonts/`), applied by `Txt` in `src/ui/kit.tsx`.
 - `assets/audio/` — synthesized sounds, made by `npm run sound` (`tools/sound/gen.ts`, byte-exact
   test); never edit or add recordings by hand.
 - `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world; `tools/e2e/browser.ts` — the browser scenario.

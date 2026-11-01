@@ -4,7 +4,9 @@ import { CATEGORIES } from '../../src/content/types';
 import { nextDay, runDays, startPrep, usedPlace, choose } from '../../src/engine';
 import { pantry } from '../../src/state/pantry';
 import { radioLines } from '../../src/state/radio';
-import { neighbours } from '../../src/state/scene';
+import { hasTorch, neighbours } from '../../src/state/scene';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { CHEAP_PLAN, GOOD_PLAN, SCENARIO, prep, world } from './plans';
 
 describe('кладовая', () => {
@@ -56,5 +58,18 @@ describe('соседние окна', () => {
     expect(neighbours(5, days, false)).toBe('dark');
     expect(neighbours(days - 1, days, false)).toBe('dark');
     expect(neighbours(days - 1, days, true)).toBe('lit');
+  });
+});
+
+describe('щелчок фонаря', () => {
+  test('с фонарями — щёлкает, со свечами — нет', () => {
+    expect(hasTorch(world, prep(GOOD_PLAN))).toBe(true);
+    expect(hasTorch(world, prep(CHEAP_PLAN))).toBe(false);
+  });
+});
+
+describe('шрифты студии', () => {
+  test('у каждой гарнитуры рядом — текст лицензии SIL OFL', () => {
+    for (const f of ['Kurale-OFL.txt', 'Onest-OFL.txt']) expect(existsSync(join(import.meta.dir, '../../assets/fonts', f))).toBe(true);
   });
 });
