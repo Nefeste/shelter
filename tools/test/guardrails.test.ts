@@ -53,6 +53,10 @@ describe('плагины сборки', () => {
     expect(addReleaseSigning(once)).toBe(once);
   });
 
+  test('вибрации нет: разрешение VIBRATE запрещено (сборка v0.1.0 остановилась на нём)', () => {
+    expect(JSON.parse(read('app.json')).expo.android.blockedPermissions).toContain('android.permission.VIBRATE');
+  });
+
   test('идентификатор приложения — навсегда games.gornitsa.shelter (ADR студии 0006)', () => {
     expect(JSON.parse(read('app.json')).expo.android.package).toBe('games.gornitsa.shelter');
   });
