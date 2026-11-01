@@ -110,6 +110,9 @@ export const T = {
     item: (name: string, qty: number, price: number) => `${name} — ${qty} × ${rub(price)}`,
     itemShop: (shop: string, sum: number) => `${shop.toLowerCase()} · ${rub(sum)}`,
     itemHome: 'уже дома',
+    pantry: (used: number, total: number) => `Кладовая и веранда — ${litres(used)} из ${litres(total)}`,
+    pantryEmpty: 'Пока пусто. Каждая коробка — десять литров.',
+    shelf: (what: string, l: number) => `${what.toLowerCase()} ${litres(l)}`,
     /** что даёт товар в этом количестве: «воды 180 л · 25 тыс. ккал» */
     gives: (p: Provides, qty: number) => {
       const out: string[] = [];
@@ -146,6 +149,7 @@ export const T = {
     short: SHORT,
     thaw: 'Оттепель: замороженное на веранде оттаяло',
     injury: 'Кто-то порезался или простыл',
+    radio: 'Радио',
     clog: 'Канализацию забило',
     faster: 'Быстрее',
     toResult: 'К итогу',

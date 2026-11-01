@@ -198,6 +198,7 @@
 - id: crank-radio
   name: Радиоприёмник с динамо
   shop: market
+  radio: true
   category: comms
   price: { rub: 2000, basis: estimate, note: "оценка: обычно 1500–3000 ₽" }
   volumeL: 1

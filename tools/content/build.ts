@@ -7,7 +7,7 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import YAML from 'yaml';
-import { type Bundle, CATEGORIES, type Good, type Scenario, type Shop, type Solution, type Source, TIERS, type Trouble, type Voice } from '../../src/content/types';
+import { type Bundle, CATEGORIES, type Good, type Scenario, type Shop, type Solution, type Source, TIERS, type Radio, type Trouble, type Voice } from '../../src/content/types';
 
 const ROOT = join(import.meta.dir, '../..');
 const CONTENT = join(ROOT, 'content');
@@ -147,7 +147,19 @@ export function build(): BuildReport {
     for (const e of voiceErrors(v, scenarios, solutions)) errors.push(`${where}: ${e}`);
   }
 
-  return { bundle: { shops, goods, troubles, solutions, scenarios, voices }, errors, todo, assumptions };
+  // районное радио: вымышленные новости, не факты — без чисел и без источника
+  const radio: Radio[] = read('radio.yaml');
+  for (const r of radio) {
+    const sc = scenarios.find(x => x.id === r.scenario);
+    if (!sc) errors.push(`радио ${r.scenario}: нет сценария`);
+    else if (r.days.length !== sc.eventDays) errors.push(`радио ${r.scenario}: строк ${r.days.length}, а дней события ${sc.eventDays}`);
+    r.days.forEach((t, i) => {
+      text(`радио ${r.scenario}, день ${i + 1}`, t);
+      if (/\d/.test(t)) errors.push(`радио ${r.scenario}, день ${i + 1}: число в новостях — числа только в записях с источником`);
+    });
+  }
+
+  return { bundle: { shops, goods, troubles, solutions, scenarios, voices, radio }, errors, todo, assumptions };
 }
 
 if (import.meta.main) {

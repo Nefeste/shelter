@@ -1,6 +1,6 @@
 {
   "name": "shelter",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "main": "index.ts",
   "private": true,
   "description": "Наготове — игра о подготовке к чрезвычайным ситуациям и сборах в дорогу",

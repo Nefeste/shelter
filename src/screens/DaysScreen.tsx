@@ -11,6 +11,8 @@ import { play, setLoop } from '../audio/sound';
 import { type Game, world } from '../state/game';
 import { Bubble } from '../ui/Bubble';
 import { dayWhen, voice } from '../state/voices';
+import { radioLines } from '../state/radio';
+import { TroubleIcon } from '../ui/icons';
 
 const DAY_MS = 3000;
 /** Дым и треск — только если стоит печь. */
@@ -41,6 +43,7 @@ export function DaysScreen({ game }: { game: Game }) {
   }, [shown, total, step]);
   if (!o) return null;
   const days = o.days.slice(0, shown);
+  const radio = radioLines(world, game.prep, o);
   const today = days[days.length - 1];
   const done = shown >= total;
   return (
@@ -65,6 +68,12 @@ export function DaysScreen({ game }: { game: Game }) {
             {d.event === 'clog' ? <Txt dim>{T.days.clog}</Txt> : null}
             {d.event === 'injury' ? <Txt dim>{T.days.injury}</Txt> : null}
             {d.short.length ? <Txt dim>{d.short.map(x => T.days.short[x]).join(', ')}</Txt> : null}
+            {radio?.[d.day] ? (
+              <View style={styles.radio} testID={`radio-day-${d.day}`}>
+                <TroubleIcon id="comms" size={24} />
+                <Txt dim style={styles.radioText}>{`${T.days.radio}: ${radio[d.day]}`}</Txt>
+              </View>
+            ) : null}
             {said ? <Bubble said={said} testID={`voice-day-${d.day}`} /> : null}
           </Card>
           );
@@ -100,4 +109,6 @@ const styles = StyleSheet.create({
   fill: { height: 8, borderRadius: R.pill },
   list: { padding: 16, gap: 8 },
   buttons: { padding: 16, gap: 8 },
+  radio: { flexDirection: 'row', gap: 8, alignItems: 'flex-start' },
+  radioText: { flex: 1, fontStyle: 'italic' },
 });
