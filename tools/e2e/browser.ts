@@ -65,7 +65,17 @@ try {
   await page.goto(`http://localhost:${server.port}/`);
   await page.getByTestId('play').waitFor();
   await snap(page, 'title');
+  // прогресс не теряется: выбрать, перезагрузить страницу, «Продолжить подготовку» — выбранное на месте
   await tap(page, 'play');
+  await tap(page, 'start-prep');
+  await pick(page, 'heat', 'heat-one-room');
+  await page.reload();
+  await tap(page, 'continue');
+  if (!(await page.getByTestId('trouble-heat').innerText()).includes('Одна комната')) throw new Error('после перезагрузки выбор пропал');
+  await snap(page, 'resumed');
+  await page.reload();
+  await tap(page, 'restart');
+  await tap(page, 'restart-yes');
   await snap(page, 'intro');
   const good = await run(page, GOOD, 'good');
   if (good !== '★★★') throw new Error(`хороший план: ждали ★★★, вышло «${good}»`);
