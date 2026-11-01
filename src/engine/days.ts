@@ -34,9 +34,9 @@ export interface Outcome {
   /** решения, не законченные до события */
   unfinished: string[];
   /** сколько запаса было в начале: для разбора «было X, нужно Y» */
-  start: { waterDl: number; kcal: number; lightH: number };
+  start: { waterDl: number; kcal: number; lightH: number; commsDays: number; sanitationDays: number };
   /** сколько нужно на всё событие */
-  need: { waterDl: number; drinkDl: number; kcal: number; lightH: number };
+  need: { waterDl: number; drinkDl: number; kcal: number; lightH: number; commsDays: number; sanitationDays: number };
   moneyLeft: number;
   /** дни, когда чего-то не хватало, кроме эвакуации */
   hardDays: number;
@@ -116,7 +116,7 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
     if (branch.chance((remains[r] ?? 100) * 100)) riskDay[r] = branch.range(1, 3);
   }
 
-  const start = { waterDl: stock.waterDl, kcal: stock.kcal, lightH: stock.lightH };
+  const start = { waterDl: stock.waterDl, kcal: stock.kcal, lightH: stock.lightH, commsDays: stock.commsDays, sanitationDays: stock.sanitationDays };
   const days: DayLog[] = [];
   let coldRun = 0;
   let hungerRun = 0;
@@ -191,7 +191,7 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
     late,
     unfinished,
     start,
-    need: { waterDl: waterDay * sc.eventDays, drinkDl: drinkDay * sc.eventDays, kcal: kcalDay * sc.eventDays, lightH: sc.norms.lightH * sc.eventDays },
+    need: { waterDl: waterDay * sc.eventDays, drinkDl: drinkDay * sc.eventDays, kcal: kcalDay * sc.eventDays, lightH: sc.norms.lightH * sc.eventDays, commsDays: sc.eventDays, sanitationDays: sc.eventDays },
     moneyLeft: s.money,
     hardDays,
   };
@@ -199,11 +199,13 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
 
 /**
  * Звёзды (спецификация, «Итог»): 1 — продержались дома все дни; 2 — и без ловушек, и ни одного
- * дня без питья, еды и тепла; 3 — и уложились в деньги с запасом (`reserve` рублей).
+ * дня без питья, еды и тепла; 3 — и ни одного дня, когда чего-то не хватало: воды на готовку и
+ * умывание, света, связи, туалета. Деньги в звёзды не входят: иначе на беды, которые не трогают
+ * здоровье, самое дешёвое решение было бы лучшим всегда (отчёт «виртуального игрока»).
  */
-export function stars(o: Outcome, reserve: number): 0 | 1 | 2 | 3 {
+export function stars(o: Outcome): 0 | 1 | 2 | 3 {
   if (o.evacuated) return 0;
-  const hard = o.days.some(d => d.short.some(x => x === 'drink' || x === 'food' || x === 'cold'));
-  if (o.traps.length || hard) return 1;
-  return o.moneyLeft >= reserve ? 3 : 2;
+  const health = o.days.some(d => d.short.some(x => x === 'drink' || x === 'food' || x === 'cold'));
+  if (o.traps.length || health) return 1;
+  return o.hardDays === 0 ? 3 : 2;
 }

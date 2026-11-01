@@ -1,6 +1,6 @@
 {
   "name": "shelter",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "main": "index.ts",
   "private": true,
   "description": "Убежище — подготовка к чрезвычайным ситуациям",
@@ -14,7 +14,8 @@
     "test": "bun tools/content/build.ts && bun test tools/test",
     "export:web": "bun tools/content/build.ts && expo export -p web --output-dir dist-web",
     "e2e": "bun tools/e2e/browser.ts",
-    "sound": "bun tools/sound/gen.ts"
+    "sound": "bun tools/sound/gen.ts",
+    "sim": "bun tools/content/build.ts && bun tools/sim/player.ts"
   },
   "dependencies": {
     "@expo/metro-runtime": "~57.0.16",

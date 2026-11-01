@@ -120,10 +120,12 @@ export const T = {
         case 'ranOut':
           if (l.what === 'water') return `Вода на готовку и умывание кончилась на ${l.day + 1}-й день: было ${water(l.had)}, на две недели нужно ${water(l.need)}.`;
           if (l.what === 'food') return `Еда кончилась на ${l.day + 1}-й день: было ${Math.round(l.had / 1000)} тыс. ккал, нужно ${Math.round(l.need / 1000)} тыс.`;
-          return `Свет кончился на ${l.day + 1}-й день: было ${l.had} ч, нужно ${l.need} ч.`;
+          if (l.what === 'light') return `Свет кончился на ${l.day + 1}-й день: было ${l.had} ч, нужно ${l.need} ч.`;
+          if (l.what === 'comms') return `Связь и новости пропали на ${l.day + 1}-й день: заряда хватило на ${l.had} дн., нужно на ${l.need}.`;
+          return `Туалет и мусор: запаса хватило на ${l.had} дн., нужно на ${l.need} — с ${l.day + 1}-го дня без него.`;
       }
     },
-    source: 'Источник',
+    source: (title: string) => `Источник: ${title}`,
     checklist: 'Мой список',
     copy: 'Скопировать список',
     copied: 'Список скопирован',

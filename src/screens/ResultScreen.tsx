@@ -4,8 +4,9 @@ import { ScrollView, StyleSheet } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { T } from '../i18n';
 import { Button, Card, Txt } from '../ui/kit';
-import { review, stars } from '../engine';
-import { type Game, RESERVE, world } from '../state/game';
+import { S } from '../ui/theme';
+import { review, sourceOf, stars } from '../engine';
+import { type Game, world } from '../state/game';
 import { play } from '../audio/sound';
 import { Scene } from '../ui/Scene';
 
@@ -17,14 +18,13 @@ export function ResultScreen({ game }: { game: Game }) {
   if (!o) return null;
   const s = game.prep;
   const sc = world.scenario(s.scenario);
-  const got = stars(o, RESERVE);
+  const got = stars(o);
   const lines = review(s, o);
   const name = (id: string) => (world.solutions.has(id) ? world.solution(id).name : world.good(id).name);
   // «Мой список»: что куплено, обычными названиями
   const counts = new Map<string, number>();
   for (const p of s.bought) if (world.good(p.good).shop !== 'home') counts.set(p.good, (counts.get(p.good) ?? 0) + p.qty);
   const list = [...counts].map(([g, n]) => `${world.good(g).name} — ${n}`);
-  const traps = o.traps.map(id => world.solution(id));
   return (
     <ScrollView contentContainerStyle={styles.wrap}>
       <Txt title>{T.result.title}</Txt>
@@ -36,8 +36,16 @@ export function ResultScreen({ game }: { game: Game }) {
       <Txt dim>{T.result.moneyLeft(o.moneyLeft)}</Txt>
       <Card testID="review">
         <Txt style={styles.head}>{T.result.review}</Txt>
-        {lines.map((l, i) => <Txt key={i}>{T.result.line(l, name)}</Txt>)}
-        {traps.map(t => <Txt key={t.id} dim>{t.why}</Txt>)}
+        {lines.map((l, i) => {
+          const src = sourceOf(world, s, l);
+          return (
+            <React.Fragment key={i}>
+              <Txt>{T.result.line(l, name)}</Txt>
+              {l.kind === 'trap' ? <Txt dim>{world.solution(l.solution).why}</Txt> : null}
+              {src ? <Txt dim style={styles.source}>{T.result.source(src.title)}</Txt> : null}
+            </React.Fragment>
+          );
+        })}
       </Card>
       <Card testID="checklist">
         <Txt style={styles.head}>{T.result.checklist}</Txt>
@@ -54,4 +62,5 @@ const styles = StyleSheet.create({
   wrap: { padding: 20, gap: 12, maxWidth: 560, width: '100%', alignSelf: 'center' },
   stars: { fontSize: 36, lineHeight: 42 },
   head: { fontWeight: '700' },
+  source: { fontSize: S.small, marginTop: -6 },
 });

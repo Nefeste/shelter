@@ -9,6 +9,8 @@
 2. [`specs/2026-11-prototype.md`](specs/2026-11-prototype.md) — живая спецификация прототипа.
 3. [`adr/`](adr/) — решения, которые дорого менять; [`adr/0001-studio-adrs.md`](adr/0001-studio-adrs.md)
    — как здесь применяются ADR студии.
+4. [`reports/`](reports/) — отчёты, которые собирает код: [`2026-11-virtual-player.md`](reports/2026-11-virtual-player.md)
+   — «виртуальный игрок», все сочетания решений (`npm run sim`; руками не править).
 
 Замысел и решения владельца, из которых выросла игра, — `Nefeste/uprava`,
 `plan/reserve-2026-11.md`, раздел 6.
