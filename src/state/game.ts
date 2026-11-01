@@ -11,8 +11,6 @@ import { setSoundOn } from '../audio/sound';
 
 export const world = new World(bundle);
 export const SCENARIO = 'ice-rain';
-/** Сколько рублей нужно оставить на третью звезду. */
-export const RESERVE = 3000;
 
 export type Screen = 'title' | Phase | 'about';
 
@@ -62,7 +60,7 @@ export function useGame() {
   const choose = useCallback((solution: string) => setPrep(s => chooseCmd(world, s, solution)), []);
   const nextDay = useCallback(() => setPrep(s => nextDayCmd(world, s)), []);
   const storm = useCallback(() => {
-    const got = stars(runDays(world, prep, attempt), RESERVE);
+    const got = stars(runDays(world, prep, attempt));
     if (got > (best[SCENARIO] ?? 0)) {
       const next = { ...best, [SCENARIO]: got };
       setBest(next);

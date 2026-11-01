@@ -74,6 +74,7 @@ npx expo start                      # dev server
 npm run typecheck                   # content + tsc (app) + tsc -p tools
 npm run lint                        # zero warnings
 npm test                            # content + bun test tools/test
+npm run sim                         # virtual player: all combinations → docs/reports/2026-11-virtual-player.md
 EXPO_OFFLINE=1 npm run export:web && npm run e2e   # web build + Playwright scenario, screenshots in tools/e2e/out
 ```
 
@@ -95,3 +96,6 @@ tag by `android.yml`, with the kit's signing and contents actions).
 - `assets/audio/` — synthesized sounds, made by `npm run sound` (`tools/sound/gen.ts`, byte-exact
   test); never edit or add recordings by hand.
 - `tools/test/` — engine, content, guardrails, i18n, sound; `tools/e2e/browser.ts` — the browser scenario.
+- `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes): every combination of
+  solutions, four ordering habits, seeds 1…10; writes `docs/reports/2026-11-virtual-player.md`. Any
+  change to content numbers, prices or the engine re-runs it, and the report goes into the same PR.

@@ -10,8 +10,8 @@ family:
   - { id: gran, name: Бабушка, kind: elder }
 prepDays: 3
 minutesPerDay: 360
-money: [30000, 25000, 0]
-pantryL: 400
+money: [30000, 34000, 0]
+pantryL: 440
 porchL: 300
 eventDays: 14
 outdoorC: [-12, -15, -18, -20, -16, -10, -4, -2, -6, -12, -18, -22, -17, -13]

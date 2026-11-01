@@ -15,8 +15,18 @@ export function prep(days: string[][]): PrepState {
   return s;
 }
 
-/** План на три звезды: печь и датчик в первый день, заказ на маркетплейсе — сразу. */
+/**
+ * План на три звезды — всего хватает на 14 дней: печь и датчик в первый день, радио с маркетплейса —
+ * сразу; вода и еда — на деньги второго дня. Свет — свечи на подставках с присмотром: на фонари по
+ * расчёту денег уже нет.
+ */
 export const GOOD_PLAN = [
+  ['heat-stove', 'comms-radio', 'co-detector-airing', 'light-candles', 'fire-both', 'toilet-full', 'meds-stock'],
+  ['water-full', 'food-full'],
+];
+
+/** План на две звезды: здоровье в порядке, но вода на умывание, свет и связь кончаются раньше. */
+export const OK_PLAN = [
   ['comms-powerbanks', 'heat-stove', 'co-detector-airing'],
   ['water-canisters', 'food-full', 'light-headlamps', 'meds-stock', 'toilet-bags'],
 ];

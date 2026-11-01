@@ -32,9 +32,10 @@ async function pick(p: Page, trouble: string, solution: string) {
   await tap(p, `choose-${solution}`);
 }
 
+// тот же план, что GOOD_PLAN в tools/test/plans.ts: всего хватает на 14 дней — три звезды
 const GOOD = [
-  [['comms', 'comms-powerbanks'], ['heat', 'heat-stove'], ['co', 'co-detector-airing']],
-  [['water', 'water-canisters'], ['food', 'food-full'], ['light', 'light-headlamps'], ['meds', 'meds-stock'], ['toilet', 'toilet-bags']],
+  [['heat', 'heat-stove'], ['comms', 'comms-radio'], ['co', 'co-detector-airing'], ['light', 'light-candles'], ['fire', 'fire-both'], ['toilet', 'toilet-full'], ['meds', 'meds-stock']],
+  [['water', 'water-full'], ['food', 'food-full']],
 ];
 const CHEAP = [[['heat', 'heat-one-room'], ['water', 'water-drink'], ['food', 'food-cold'], ['light', 'light-candles'], ['fire', 'fire-holders'], ['comms', 'comms-saving'], ['meds', 'meds-home'], ['toilet', 'toilet-bucket']]];
 
@@ -83,6 +84,7 @@ try {
   const cheap = await run(page, CHEAP, 'cheap');
   if (cheap !== '☆☆☆') throw new Error(`всё дешёвое: ждали эвакуацию, вышло «${cheap}»`);
   if (!(await page.getByTestId('evacuated').isVisible())) throw new Error('нет строки об эвакуации');
+  if (!(await page.getByTestId('review').innerText()).includes('Источник:')) throw new Error('в разборе нет источника');
   await tap(page, 'home');
   await tap(page, 'about');
   await page.getByTestId('assumptions').waitFor();
