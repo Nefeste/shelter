@@ -59,6 +59,7 @@ export function DaysScreen({ game }: { game: Game }) {
             <Txt>{T.days.day(d.day)}</Txt>
             {d.event === 'thaw' ? <Txt dim>{T.days.thaw}</Txt> : null}
             {d.event === 'clog' ? <Txt dim>{T.days.clog}</Txt> : null}
+            {d.event === 'injury' ? <Txt dim>{T.days.injury}</Txt> : null}
             {d.short.length ? <Txt dim>{d.short.map(x => T.days.short[x]).join(', ')}</Txt> : null}
           </Card>
         ))}

@@ -9,7 +9,7 @@ family:
   - { id: son, name: Сын, kind: child }
   - { id: gran, name: Бабушка, kind: elder }
 prepDays: 3
-minutesPerDay: 360
+minutesPerDay: 330
 money: [30000, 34000, 0]
 pantryL: 440
 porchL: 300
@@ -26,11 +26,15 @@ norms:
   coldEvacC: 8
   maxC: 22
 needsMeds: [gran]
+# мелкая травма или простуда за две недели — по зерну; без аптечки этот день трудный
+injury: { pct: 50, from: 2, to: 9 }
 sources:
   - mchs-norms
   - mchs-evacuation
   - pp-354
   - meteoinfo-2010
   - meteoinfo-norms
+  - mchs-kit
+  - { assumption: "за две недели в холодном доме без света кто-то из четверых порежется или простынет с вероятностью 50 % — допущение игры" }
   - { assumption: "погода сценария — затяжная волна холода после ледяного дождя, холоднее январской нормы; свет на 5 часов в сутки; теплее 22 °C не топят" }
 review: draft

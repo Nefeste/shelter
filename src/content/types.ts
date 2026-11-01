@@ -56,6 +56,12 @@ export interface Good {
   provides?: Provides;
   /** портится в оттепель без холодильника */
   spoilsInThaw?: boolean;
+  /** на этом можно готовить: печь, горелка — если решение с ним работает в событии */
+  cooks?: boolean;
+  /** без готовки не съесть: крупа; нечем готовить — калорий от неё нет */
+  needsCooking?: boolean;
+  /** аптечка: мелкая травма или простуда не становится трудным днём */
+  firstAid?: boolean;
   sources: Source[];
   review: Review;
 }
@@ -141,6 +147,11 @@ export interface Scenario {
   };
   /** у кого постоянные лекарства */
   needsMeds: string[];
+  /**
+   * Мелкая травма или простуда за время события: с какой вероятностью (проценты) и в какой день
+   * (с нуля, `from`…`to`, по зерну). Без аптечки этот день — трудный.
+   */
+  injury?: { pct: number; from: number; to: number };
   sources: Source[];
   review: Review;
 }

@@ -12,14 +12,14 @@ solutions:
     why: Холодная еда не требует плиты, но на две недели её нужно много, а хлеб быстро черствеет.
     sources: [mchs-norms, skurikhin-2002]
     review: draft
-  - id: food-burner
+  - id: food-stove
     tier: mid
-    name: Консервы, крупы и горелка
-    text: Крупы и консервы, туристическая горелка — готовить на улице или под навесом, не в доме.
-    goods: [{ good: canned-meat, qty: 20 }, { good: buckwheat, qty: 25 }, { good: camp-burner, qty: 1 }]
-    workMin: 30
-    why: Крупы дают много калорий на рубль, горелка позволяет готовить без света — но не в доме.
-    sources: [mchs-norms, skurikhin-2002, cdc-co, cpsc-co]
+    name: Консервы и крупы — варить на печи
+    text: Консервы и крупы по норме на всех, без горелки — варить на печи. Нет печи — крупу не сварить.
+    goods: [{ good: canned-meat, qty: 25 }, { good: buckwheat, qty: 37 }]
+    workMin: 0
+    why: Крупы дают много калорий на рубль, но их нужно варить. Печь греет и кормит; без неё от запаса останутся только консервы.
+    sources: [mchs-norms, skurikhin-2002, mchs-kaluga-stove]
     review: draft
   - id: food-full
     tier: right

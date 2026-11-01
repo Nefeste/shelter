@@ -14,10 +14,10 @@
 |---|---|---|
 | Источник | `content/sources.yaml` | ключ → `title`, `url`. В записи источник — ключ, `{ assumption: "…" }` (допущение игры, видно в «Об игре») или `{ todo: "…" }` (не сверен, в выпуск не идёт) |
 | Магазин | `content/shops.yaml` | `id`, `name` (обычное место, без сети), `travelMin` (туда и обратно), `deliveryDays` (только маркетплейс) |
-| Товар | `content/goods.yaml` | `id`, `name` (без марки), `shop`, `price {rub, basis: rosstat\|estimate, note}`, `volumeL`, `provides {waterDl, kcal, lightH, commsDays, medsDays, fuelH, sanitationDays}`, `spoilsInThaw`, `sources`, `review` |
+| Товар | `content/goods.yaml` | `id`, `name` (без марки), `shop`, `price {rub, basis: rosstat\|estimate, note}`, `volumeL`, `provides {waterDl, kcal, lightH, commsDays, medsDays, fuelH, sanitationDays}`, `spoilsInThaw`, `cooks` (печь, горелка), `needsCooking` (крупа), `firstAid` (аптечка), `sources`, `review` |
 | Беда | `content/troubles/<id>.yaml`, блок `trouble` | `id` (= имя файла), `name`, `text` |
 | Решение | там же, `solutions` — ровно четыре | `id`, `tier` (`cheap`, `mid`, `right`, `trap`), `name`, `text`, `goods [{good, qty}]`, `workMin`, `beforeEvent`, `heatC`, `fuelHPerDay`, `heatLossC`, `keepsPct`, `risks`, `guards [{risk, stopsPct}]`, `creates`, `after [{trouble, extraMin}]`, `why`, `sources`, `review` |
-| Сценарий | `content/scenarios/<id>.yaml` | `id`, `name`, `text`, `family [{id, name, kind: adult\|child\|elder}]`, `prepDays`, `minutesPerDay`, `money [по дням]`, `pantryL`, `porchL`, `eventDays`, `outdoorC [по дням]`, `houseC`, `troubles` (начальные), `norms {waterDl, drinkDl по виду человека; kcal; lightH; coldC; coldEvacC; maxC}`, `needsMeds`, `sources`, `review` |
+| Сценарий | `content/scenarios/<id>.yaml` | `id`, `name`, `text`, `family [{id, name, kind: adult\|child\|elder}]`, `prepDays`, `minutesPerDay`, `money [по дням]`, `pantryL`, `porchL`, `eventDays`, `outdoorC [по дням]`, `houseC`, `troubles` (начальные), `norms {waterDl, drinkDl по виду человека; kcal; lightH; coldC; coldEvacC; maxC}`, `needsMeds`, `injury {pct, from, to}` (порез или простуда), `sources`, `review` |
 
 Риски (`Risk`) — `co` (угарный газ), `fire` (пожар), `clog` (забитая канализация).
 
@@ -44,12 +44,12 @@
 (уже выбрано), `unknown`.
 
 **Исход 14 дней — `Outcome`:** `days` (по дню: улица, дом, остаток воды, калорий, света, чего не
-хватило, событие «оттепель» или «засор»), `stayed`, `evacuated {day, reason}` (`cold`, `thirst`,
+хватило — `care` значит «нечем обработать порез или простуду», событие «оттепель», «засор» или «порез»), `stayed`, `evacuated {day, reason}` (`cold`, `thirst`,
 `hunger`, `meds`, `co`, `fire`), `traps`, `late` (не пришло до события), `unfinished` (не успели),
 `start` и `need` (было и нужно: вода, калории, свет, связь, туалет), `moneyLeft`, `hardDays`.
 
 **Разбор — `ReviewLine`:** `evacuated`, `trap`, `unfinished`, `late`, `ranOut {what, day, had,
-need}` (вода, еда, свет, связь, туалет), `allGood`. Слова — в `src/i18n`, источник —
+need}` (вода, еда, свет, связь, туалет), `injury {day}` (не было аптечки), `allGood`. Слова — в `src/i18n`, источник —
 `sourceOf(world, prep, line)`.
 
 ## 3. Сохранение

@@ -29,9 +29,9 @@ solutions:
     text: Свечи в подсвечниках под присмотром и огнетушитель рядом.
     goods: [{ good: extinguisher, qty: 1 }]
     workMin: 30
-    guards: [{ risk: fire, stopsPct: 100 }]
-    why: Огонь под присмотром и огнетушитель рядом — так риск от свечей самый низкий.
-    sources: [mchs-khabarovsk-candles, mchs-pskov-extinguisher, ppr-1479]
+    guards: [{ risk: fire, stopsPct: 90 }]
+    why: Огонь под присмотром и огнетушитель рядом — так риск от свечей самый низкий, но открытый огонь в доме не бывает без риска.
+    sources: [mchs-khabarovsk-candles, mchs-pskov-extinguisher, ppr-1479, { assumption: "подставки, присмотр и огнетушитель вместе защищают на 90 %" }]
     review: draft
   - id: fire-window
     tier: trap

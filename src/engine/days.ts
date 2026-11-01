@@ -8,7 +8,7 @@ import { type PrepState, type World } from './prep';
 export type EvacReason = 'cold' | 'thirst' | 'hunger' | 'meds' | 'co' | 'fire';
 
 /** Чего не хватило в день — для разбора. */
-export type Shortage = 'water' | 'drink' | 'food' | 'light' | 'comms' | 'sanitation' | 'cold';
+export type Shortage = 'water' | 'drink' | 'food' | 'light' | 'comms' | 'sanitation' | 'cold' | 'care';
 
 export interface DayLog {
   day: number;
@@ -19,7 +19,7 @@ export interface DayLog {
   lightH: number;
   short: Shortage[];
   /** событие дня, если было */
-  event?: 'thaw' | 'clog';
+  event?: 'thaw' | 'clog' | 'injury';
 }
 
 export interface Outcome {
@@ -67,12 +67,19 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
   const late = s.bought.filter(p => p.arrivesDay >= sc.prepDays).map(p => p.good);
   const unfinished = Object.values(s.chosen).filter(sid => w.solution(sid).beforeEvent && !s.done.includes(sid));
 
+  // готовить можно, если работает решение с печью или горелкой (поставленная печь, а не купленная)
+  const cooking = sols.some(sol => sol.goods.some(x => w.good(x.good).cooks));
+  // аптечка — у работающего решения
+  const firstAid = sols.some(sol => sol.goods.some(x => w.good(x.good).firstAid));
+
   // запас: всё пришедшее до события, с поправкой на решения, которые портят часть запаса
   const stock = empty();
   const spoil = empty();
   for (const p of s.bought) {
     if (p.arrivesDay >= sc.prepDays) continue;
     const g = w.good(p.good);
+    // крупу без печи и горелки не сварить: её калории не в счёт
+    if (g.needsCooking && !cooking) continue;
     for (const [k, v] of Object.entries(g.provides ?? {}) as [keyof Stock, number][]) {
       stock[k] += v * p.qty;
       if (g.spoilsInThaw) spoil[k] += v * p.qty;
@@ -108,6 +115,9 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
   const needMeds = sc.needsMeds.length > 0;
 
   const thawDay = rng.fork('thaw').range(4, 8);
+  // мелкая травма или простуда — по зерну сценария
+  const hurt = sc.injury ? rng.fork('injury') : undefined;
+  const injuryDay = sc.injury && hurt && hurt.chance(sc.injury.pct * 100) ? hurt.range(sc.injury.from, sc.injury.to) : -1;
   // беда случается, если защита её не остановила (шанс — остаток в процентах); тогда — на 2–4-й
   // день, а не в первый: так игрок видит, что она была
   const riskDay: Partial<Record<Risk, number>> = {};
@@ -164,6 +174,10 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
     coldRun = indoorC < sc.norms.coldEvacC ? coldRun + 1 : 0;
 
     if (riskDay.clog === d) event = 'clog';
+    if (d === injuryDay) {
+      event = 'injury';
+      if (!firstAid) short.push('care');
+    }
 
     days.push({ day: d, outdoorC, indoorC, waterDl: stock.waterDl, kcal: stock.kcal, lightH: stock.lightH, short, event });
     if (short.length) hardDays += 1;

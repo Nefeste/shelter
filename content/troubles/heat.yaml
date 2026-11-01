@@ -16,15 +16,15 @@ solutions:
   - id: heat-gas-heater
     tier: mid
     name: Туристический газовый обогреватель
-    text: "Греет одну комнату 6 часов в сутки: баллона хватает на 2 часа. Запасные баллоны хранят вне дома."
-    goods: [{ good: gas-heater, qty: 1 }, { good: gas-cartridge, qty: 42 }, { good: window-film, qty: 1 }]
+    text: "Греет одну утеплённую комнату 8 часов в сутки: баллона хватает на 2 часа — на две недели их нужно 56. Ставится за час. Запасные баллоны хранят вне дома."
+    goods: [{ good: gas-heater, qty: 1 }, { good: gas-cartridge, qty: 56 }, { good: window-film, qty: 1 }]
     workMin: 60
-    heatC: 22
-    fuelHPerDay: 6
+    heatC: 37
+    fuelHPerDay: 8
     risks: [co]
     creates: [co]
     why: Обогреватель греет, пока горит газ, но в закрытой комнате копится угарный газ.
-    sources: [mchs-kuzbass-co, cpsc-co, mchs-gas-help, { assumption: "6 часов в сутки и прибавка температуры — допущение игры" }]
+    sources: [mchs-kuzbass-co, cpsc-co, mchs-gas-help, { assumption: "8 часов в сутки держат одну утеплённую комнату не холоднее +18 °C при −22 °C на улице — допущение игры" }]
     review: draft
   - id: heat-stove
     tier: right
