@@ -69,6 +69,8 @@ export interface Good {
   firstAid?: boolean;
   /** приёмник: в днях события слышно районное радио (content/radio.yaml) */
   radio?: boolean;
+  /** фонарь с кнопкой: в сумерки слышен щелчок (звук с видимой причиной) */
+  clicks?: boolean;
   sources: Source[];
   review: Review;
 }

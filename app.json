@@ -2,13 +2,13 @@
   "expo": {
     "name": "Nagotove",
     "slug": "shelter",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "backgroundColor": "#ECEDE6",
     "android": {
       "package": "games.gornitsa.shelter",
-      "versionCode": 10,
+      "versionCode": 11,
       "allowBackup": false,
       "predictiveBackGestureEnabled": false,
       "blockedPermissions": [
@@ -54,7 +54,8 @@
             "useLegacyPackaging": true
           }
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }

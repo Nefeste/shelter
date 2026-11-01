@@ -148,6 +148,21 @@ function makeTap(): Float32Array {
   return normalize(fades(x, 0.0005, 0.005), 0.5);
 }
 
+/** Щелчок фонаря: нажали кнопку — и отпустили; два сухих щелчка, второй тише. */
+export const CLICK = { hz: 3600, gapSec: 0.045 };
+
+function makeClick(): Float32Array {
+  const out = len(0.12);
+  const tick = (name: string, gain: number, start: number) => {
+    const x = biquad(noise(at(0.015), name), 'bp', CLICK.hz, 3);
+    for (let i = 0; i < x.length; i++) x[i] *= Math.exp(-i / at(0.0015));
+    mixInto(out, x, start, gain);
+  };
+  tick('click:down', 1, at(0.002));
+  tick('click:up', 0.55, at(0.002 + CLICK.gapSec));
+  return normalize(fades(out, 0.0005, 0.01), 0.5);
+}
+
 /** Решение выбрано: две короткие «деревянные» ноты вверх. */
 function makeChoose(): Float32Array {
   const out = len(0.35);
@@ -180,6 +195,7 @@ export const SOUNDS = [
   { file: 'storm.wav', what: 'ветер и ледяной дождь — петля 6 с', params: `шум ${WIND.lowHz}–${WIND.highHz} Гц, порывы ${WIND.gustSec.join(' и ')} с; щелчки льда ${ICE.perSec}/с около ${ICE.hz} Гц`, make: () => normalize(makeStorm(), 0.5) },
   { file: 'crackle.wav', what: 'треск печи — петля 4 с', params: 'гул 250–700 Гц, всплески 1,2–3,6 кГц, 6/с', make: () => normalize(makeCrackle(), 0.45) },
   { file: 'tap.wav', what: 'щелчок кнопки', params: 'шум в полосе 2 кГц, 30 мс', make: makeTap },
+  { file: 'click.wav', what: 'щелчок фонаря в сумерки', params: `два щелчка около ${CLICK.hz} Гц, второй через ${CLICK.gapSec * 1000} мс и тише`, make: makeClick },
   { file: 'choose.wav', what: 'решение выбрано', params: '660 и 880 Гц, затухание 60–70 мс', make: makeChoose },
   { file: 'day.wav', what: 'новый день события', params: '520 Гц, затухание 70 мс', make: makeDay },
   { file: 'done.wav', what: 'итог: все дома', params: 'до-ми-соль-до, перебор 120 мс', make: makeDone },

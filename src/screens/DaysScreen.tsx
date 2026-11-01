@@ -12,7 +12,7 @@ import { type Game, world } from '../state/game';
 import { Bubble } from '../ui/Bubble';
 import { dayWhen, voice } from '../state/voices';
 import { radioLines } from '../state/radio';
-import { neighbours } from '../state/scene';
+import { hasTorch, neighbours } from '../state/scene';
 import { TroubleIcon } from '../ui/icons';
 
 const DAY_MS = 3000;
@@ -35,13 +35,19 @@ export function DaysScreen({ game }: { game: Game }) {
     setLoop('crackle', stove);
     return () => { setLoop('storm', false); setLoop('crackle', false); };
   }, [stove]);
+  // щелчок фонаря в сумерки — если фонарь есть и свет в этот день не кончился
+  const torch = hasTorch(world, game.prep);
+  const lightToday = !!o && !o.days[shown - 1]?.short.includes('light');
   useEffect(() => {
     play('day');
-    const dusk = setTimeout(() => setNight(true), step * 0.6);
+    const dusk = setTimeout(() => {
+      setNight(true);
+      if (torch && lightToday) play('click');
+    }, step * 0.6);
     if (shown >= total) return () => clearTimeout(dusk);
     const next = setTimeout(() => { setNight(false); setShown(n => n + 1); }, step);
     return () => { clearTimeout(dusk); clearTimeout(next); };
-  }, [shown, total, step]);
+  }, [shown, total, step, torch, lightToday]);
   if (!o) return null;
   const days = o.days.slice(0, shown);
   const radio = radioLines(world, game.prep, o);
