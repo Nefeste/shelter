@@ -1,0 +1,41 @@
+trouble:
+  id: meds
+  name: Лекарства бабушки
+  text: У бабушки постоянные лекарства. Аптека в ледяной дождь будет закрыта. Доз и схем в игре нет — только то, что назначил врач.
+solutions:
+  - id: meds-home
+    tier: cheap
+    name: Взять, что дома
+    text: Лекарства, которые есть в аптечке.
+    goods: [{ good: home-meds, qty: 1 }]
+    workMin: 0
+    why: Обычно дома лекарств на несколько дней, а не на две недели.
+    sources: [{ todo: "оценка: остаток постоянных лекарств дома" }]
+    review: draft
+  - id: meds-stock
+    tier: mid
+    name: Запас по рецепту на две недели
+    text: Купить назначенные лекарства на 14 дней.
+    goods: [{ good: home-meds, qty: 1 }, { good: meds-14, qty: 1 }]
+    workMin: 0
+    why: Запас назначенных лекарств — первое, что советуют положить в тревожный набор.
+    sources: [mchs-kit]
+    review: draft
+  - id: meds-kit
+    tier: right
+    name: Запас по рецепту и аптечка
+    text: Назначенные лекарства на 14 дней и аптечка для остальной семьи.
+    goods: [{ good: home-meds, qty: 1 }, { good: meds-14, qty: 1 }, { good: first-aid, qty: 1 }]
+    workMin: 0
+    why: Лекарства на весь срок и аптечка — для мелких травм, пока до врача не добраться.
+    sources: [mchs-kit]
+    review: draft
+  - id: meds-random
+    tier: trap
+    name: Что-нибудь от давления
+    text: Без рецепта взять «что-нибудь похожее».
+    goods: [{ good: home-meds, qty: 1 }, { good: random-pills, qty: 1 }]
+    workMin: 0
+    why: Чужое лекарство не заменяет назначенное — бабушке нужны её таблетки.
+    sources: [{ todo: "памятка: нельзя заменять назначенные лекарства без врача" }]
+    review: draft

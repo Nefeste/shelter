@@ -1,0 +1,46 @@
+trouble:
+  id: co
+  name: Угарный газ
+  text: Всё, что горит в доме, даёт угарный газ. Он без цвета и запаха.
+solutions:
+  - id: co-airing
+    tier: cheap
+    name: Проветривать по расписанию
+    text: Каждые несколько часов открывать окно на несколько минут.
+    goods: []
+    workMin: 0
+    heatLossC: 2
+    guards: [{ risk: co, stopsPct: 60 }]
+    why: Проветривание снижает угарный газ, но ночью про него легко забыть, а дом выстывает.
+    sources: [{ todo: "памятка МЧС об угарном газе" }]
+    review: draft
+  - id: co-sensor
+    tier: mid
+    name: Датчик угарного газа
+    text: Датчик на батарейках пищит раньше, чем станет опасно.
+    goods: [{ good: co-detector, qty: 1 }]
+    workMin: 15
+    guards: [{ risk: co, stopsPct: 90 }]
+    why: Датчик замечает угарный газ, который не почувствовать, и будит, если что-то не так.
+    sources: [{ todo: "памятка МЧС о датчиках угарного газа" }]
+    review: draft
+  - id: co-detector-airing
+    tier: right
+    name: Датчик и проветривание
+    text: Датчик угарного газа и короткое проветривание утром и вечером.
+    goods: [{ good: co-detector, qty: 1 }]
+    workMin: 15
+    heatLossC: 1
+    guards: [{ risk: co, stopsPct: 100 }]
+    why: Датчик предупреждает, а проветривание не даёт газу копиться.
+    sources: [{ todo: "памятка МЧС об угарном газе" }]
+    review: draft
+  - id: co-seal
+    tier: trap
+    name: Заделать щели поплотнее
+    text: Чтобы не уходило тепло — законопатить окна и двери.
+    goods: [{ good: window-film, qty: 1 }]
+    workMin: 60
+    why: Чем плотнее закрыта комната, тем быстрее в ней копится угарный газ.
+    sources: [{ todo: "памятка МЧС об угарном газе" }]
+    review: draft

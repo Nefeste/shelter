@@ -1,0 +1,18 @@
+# Источники, на которые ссылаются записи: ключ → название и адрес. Запись ссылается ключом
+# (`sources: [mchs-norms]`) или пишет `todo: …`, если источник ещё не найден, — тогда она
+# остаётся черновиком и в выпуск не идёт.
+mchs-norms:
+  title: "МЧС России, термин «Средства жизнеобеспечения населения в чрезвычайных ситуациях»: вода на питьё 2,5 л взрослому и 5 л детям в сутки, на готовку и умывание 7,5 л; питание пострадавших 2300 ккал в сутки"
+  url: https://mchs.gov.ru/ministerstvo/o-ministerstve/terminy-mchs-rossii/term/1783
+mchs-kit:
+  title: "МЧС России, «Памятка. Гражданская оборона. Тревожный чемоданчик» (материалы сайта — CC BY 4.0)"
+  url: https://mchs.gov.ru/dokumenty/4344
+mchs-evacuation:
+  title: "МЧС России, «Памятка. Гражданская защита. Эвакуация населения»"
+  url: https://mchs.gov.ru/dokumenty/4342
+mchs-gas:
+  title: "МЧС России, «Утечка бытового газа»"
+  url: https://mchs.gov.ru/deyatelnost/bezopasnost-grazhdan/utechka-bytovogo-gaza_4
+ready-list:
+  title: "Ready.gov, «Список вещей на случай чрезвычайной ситуации» (на русском)"
+  url: https://www.ready.gov/sites/default/files/2021-12/ready_supply-list_russian.pdf

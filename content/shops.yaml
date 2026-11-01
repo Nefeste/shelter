@@ -1,0 +1,20 @@
+# Обычные места, без названий сетей (AGENTS.md, «Hard rules»). Дорога — туда и обратно.
+- id: home
+  name: Дома
+  travelMin: 0
+- id: near
+  name: Магазин у дома
+  travelMin: 30
+- id: super
+  name: Супермаркет
+  travelMin: 60
+- id: hardware
+  name: Строительный магазин
+  travelMin: 90
+- id: pharmacy
+  name: Аптека
+  travelMin: 60
+- id: market
+  name: Маркетплейс
+  travelMin: 0
+  deliveryDays: 2

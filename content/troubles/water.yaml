@@ -1,0 +1,45 @@
+trouble:
+  id: water
+  name: Вода
+  text: Насос и водопровод без света не работают. Воды нужно и на питьё, и на готовку с умыванием.
+solutions:
+  - id: water-drink
+    tier: cheap
+    name: Вода на питьё
+    text: Питьевая вода в бутылках — только чтобы пить.
+    goods: [{ good: water-5l, qty: 36 }]
+    workMin: 0
+    why: "Норма на питьё — 2,5 л взрослому и 5 л ребёнку в сутки; на готовку и умывание нужно ещё 7,5 л на человека."
+    sources: [mchs-norms]
+    review: draft
+  - id: water-canisters
+    tier: mid
+    name: Питьевая вода и канистры из крана
+    text: Бутылки на питьё и канистры, наполненные из крана, пока он работает.
+    goods: [{ good: water-5l, qty: 36 }, { good: canister-20l, qty: 10 }, { good: tap-water, qty: 10 }]
+    workMin: 60
+    beforeEvent: true
+    why: Вода из крана в своих ёмкостях почти ничего не стоит, но набрать её можно только до отключения.
+    sources: [mchs-norms]
+    review: draft
+  - id: water-full
+    tier: right
+    name: Полная норма на две недели
+    text: Бутылки на питьё и столько канистр, чтобы хватило на готовку и умывание на все дни.
+    goods: [{ good: water-5l, qty: 36 }, { good: canister-20l, qty: 21 }, { good: tap-water, qty: 21 }]
+    workMin: 90
+    beforeEvent: true
+    why: На семью из четырёх нужно больше 40 л в сутки — на две недели это сотни литров.
+    sources: [mchs-norms]
+    review: draft
+  - id: water-porch
+    tier: trap
+    name: Канистры на холодной веранде
+    text: Места в доме мало — поставить канистры на веранду.
+    goods: [{ good: water-5l, qty: 36 }, { good: canister-20l, qty: 10 }, { good: tap-water, qty: 10 }]
+    workMin: 60
+    beforeEvent: true
+    keepsPct: 40
+    why: На морозе вода в канистрах замерзает и рвёт их — большая часть запаса пропадёт.
+    sources: [{ todo: "памятка: хранение запаса воды зимой" }]
+    review: draft

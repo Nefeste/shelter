@@ -1,0 +1,45 @@
+trouble:
+  id: light
+  name: Свет
+  text: Зимой темнеет рано. Свет нужен хотя бы на 5 часов в сутки.
+solutions:
+  - id: light-candles
+    tier: cheap
+    name: Свечи
+    text: Дёшево и светло, но это открытый огонь.
+    goods: [{ good: candles, qty: 2 }]
+    workMin: 0
+    risks: [fire]
+    creates: [fire]
+    why: Свечи дают свет, но открытый огонь в доме — риск пожара.
+    sources: [{ todo: "памятка МЧС: пожарная безопасность при использовании свечей" }]
+    review: draft
+  - id: light-headlamps
+    tier: mid
+    name: Налобные фонари и батарейки
+    text: Два налобных фонаря и запас батареек.
+    goods: [{ good: headlamp, qty: 2 }, { good: batteries, qty: 4 }]
+    workMin: 0
+    why: Фонари безопасны, но батареек нужно столько, чтобы хватило на все вечера.
+    sources: [mchs-kit]
+    review: draft
+  - id: light-lanterns
+    tier: right
+    name: Кемпинговый фонарь, налобные и батарейки по расчёту
+    text: Фонарь на стол и налобные — с батарейками на все две недели.
+    goods: [{ good: lantern, qty: 1 }, { good: headlamp, qty: 2 }, { good: batteries, qty: 4 }]
+    workMin: 0
+    why: "Свет на все вечера без огня: батареек — по часам, а не на глаз."
+    sources: [mchs-kit]
+    review: draft
+  - id: light-car
+    tier: trap
+    name: Заряжать фонари в машине в гараже
+    text: Машина есть — заводить её в гараже и заряжать от неё фонарь и телефоны.
+    goods: [{ good: headlamp, qty: 1 }]
+    workMin: 0
+    risks: [co]
+    creates: [co]
+    why: Работающий двигатель в закрытом гараже — частая причина отравления угарным газом.
+    sources: [{ todo: "памятка МЧС об угарном газе от автомобиля в гараже" }]
+    review: draft

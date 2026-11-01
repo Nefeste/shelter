@@ -1,0 +1,33 @@
+id: ice-rain
+name: Ледяной дождь
+text: >-
+  Январь, частный дом в средней полосе. Прогноз: через три дня ледяной дождь. Провода оборвутся,
+  дорогу закроет, свет и тепло вернут только через две недели.
+family:
+  - { id: dad, name: Папа, kind: adult }
+  - { id: mom, name: Мама, kind: adult }
+  - { id: son, name: Сын, kind: child }
+  - { id: gran, name: Бабушка, kind: elder }
+prepDays: 3
+minutesPerDay: 360
+money: [30000, 25000, 0]
+pantryL: 400
+porchL: 450
+eventDays: 14
+outdoorC: [-12, -15, -18, -20, -16, -10, -4, -2, -6, -12, -18, -22, -17, -13]
+houseC: 4
+troubles: [heat, water, food, light, comms, meds, toilet]
+norms:
+  waterDl: { adult: 100, child: 125, elder: 100 }
+  drinkDl: { adult: 25, child: 50, elder: 25 }
+  kcal: 2300
+  lightH: 5
+  coldC: 15
+  coldEvacC: 6
+  maxC: 22
+needsMeds: [gran]
+sources:
+  - mchs-norms
+  - mchs-evacuation
+  - { todo: "погода сценария — оценка по климатическим нормам средней полосы; температура, при которой нужна эвакуация, — источник" }
+review: draft

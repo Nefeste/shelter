@@ -1,0 +1,5 @@
+# Разрешения, которые может просить релизный APK «Убежища» (действие android-contents набора
+# gornitsa-kit, шаг «Содержимое» в android.yml): строка — полное имя, «*» в конце — любая концовка.
+# Сети нет (ADR студии 0005; INTERNET вырезает plugins/with-release-no-internet.js). Нужное — сюда и
+# в политику, ненужное — в blockedPermissions в app.json. Файл — путь владельца.
+games.gornitsa.shelter.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
