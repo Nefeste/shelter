@@ -19,7 +19,8 @@
    решения владельца.
 7. [`specs/2026-11-prototype.md`](specs/2026-11-prototype.md) — живая спецификация прототипа:
    критерии, решения агента, журнал проверок.
-   Сборы в дорогу — [`specs/2026-11-trips.md`](specs/2026-11-trips.md).
+   Сборы в дорогу — [`specs/2026-11-trips.md`](specs/2026-11-trips.md) (дача),
+   [`specs/2026-11-bike-weekend.md`](specs/2026-11-bike-weekend.md) (велопоход выходного дня).
 8. [`10-money.md`](10-money.md), [`11-market.md`](11-market.md) — деньги и рынок.
 9. [`adr/`](adr/) — решения, которые дорого менять; [`adr/0001-studio-adrs.md`](adr/0001-studio-adrs.md)
    — как здесь применяются ADR студии.
