@@ -27,11 +27,12 @@ export const SCHEDULE = /раз[аы]?\s+в\s+(день|сутки)|утром\s
 /** Латиница в тексте для игрока — почти всегда марка. */
 export const LATIN = /[a-z]/i;
 
-export interface BuildReport { bundle: Bundle; errors: string[]; todo: string[] }
+export interface BuildReport { bundle: Bundle; errors: string[]; todo: string[]; assumptions: string[] }
 
 export function build(): BuildReport {
   const errors: string[] = [];
   const todo: string[] = [];
+  const assumptions: string[] = [];
   const sources: Record<string, { title: string; url?: string }> = read('sources.yaml');
 
   const resolve = (where: string, list: RawSource[] | undefined): Source[] => {
@@ -45,6 +46,7 @@ export function build(): BuildReport {
         return sources[s] ?? { todo: s };
       }
       if ('todo' in s) todo.push(`${where}: ${s.todo}`);
+      if ('assumption' in s) assumptions.push(`${where}: ${s.assumption}`);
       return s;
     });
   };
@@ -72,6 +74,7 @@ export function build(): BuildReport {
     if (!shops.some(s => s.id === g.shop)) errors.push(`${where}: нет магазина ${g.shop}`);
     if (!Number.isInteger(g.price?.rub) || g.price.rub < 0) errors.push(`${where}: цена — целые рубли`);
     if (g.price?.basis !== 'rosstat' && g.price?.basis !== 'estimate') errors.push(`${where}: price.basis — rosstat или estimate`);
+    if (g.price?.rub > 0 && !g.price?.note) errors.push(`${where}: у цены нет пояснения (позиция Росстата или диапазон оценки)`);
     return { ...g, sources: resolve(where, g.sources) };
   });
 
@@ -119,11 +122,11 @@ export function build(): BuildReport {
     for (const a of s.after ?? []) if (!troubles.some(x => x.id === a.trouble)) errors.push(`решение ${s.id}: нет беды ${a.trouble}`);
   }
 
-  return { bundle: { shops, goods, troubles, solutions, scenarios }, errors, todo };
+  return { bundle: { shops, goods, troubles, solutions, scenarios }, errors, todo, assumptions };
 }
 
 if (import.meta.main) {
-  const { bundle, errors, todo } = build();
+  const { bundle, errors, todo, assumptions } = build();
   if (errors.length) {
     console.error(`Содержание не собрано — ошибок: ${errors.length}`);
     for (const e of errors) console.error(`  ${e}`);
@@ -133,5 +136,5 @@ if (import.meta.main) {
     mkdirSync(OUT, { recursive: true });
     writeFileSync(join(OUT, 'bundle.json'), `${JSON.stringify(bundle, null, 1)}\n`);
   }
-  console.log(`Содержание: бед ${bundle.troubles.length}, решений ${bundle.solutions.length}, товаров ${bundle.goods.length}; без источника — ${todo.length} (черновики)`);
+  console.log(`Содержание: бед ${bundle.troubles.length}, решений ${bundle.solutions.length}, товаров ${bundle.goods.length}; без источника — ${todo.length}, допущений игры — ${assumptions.length}`);
 }

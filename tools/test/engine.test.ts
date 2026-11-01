@@ -100,10 +100,11 @@ describe('подготовка', () => {
     expect(openTroubles(world, s)).not.toContain('co');
   });
 
-  test('места мало: печь с дровами и полный запас воды вместе не встают', () => {
+  test('места мало: полный запас воды, туалет на все дни и еда по норме вместе не помещаются', () => {
     let s = startPrep(world, SCENARIO);
-    s = choose(world, s, 'heat-stove');
+    s = choose(world, s, 'water-full');
     s = nextDay(world, s);
-    expect(canChoose(world, s, 'water-full')).toBe('place');
+    s = choose(world, s, 'toilet-full');
+    expect(canChoose(world, s, 'food-full')).toBe('place');
   });
 });

@@ -10,6 +10,14 @@ describe('содержание', () => {
     expect(errors).toEqual([]);
   });
 
+  test('ни одного факта без источника: числа без источника — только «допущения игры»', () => {
+    expect(build().todo).toEqual([]);
+  });
+
+  test('у каждой цены — пояснение: позиция Росстата или диапазон оценки', () => {
+    for (const g of bundle.goods) expect({ id: g.id, note: g.price.note.length > 0 }).toEqual({ id: g.id, note: true });
+  });
+
   test('у каждой беды — дешёвое, среднее, правильное и ловушка', () => {
     for (const t of bundle.troubles) {
       expect(t.solutions.map(id => bundle.solutions.find(s => s.id === id)?.tier)).toEqual(['cheap', 'mid', 'right', 'trap']);

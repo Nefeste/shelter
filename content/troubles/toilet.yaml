@@ -6,29 +6,29 @@ solutions:
   - id: toilet-bucket
     tier: cheap
     name: Ведро с крышкой
-    text: Ведро с плотной крышкой на холодной веранде.
+    text: Ведро с плотной крышкой — чтобы запах не расходился по дому.
     goods: [{ good: bucket, qty: 1 }]
     workMin: 0
     why: Ведро выручит на несколько дней, дальше нужны мешки и наполнитель.
-    sources: [{ todo: "памятка: туалет без воды при ЧС" }]
+    sources: [mcf-toilet]
     review: draft
   - id: toilet-bags
     tier: mid
     name: Мешки и наполнитель
-    text: Прочные мешки в унитаз и древесный наполнитель.
+    text: Прочные мешки в унитаз, после каждого раза — присыпать древесным наполнителем и завязать.
     goods: [{ good: trash-bags, qty: 2 }, { good: sawdust, qty: 1 }]
     workMin: 15
-    why: Мешок с наполнителем убирает запах; использованные — в плотный мешок на улицу.
-    sources: [{ todo: "памятка: туалет без воды при ЧС (шведская памятка)" }]
+    why: Мешок с наполнителем — то, что советуют для туалета без воды; использованные — в плотный мешок на улицу.
+    sources: [mcf-toilet]
     review: draft
   - id: toilet-full
     tier: right
     name: Мешки, наполнитель и ведро на все дни
-    text: Мешков и наполнителя на две недели, ведро для мусора.
-    goods: [{ good: trash-bags, qty: 2 }, { good: sawdust, qty: 1 }, { good: bucket, qty: 1 }]
+    text: Мешков и наполнителя на две недели, ведро с крышкой для мусора.
+    goods: [{ good: trash-bags, qty: 4 }, { good: sawdust, qty: 3 }, { good: bucket, qty: 1 }]
     workMin: 15
     why: Запаса хватает на все дни, мусор — в одном месте.
-    sources: [{ todo: "памятка: туалет без воды при ЧС (шведская памятка)" }]
+    sources: [mcf-toilet]
     review: draft
   - id: toilet-snow
     tier: trap
@@ -37,6 +37,6 @@ solutions:
     goods: []
     workMin: 0
     risks: [clog]
-    why: Снега для смыва нужно очень много, а без давления в трубах канализацию забьёт.
-    sources: [{ todo: "памятка: канализация при отключении водоснабжения" }]
+    why: Из ведра снега выходит совсем немного воды, а без нормального смыва канализация быстро засоряется.
+    sources: [mcf-toilet]
     review: draft

@@ -19,8 +19,8 @@ solutions:
     goods: [{ good: water-5l, qty: 36 }, { good: canister-20l, qty: 10 }, { good: tap-water, qty: 10 }]
     workMin: 60
     beforeEvent: true
-    why: Вода из крана в своих ёмкостях почти ничего не стоит, но набрать её можно только до отключения.
-    sources: [mchs-norms]
+    why: Пока в кране есть вода, её набирают про запас для хозяйственных нужд — это почти ничего не стоит.
+    sources: [mchs-kaluga-outage, mchs-norms]
     review: draft
   - id: water-full
     tier: right
@@ -30,7 +30,7 @@ solutions:
     workMin: 90
     beforeEvent: true
     why: На семью из четырёх нужно больше 40 л в сутки — на две недели это сотни литров.
-    sources: [mchs-norms]
+    sources: [mchs-norms, mchs-kaluga-outage]
     review: draft
   - id: water-porch
     tier: trap
@@ -39,7 +39,7 @@ solutions:
     goods: [{ good: water-5l, qty: 36 }, { good: canister-20l, qty: 10 }, { good: tap-water, qty: 10 }]
     workMin: 60
     beforeEvent: true
-    keepsPct: 40
-    why: На морозе вода в канистрах замерзает и рвёт их — большая часть запаса пропадёт.
-    sources: [{ todo: "памятка: хранение запаса воды зимой" }]
+    keepsPct: 60
+    why: На морозе вода замерзает — быстро её не достать, а полная канистра может лопнуть.
+    sources: [ready-list, { assumption: "сколько воды теряется на морозе — допущение игры: 40 %" }]
     review: draft

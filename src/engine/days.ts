@@ -43,7 +43,7 @@ export interface Outcome {
 }
 
 type Stock = Required<Provides>;
-const empty = (): Stock => ({ waterDl: 0, kcal: 0, lightH: 0, commsDays: 0, medsDays: 0, fuelDays: 0, sanitationDays: 0 });
+const empty = (): Stock => ({ waterDl: 0, kcal: 0, lightH: 0, commsDays: 0, medsDays: 0, fuelH: 0, sanitationDays: 0 });
 
 /** Решения, которые работают в событии: выбранные и законченные. */
 function active(w: World, s: PrepState): Solution[] {
@@ -96,8 +96,10 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
     for (const g of sol.guards ?? []) remains[g.risk] = Math.floor(((remains[g.risk] ?? 100) * (100 - g.stopsPct)) / 100);
   }
   const heatLossC = sols.reduce((n, x) => n + (x.heatLossC ?? 0), 0);
-  const heatC = Math.max(0, ...sols.map(x => x.heatC ?? 0));
-  const heatNeedsFuel = sols.some(x => (x.heatC ?? 0) === heatC && heatC > 0 && x.goods.some(g => (w.good(g.good).provides?.fuelDays ?? 0) > 0));
+  // греет самое тёплое решение; если ему нужно топливо — столько часов в сутки
+  const heater = sols.filter(x => (x.heatC ?? 0) > 0).sort((a, b) => (b.heatC ?? 0) - (a.heatC ?? 0))[0];
+  const heatC = heater?.heatC ?? 0;
+  const fuelPerDay = heater?.fuelHPerDay ?? 0;
 
   const people = sc.family;
   const waterDay = people.reduce((n, p) => n + sc.norms.waterDl[p.kind], 0);
@@ -131,9 +133,9 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
     }
 
     let heat = heatC;
-    if (heat > 0 && heatNeedsFuel) {
-      if (stock.fuelDays > 0) stock.fuelDays -= 1;
-      else heat = 0;
+    if (fuelPerDay > 0) {
+      if (stock.fuelH >= fuelPerDay) stock.fuelH -= fuelPerDay;
+      else { stock.fuelH = 0; heat = 0; }
     }
     // топят по погоде: теплее `maxC` в доме не держат, лишнее тепло не считается
     const indoorC = Math.min(sc.norms.maxC, outdoorC + sc.houseC + heat - heatLossC);

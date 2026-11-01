@@ -16,3 +16,90 @@ mchs-gas:
 ready-list:
   title: "Ready.gov, «Список вещей на случай чрезвычайной ситуации» (на русском)"
   url: https://www.ready.gov/sites/default/files/2021-12/ready_supply-list_russian.pdf
+skurikhin-2002:
+  title: "«Химический состав российских пищевых продуктов»: справочник / под ред. И. М. Скурихина, В. А. Тутельяна. — М.: ДеЛи принт, 2002 (ГУ НИИ питания РАМН)"
+gost-33394:
+  title: "ГОСТ 33394-2015 «Пельмени замороженные. Технические условия», приложение А, табл. А.1"
+ppr-1479:
+  title: "Правила противопожарного режима в Российской Федерации, утв. постановлением Правительства РФ от 16.09.2020 № 1479, пп. 77–83, 85 (действуют до 31.12.2026)"
+  url: https://02.mchs.gov.ru/uploads/resource/2026-06-08/71225f84f8519180b820ac49498fe800.pdf
+sp-7-13130:
+  title: "СП 7.13130.2013 «Отопление, вентиляция и кондиционирование. Требования пожарной безопасности», пп. 5.14–5.17"
+pp-354:
+  title: "Правила предоставления коммунальных услуг, утв. постановлением Правительства РФ от 06.05.2011 № 354, приложение 1, пп. 14–15: в жилых помещениях не ниже +18 °C; ниже +8 °C перерыв отопления не допускается"
+  url: https://www.consultant.ru/document/cons_doc_LAW_114247/38f223113cabebcdfa928503d5524f19d8309589
+mchs-kaluga-stove:
+  title: "ГУ МЧС России по Калужской области, «Меры безопасности. Как топить печь, чтобы не угореть»"
+  url: https://40.mchs.gov.ru/deyatelnost/press-centr/novosti/4009905
+mchs-kuzbass-co:
+  title: "ГУ МЧС России по Кемеровской области — Кузбассу, «Угарный газ: как обезопасить себя»"
+  url: https://42.mchs.gov.ru/deyatelnost/press-centr/novosti/5438998
+mchs-voronezh-co:
+  title: "ГУ МЧС России по Воронежской области, «Осторожно: угарный газ!» (29.03.2026)"
+  url: https://36.mchs.gov.ru/deyatelnost/press-centr/novosti/5724568
+mchs-stavropol-detector:
+  title: "ГУ МЧС России по Ставропольскому краю, «Как защититься от утечки газа?» (датчики газа и угарного газа)"
+  url: https://26.mchs.gov.ru/deyatelnost/press-centr/novosti/5522775
+mchs-tyva-utilities:
+  title: "ГУ МЧС России по Республике Тыва, «Правила поведения при аварии на коммунальных системах»"
+  url: https://17.mchs.gov.ru/deyatelnost/poleznaya-informaciya/rekomendacii-naseleniyu/pravila-povedeniya-pri-razlichnyh-chs/chs-tehnogennogo-haraktera/pravila-povedeniya-pri-avarii-na-kommunalnyh-sistemah
+mchs-kaluga-outage:
+  title: "ГУ МЧС России по Калужской области, «Рекомендации при кратковременном отключении электроэнергии»"
+  url: https://40.mchs.gov.ru/deyatelnost/poleznaya-informaciya/rekomendacii-naseleniyu/pamyatki/pravila-obshchey-bezopasnosti/rekomendacii-pri-kratkovremennom-otklyuchenii-elektroenergii
+mchs-yakutia-outage:
+  title: "ГУ МЧС России по Республике Саха (Якутия), «МЧС: что делать в случае отключения электричества»"
+  url: https://14.mchs.gov.ru/deyatelnost/press-centr/novosti/1745306
+mchs-sverdlovsk-weather:
+  title: "ГУ МЧС России по Свердловской области, «Ухудшение погодных условий»"
+  url: https://66.mchs.gov.ru/rekomendacii-naseleniyu/uhudshenie-pogodnyh-usloviy
+mchs-khabarovsk-candles:
+  title: "ГУ МЧС России по Хабаровскому краю, «Правила использования свечей»"
+  url: https://27.mchs.gov.ru/rekomendacii-naseleniyu/pravila-ispolzovaniya-svechey
+mchs-pskov-extinguisher:
+  title: "ГУ МЧС России по Псковской области, «Почему важно иметь дома огнетушитель»"
+  url: https://60.mchs.gov.ru/deyatelnost/press-centr/novosti/3192908
+mchs-bashkiria-extinguisher:
+  title: "ГУ МЧС России по Республике Башкортостан, «По огнетушителю — в каждую квартиру!»"
+  url: https://02.mchs.gov.ru/deyatelnost/poleznaya-informaciya/rekomendacii-naseleniyu/rekomendacii-v-bytu/po-ognetushitelyu-v-kazhduyu-kvartiru
+mchs-gas-help:
+  title: "МЧС России, «Помощь при утечке бытового газа»: запасные баллоны хранить вне помещения"
+  url: https://mchs.gov.ru/deyatelnost/bezopasnost-grazhdan/utechka-bytovogo-gaza_9
+minzdrav-2023-01-20:
+  title: "Минздрав России, «Михаил Мурашко призвал проявлять повышенную осторожность в связи с высокими рисками для здоровья из-за аномальных погодных условий» (20.01.2023) — пересказ, не цитата"
+  url: https://minzdrav.gov.ru/news/2023/01/20/19785-mihail-murashko-prizval-proyavlyat-povyshennuyu-ostorozhnost-v-svyazi-s-vysokimi-riskami-dlya-zdorovya-iz-za-anomalnyh-pogodnyh-usloviy
+cdc-co:
+  title: "CDC, «Carbon Monoxide (CO) Poisoning Basics»"
+  url: https://www.cdc.gov/carbon-monoxide/about/index.html
+cpsc-co:
+  title: "U.S. CPSC, «Carbon Monoxide Fact Sheet»"
+  url: https://www.cpsc.gov/safety-education/safety-guides/carbon-monoxide/carbon-monoxide-fact-sheet
+ready-outage:
+  title: "Ready.gov (FEMA), «Power Outages»"
+  url: https://www.ready.gov/power-outages
+fsis-emergency:
+  title: "USDA FSIS, «Keeping Food Safe During an Emergency»"
+  url: https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/food-safety-basics/keeping-food-safe-during
+mcf-toilet:
+  title: "Myndigheten för civilt försvar (Швеция), «Tvätt och toalett i kris» — пересказ"
+  url: https://www.mcf.se/sv/rad-till-privatpersoner/hemberedskap---preppa-for-en-vecka/vatten/hygien-tvatt-och-toalett/
+krisinfo-home:
+  title: "Krisinformation.se, «Home preparedness»: запас назначенных лекарств на месяц (рекомендация Socialstyrelsen)"
+  url: https://www.krisinformation.se/en/hazards-and-risks/home-preparedness/toilets-and-hygiene-during-a-crisis/
+ofcom-ran-2025:
+  title: "Ofcom, «Mobile RAN power resilience: technical report» (10.02.2025), п. 1.8: резерв вышек — от 10–15 минут до нескольких часов, сутки — только у отдельных узлов"
+  url: https://www.ofcom.org.uk/siteassets/resources/documents/consultations/category-1-10-weeks/272921-resilience-guidance-and-mobile-ran-power-back-up/associated-documents/mobile-ran-power-resilience-technical-report-cfi-update.pdf
+nist-butane:
+  title: "NIST Chemistry WebBook, SRD 69, «Butane»: теплота сгорания и температура кипения"
+  url: https://webbook.nist.gov/cgi/cbook.cgi?ID=C106978&Mask=1
+bse-firewood:
+  title: "Большая советская энциклопедия, 3-е изд., статья «Дрова»: теплота сгорания сухих дров около 18 800 кДж/кг"
+  url: https://booksite.ru/fulltext/1/001/008/033/615.htm
+meteoinfo-norms:
+  title: "Гидрометцентр России, климатические нормы температуры воздуха для Москвы (1991–2020): январь −6,3 °C"
+  url: https://meteoinfo.ru/categ-articles/126-climate-cat/klimaticheskie-normy/2307-1246618396
+meteoinfo-2010:
+  title: "Гидрометцентр России, «Ледяной дождь в Москве, Московской области… 25–26 декабря 2010 г.»"
+  url: https://meteoinfo.ru/categ-articles/65-2011-06-07-09-02-13/6303-2012-11-29-11-40-51
+rosstat-prices-2026-09:
+  title: "Росстат, «Средние потребительские цены (тарифы) на товары и услуги по Российской Федерации…», сентябрь 2026, строка «Российская Федерация» (числа сняты с зеркала roschart.ru; сверить с файлом Росстата)"
+  url: https://rosstat.gov.ru/storage/mediabank/sred_potreb_cen_09-2026.xlsx

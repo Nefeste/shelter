@@ -1,232 +1,261 @@
-# Товары — обычные названия, без марок (AGENTS.md). Цены — оценка, пока не сверены со средними
-# потребительскими ценами Росстата; что даёт единица (литры, калории, часы) — тоже оценка до сверки.
+# Товары — обычные названия, без марок (AGENTS.md). Цена — средняя потребительская цена Росстата,
+# где товар есть в его таблице (сентябрь 2026; числа сняты с зеркала — сверить с файлом Росстата),
+# иначе — оценка по типичным розничным ценам с диапазоном в `note`. Что даёт единица (литры,
+# калории, часы) — из справочника, ГОСТ или памятки; где источника нет — «допущение игры».
 - id: tap-water
   name: Вода из водопровода в своих ёмкостях
   shop: home
-  price: { rub: 0, basis: estimate }
+  price: { rub: 0, basis: estimate, note: "набирают дома, пока работает водопровод" }
   volumeL: 0
   provides: { waterDl: 200 }
-  sources: [{ todo: "нужна памятка: запас воды заранее, пока работает насос и водопровод" }]
+  sources: [mchs-kaluga-outage, mchs-sverdlovsk-weather]
   review: draft
 - id: water-5l
   name: Вода питьевая, 5 л
   shop: super
-  price: { rub: 120, basis: estimate }
+  price: { rub: 225, basis: rosstat, note: "«Вода питьевая, л» — 45,00 ₽ × 5 л; в цене Росстата все фасовки, пятилитровая бутыль в рознице обычно дешевле" }
   volumeL: 5
   provides: { waterDl: 50 }
-  sources: [mchs-norms]
+  sources: [mchs-norms, rosstat-prices-2026-09]
   review: draft
 - id: canister-20l
   name: Канистра для воды, 20 л
   shop: hardware
-  price: { rub: 500, basis: estimate }
+  price: { rub: 700, basis: estimate, note: "оценка: обычно 500–1000 ₽" }
   volumeL: 20
   sources: [ready-list]
   review: draft
 - id: canned-meat
   name: Тушёнка говяжья, ж/б 325 г
   shop: super
-  price: { rub: 250, basis: estimate }
+  price: { rub: 239, basis: rosstat, note: "«Консервы мясные, кг» — 735,41 ₽ × 0,325 кг; в позиции Росстата все мясные консервы" }
   volumeL: 1
-  provides: { kcal: 700 }
-  sources: [{ todo: "калорийность — по справочнику химического состава продуктов" }]
+  provides: { kcal: 715 }
+  sources: [skurikhin-2002, rosstat-prices-2026-09]
   review: draft
 - id: buckwheat
   name: Гречка, 1 кг
   shop: super
-  price: { rub: 120, basis: estimate }
+  price: { rub: 90, basis: rosstat, note: "«Крупа гречневая-ядрица, кг» — 90,08 ₽" }
   volumeL: 1
-  provides: { kcal: 3300 }
-  sources: [{ todo: "калорийность — по справочнику химического состава продуктов" }]
+  provides: { kcal: 3080 }
+  sources: [skurikhin-2002, rosstat-prices-2026-09]
   review: draft
 - id: bread
-  name: Хлеб, батон
+  name: Батон нарезной, 400 г
   shop: near
-  price: { rub: 60, basis: estimate }
+  price: { rub: 50, basis: rosstat, note: "«Хлеб и булочные изделия из пшеничной муки различных сортов, кг» — 125,86 ₽ × 0,4 кг" }
   volumeL: 1
-  provides: { kcal: 1000 }
-  sources: [{ todo: "калорийность — по справочнику химического состава продуктов" }]
+  provides: { kcal: 1050 }
+  sources: [skurikhin-2002, rosstat-prices-2026-09]
   review: draft
 - id: frozen-dumplings
   name: Пельмени замороженные, 1 кг
   shop: super
-  price: { rub: 450, basis: estimate }
+  price: { rub: 449, basis: rosstat, note: "«Пельмени, манты, равиоли, кг» — 449,26 ₽" }
   volumeL: 1
   provides: { kcal: 2500 }
   spoilsInThaw: true
-  sources: [{ todo: "калорийность — по справочнику; хранение замороженного без холодильника" }]
+  sources: [gost-33394, fsis-emergency, rosstat-prices-2026-09]
   review: draft
 - id: camp-burner
   name: Туристическая газовая горелка
   shop: hardware
-  price: { rub: 1500, basis: estimate }
+  price: { rub: 1500, basis: estimate, note: "оценка: обычно 600–2500 ₽" }
   volumeL: 3
-  sources: [{ todo: "памятка о туристических газовых приборах в помещении" }]
+  sources: [cdc-co, cpsc-co]
   review: draft
 - id: gas-heater
   name: Туристический газовый обогреватель
   shop: hardware
-  price: { rub: 3500, basis: estimate }
+  price: { rub: 3000, basis: estimate, note: "оценка: обычно 2000–4000 ₽" }
   volumeL: 5
-  sources: [{ todo: "памятка о газовых обогревателях в помещении и угарном газе" }]
+  sources: [mchs-kuzbass-co, cpsc-co]
   review: draft
 - id: gas-cartridge
-  name: Газовый баллон для обогревателя, на сутки
+  name: Газовый баллон 220 г, всесезонная смесь
   shop: hardware
-  price: { rub: 300, basis: estimate }
-  volumeL: 2
-  provides: { fuelDays: 1 }
-  sources: [{ todo: "расход газа обогревателем в сутки — по паспорту типового прибора" }]
+  price: { rub: 220, basis: estimate, note: "оценка: обычно 150–300 ₽ за баллон 220 г" }
+  # запасные баллоны хранят вне дома (МЧС) — места в кладовой не занимают
+  volumeL: 0
+  provides: { fuelH: 2 }
+  sources:
+    - nist-butane
+    - mchs-gas-help
+    - { assumption: "обогреватель 1,3–1,5 кВт сжигает около 0,1 кг газа в час (типовое по паспортам): баллона 220 г хватает примерно на 2 часа" }
   review: draft
 - id: stove
   name: Печь-буржуйка с дымоходом
   shop: hardware
-  price: { rub: 15000, basis: estimate }
+  price: { rub: 9000, basis: estimate, note: "оценка: печь обычно 5000–10 000 ₽, дымоход — отдельно" }
   volumeL: 0
-  sources: [{ todo: "правила печного отопления МЧС: установка, дымоход, разделка" }]
+  sources: [ppr-1479, sp-7-13130]
   review: draft
 - id: firewood
-  name: Дрова колотые, мешок
+  name: Дрова колотые, мешок около 20 кг
   shop: hardware
-  price: { rub: 300, basis: estimate }
-  volumeL: 25
-  provides: { fuelDays: 1 }
-  sources: [{ todo: "расход дров на сутки для небольшой печи — оценить по справочнику" }]
+  price: { rub: 250, basis: estimate, note: "оценка: 150–400 ₽ за мешок; у Росстата дрова — кубометрами навалом (3116 ₽ за м³), это другой товар" }
+  # дрова лежат во дворе под навесом — места в доме не занимают
+  volumeL: 0
+  provides: { fuelH: 16 }
+  sources:
+    - bse-firewood
+    - { assumption: "мешок около 20 кг сухих дров при КПД печи около 60 % держит тепло в жилой части дома примерно 16 часов — расчёт по теплоте сгорания, не норматив" }
   review: draft
 - id: blanket
   name: Одеяло тёплое
   shop: super
-  price: { rub: 1200, basis: estimate }
+  price: { rub: 2164, basis: rosstat, note: "«Одеяло стеганое, шт.» — 2163,97 ₽" }
   volumeL: 10
-  sources: [ready-list]
+  sources: [mchs-tyva-utilities, rosstat-prices-2026-09]
   review: draft
 - id: window-film
   name: Плёнка для утепления окон со скотчем
   shop: hardware
-  price: { rub: 400, basis: estimate }
+  price: { rub: 400, basis: estimate, note: "оценка: 200–600 ₽ за комплект на окно" }
   volumeL: 1
-  sources: [{ todo: "памятка об утеплении жилья при отключении отопления" }]
+  sources: [mchs-tyva-utilities]
   review: draft
 - id: co-detector
   name: Датчик угарного газа на батарейках
   shop: hardware
-  price: { rub: 1800, basis: estimate }
+  price: { rub: 1800, basis: estimate, note: "оценка: обычно 1200–2500 ₽" }
   volumeL: 0
-  sources: [{ todo: "памятка МЧС о датчиках угарного газа" }]
+  sources: [mchs-stavropol-detector, cdc-co]
   review: draft
 - id: candles
-  name: Свечи хозяйственные, упаковка
+  name: Свечи хозяйственные, упаковка 8 шт.
   shop: near
-  price: { rub: 150, basis: estimate }
+  price: { rub: 200, basis: estimate, note: "оценка: 100–300 ₽ за упаковку" }
   volumeL: 1
   provides: { lightH: 40 }
-  sources: [{ todo: "время горения хозяйственной свечи — по ГОСТ или паспорту" }]
+  sources:
+    - mchs-khabarovsk-candles
+    - { assumption: "хозяйственная свеча горит около 5 часов — типовое по упаковкам; действующий стандарт с этим числом не найден" }
   review: draft
 - id: headlamp
   name: Фонарь налобный
   shop: super
-  price: { rub: 600, basis: estimate }
+  price: { rub: 800, basis: estimate, note: "оценка: 300–1500 ₽" }
   volumeL: 1
-  sources: [mchs-kit]
+  sources: [mchs-kit, ready-outage]
   review: draft
 - id: batteries
   name: Батарейки АА, 4 шт.
   shop: super
-  price: { rub: 250, basis: estimate }
+  price: { rub: 297, basis: rosstat, note: "«Батарейки электрические типа АА, шт.» — 74,23 ₽ × 4" }
   volumeL: 0
   provides: { lightH: 15 }
-  sources: [{ todo: "время работы фонаря на комплекте батареек — по паспорту типового фонаря" }]
+  sources:
+    - rosstat-prices-2026-09
+    - { assumption: "налобный фонарь в среднем режиме работает на четырёх щелочных АА около 15 часов — типовое по паспортам; на холоде меньше" }
   review: draft
 - id: lantern
   name: Фонарь кемпинговый
   shop: hardware
-  price: { rub: 1500, basis: estimate }
+  price: { rub: 1000, basis: estimate, note: "оценка: обычно 500–1500 ₽" }
   volumeL: 2
   provides: { lightH: 30 }
-  sources: [ready-list]
+  sources:
+    - ready-list
+    - ready-outage
+    - { assumption: "кемпинговый фонарь со своим комплектом батареек светит около 30 часов — типовое по паспортам" }
   review: draft
 - id: powerbank
   name: Внешний аккумулятор для телефона
   shop: market
-  price: { rub: 2000, basis: estimate }
+  price: { rub: 1700, basis: estimate, note: "оценка: 900–2500 ₽ на 10 000 мА·ч" }
   volumeL: 0
   provides: { commsDays: 4 }
-  sources: [ready-list]
+  sources:
+    - mchs-yakutia-outage
+    - ready-outage
+    - { assumption: "одного внешнего аккумулятора хватает телефону в экономном режиме примерно на 4 дня" }
   review: draft
 - id: crank-radio
   name: Радиоприёмник с динамо
   shop: market
-  price: { rub: 1800, basis: estimate }
+  price: { rub: 2000, basis: estimate, note: "оценка: обычно 1500–3000 ₽" }
   volumeL: 1
   provides: { commsDays: 14 }
-  sources: [mchs-kit]
+  sources: [mchs-kit, mchs-sverdlovsk-weather]
   review: draft
 - id: home-meds
   name: Лекарства, которые есть дома
   shop: home
-  price: { rub: 0, basis: estimate }
+  price: { rub: 0, basis: estimate, note: "уже дома" }
   volumeL: 0
   provides: { medsDays: 5 }
-  sources: [{ todo: "оценка: сколько дней обычно остаётся у человека с постоянными лекарствами" }]
+  sources:
+    - krisinfo-home
+    - { assumption: "дома остаётся запас назначенных лекарств примерно на 5 дней — статистики нет" }
   review: draft
 - id: meds-14
   name: Постоянные лекарства на 14 дней, по рецепту
   shop: pharmacy
-  price: { rub: 1500, basis: estimate }
+  price: { rub: 1500, basis: estimate, note: "оценка: 300–2000 ₽ — зависит от назначения" }
   volumeL: 0
   provides: { medsDays: 14 }
-  sources: [mchs-kit]
+  sources: [mchs-kit, krisinfo-home]
   review: draft
 - id: random-pills
   name: Таблетки «от давления» без рецепта
   shop: pharmacy
-  price: { rub: 400, basis: estimate }
+  price: { rub: 250, basis: estimate, note: "оценка: 100–400 ₽" }
   volumeL: 0
-  sources: [{ todo: "почему нельзя заменять назначенные лекарства — памятка Минздрава" }]
+  sources: [minzdrav-2023-01-20]
   review: draft
 - id: first-aid
   name: Аптечка
   shop: pharmacy
-  price: { rub: 1200, basis: estimate }
+  price: { rub: 1200, basis: estimate, note: "оценка: 500–2200 ₽ за готовую домашнюю аптечку" }
   volumeL: 1
   sources: [mchs-kit]
   review: draft
 - id: bucket
   name: Ведро с крышкой
   shop: near
-  price: { rub: 300, basis: estimate }
+  price: { rub: 400, basis: estimate, note: "оценка: 200–600 ₽ за ведро 10–15 л" }
   volumeL: 10
   provides: { sanitationDays: 5 }
-  sources: [{ todo: "памятка: туалет без воды при ЧС" }]
+  sources:
+    - mcf-toilet
+    - { assumption: "ведра с крышкой хватает на несколько дней — около 5" }
   review: draft
 - id: trash-bags
-  name: Мешки для мусора прочные
+  name: Мешки для мусора прочные, 10 шт.
   shop: near
-  price: { rub: 150, basis: estimate }
+  price: { rub: 300, basis: estimate, note: "оценка: 150–450 ₽ за рулон" }
   volumeL: 1
   provides: { sanitationDays: 4 }
-  sources: [{ todo: "памятка: туалет без воды при ЧС" }]
+  sources:
+    - mcf-toilet
+    - { assumption: "рулона мешков хватает семье примерно на 4 дня" }
   review: draft
 - id: sawdust
   name: Древесный наполнитель, 10 кг
   shop: super
-  price: { rub: 400, basis: estimate }
+  price: { rub: 350, basis: estimate, note: "оценка: обычно 300–450 ₽" }
   volumeL: 15
   provides: { sanitationDays: 5 }
-  sources: [{ todo: "памятка: туалет без воды при ЧС (шведская памятка советует опилки)" }]
+  sources:
+    - mcf-toilet
+    - { assumption: "10 кг наполнителя хватает семье примерно на 5 дней" }
   review: draft
 - id: extinguisher
-  name: Огнетушитель
+  name: Огнетушитель порошковый
   shop: hardware
-  price: { rub: 1500, basis: estimate }
+  price: { rub: 900, basis: estimate, note: "оценка: обычно 700–1100 ₽ за порошковый на 2–4 кг" }
   volumeL: 3
-  sources: [{ todo: "памятка МЧС: огнетушитель дома" }]
+  sources: [mchs-pskov-extinguisher, mchs-bashkiria-extinguisher]
   review: draft
 - id: own-phone
   name: Свой телефон, заряженный заранее
   shop: home
-  price: { rub: 0, basis: estimate }
+  price: { rub: 0, basis: estimate, note: "уже есть" }
   volumeL: 0
   provides: { commsDays: 3 }
-  sources: [{ todo: "оценка: сколько дней держит телефон в режиме экономии" }]
+  sources:
+    - mchs-yakutia-outage
+    - { assumption: "заряженный телефон в экономном режиме держится около 3 дней — зависит от модели" }
   review: draft
