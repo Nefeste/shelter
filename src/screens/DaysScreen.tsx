@@ -12,6 +12,7 @@ import { type Game, world } from '../state/game';
 import { Bubble } from '../ui/Bubble';
 import { dayWhen, voice } from '../state/voices';
 import { radioLines } from '../state/radio';
+import { neighbours } from '../state/scene';
 import { TroubleIcon } from '../ui/icons';
 
 const DAY_MS = 3000;
@@ -49,7 +50,7 @@ export function DaysScreen({ game }: { game: Game }) {
   return (
     <View style={styles.screen}>
       <View style={styles.top}>
-        <Scene lit={!today.short.includes('light')} smoke={stove} cold={today.short.includes('cold')} night={night} ice={today.day < ICE_DAYS} />
+        <Scene lit={!today.short.includes('light')} smoke={stove} cold={today.short.includes('cold')} night={night} ice={today.day < ICE_DAYS} windows={neighbours(today.day, world.scenario(game.prep.scenario).eventDays, night)} />
         <Txt title testID="days-day">{T.days.day(today.day)}</Txt>
         <Txt>{[T.days.outdoor(today.outdoorC), T.days.indoor(today.indoorC)].join(' · ')}</Txt>
         <View style={styles.bars}>

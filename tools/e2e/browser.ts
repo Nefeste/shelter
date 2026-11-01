@@ -61,6 +61,11 @@ async function run(p: Page, plan: string[][][], label: string) {
     await tap(p, day < 2 ? 'next-day' : 'storm');
   }
   await snap(p, `${label}-days`);
+  if (label === 'good') {
+    // первый вечер: соседи без света, семья ложится спать
+    await p.waitForTimeout(2000);
+    await snap(p, 'good-night');
+  }
   // районное радио — только с приёмником
   const radio = await p.getByTestId('radio-day-0').count();
   if (label === 'good' && !radio) throw new Error('хороший план с приёмником: радио молчит');
