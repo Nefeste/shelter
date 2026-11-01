@@ -5,8 +5,8 @@ trouble:
 solutions:
   - id: fire-holders
     tier: cheap
-    name: Подставки и присмотр
-    text: Свечи — только в устойчивых подсвечниках, подальше от штор и постели, не оставлять без присмотра.
+    name: Подсвечники и присмотр
+    text: Свечи — в устойчивых подсвечниках, подальше от штор и постели, не оставлять одни.
     goods: []
     workMin: 15
     guards: [{ risk: fire, stopsPct: 60 }]
@@ -16,7 +16,7 @@ solutions:
   - id: fire-extinguisher
     tier: mid
     name: Огнетушитель
-    text: Порошковый огнетушитель на видном месте, вдали от печи и от детей.
+    text: Порошковый огнетушитель на видном месте.
     goods: [{ good: extinguisher, qty: 1 }]
     workMin: 15
     guards: [{ risk: fire, stopsPct: 80 }]
@@ -25,8 +25,8 @@ solutions:
     review: draft
   - id: fire-both
     tier: right
-    name: Подставки, присмотр и огнетушитель
-    text: Свечи в подсвечниках под присмотром и огнетушитель рядом.
+    name: Подсвечники и огнетушитель
+    text: Свечи в подсвечниках под присмотром, огнетушитель рядом.
     goods: [{ good: extinguisher, qty: 1 }]
     workMin: 30
     guards: [{ risk: fire, stopsPct: 90 }]
@@ -36,7 +36,7 @@ solutions:
   - id: fire-window
     tier: trap
     name: Свечи на подоконнике
-    text: На подоконнике светлее и не мешают.
+    text: На подоконнике светлее и никому не мешают.
     goods: []
     workMin: 0
     why: У окна сквозняк клонит пламя, а рядом шторы — свечи держат подальше от окон и занавесок.

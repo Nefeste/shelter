@@ -1,4 +1,4 @@
-# Документы «Убежища»
+# Документы «Наготове»
 
 Правила студии — только в уставе `Nefeste/gornitsa`; здесь — то, что своё у этой игры. Как
 пишутся документы и спецификации — устав, [`docs/04-process.md`](https://github.com/Nefeste/gornitsa/blob/main/docs/04-process.md).

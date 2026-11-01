@@ -1,9 +1,9 @@
 {
   "name": "shelter",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "main": "index.ts",
   "private": true,
-  "description": "Убежище — подготовка к чрезвычайным ситуациям",
+  "description": "Наготове — игра о подготовке к чрезвычайным ситуациям и сборах в дорогу",
   "scripts": {
     "start": "bun tools/content/build.ts && expo start",
     "android": "expo run:android",

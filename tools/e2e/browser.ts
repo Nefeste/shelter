@@ -45,7 +45,12 @@ async function run(p: Page, plan: string[][][], label: string) {
   for (let day = 0; day < 3; day++) {
     for (const [t, sid] of plan[day] ?? []) await pick(p, t, sid);
     if (day === 0) {
-      await tap(p, 'trouble-heat');
+      // после выбора откликается семья
+      await p.getByTestId('voice').waitFor();
+      await tap(p, 'trouble-water');
+      // «Что входит»: состав решения — то, что попадёт в «Мой список»
+      await tap(p, 'more-water-canisters');
+      await p.getByTestId('contents-water-canisters').waitFor();
       await snap(p, `${label}-card`);
       await tap(p, 'card-back');
     }
@@ -80,6 +85,12 @@ try {
   await snap(page, 'intro');
   const good = await run(page, GOOD, 'good');
   if (good !== '★★★') throw new Error(`хороший план: ждали ★★★, вышло «${good}»`);
+  // «Мой список»: «Всего», отметка «есть дома» — «Осталось купить»
+  await page.getByTestId('list-total').waitFor();
+  await tap(page, 'have-water-5l');
+  await page.getByTestId('list-left').waitFor();
+  await page.getByTestId('checklist').scrollIntoViewIfNeeded();
+  await snap(page, 'good-list');
   await tap(page, 'again');
   const cheap = await run(page, CHEAP, 'cheap');
   if (cheap !== '☆☆☆') throw new Error(`всё дешёвое: ждали эвакуацию, вышло «${cheap}»`);

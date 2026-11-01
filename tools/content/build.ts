@@ -7,7 +7,7 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import YAML from 'yaml';
-import { type Bundle, type Good, type Scenario, type Shop, type Solution, type Source, TIERS, type Trouble } from '../../src/content/types';
+import { type Bundle, CATEGORIES, type Good, type Scenario, type Shop, type Solution, type Source, TIERS, type Trouble, type Voice } from '../../src/content/types';
 
 const ROOT = join(import.meta.dir, '../..');
 const CONTENT = join(ROOT, 'content');
@@ -26,6 +26,22 @@ export const DOSE = /\d+\s*(мг|мкг|мл|ед\.|таблет|капсул)|�
 export const SCHEDULE = /раз[аы]?\s+в\s+(день|сутки)|утром\s+и\s+вечером|перед\s+едой|после\s+еды/i;
 /** Латиница в тексте для игрока — почти всегда марка. */
 export const LATIN = /[a-z]/i;
+
+/** Поводы реплик в днях — те, что выбирает `dayWhen` в src/state/voices.ts. */
+const DAY = ['cold', 'food', 'water', 'light', 'comms', 'sanitation', 'care', 'injury', 'thaw', 'clog', 'ok', 'last'];
+
+/** Что не так с репликой семьи: человек, повод, число в тексте. */
+export function voiceErrors(v: Voice, scenarios: Scenario[], solutions: Solution[]): string[] {
+  const out: string[] = [];
+  const sc = scenarios.find(x => x.id === v.scenario);
+  if (!sc) out.push(`нет сценария ${v.scenario}`);
+  else if (!sc.family.some(p => p.id === v.who)) out.push(`в семье нет ${v.who}`);
+  const [kind, arg] = v.when.split(':');
+  const ok = (kind === 'intro' && !arg) || (kind === 'choose' && solutions.some(s => s.id === arg)) || (kind === 'day' && DAY.includes(arg)) || (kind === 'result' && (arg === 'home' || arg === 'evac'));
+  if (!ok) out.push(`неизвестный повод «${v.when}»`);
+  if (/\d/.test(v.text)) out.push('в реплике число — числа только в записях с источником');
+  return out;
+}
 
 export interface BuildReport { bundle: Bundle; errors: string[]; todo: string[]; assumptions: string[] }
 
@@ -72,6 +88,7 @@ export function build(): BuildReport {
     text(g.shop === 'pharmacy' ? `${where} meds` : where, g.name);
     review(where, g.review);
     if (!shops.some(s => s.id === g.shop)) errors.push(`${where}: нет магазина ${g.shop}`);
+    if (!CATEGORIES.includes(g.category)) errors.push(`${where}: раздел списка (category) — один из ${CATEGORIES.join(', ')}`);
     if (!Number.isInteger(g.price?.rub) || g.price.rub < 0) errors.push(`${where}: цена — целые рубли`);
     if (g.price?.basis !== 'rosstat' && g.price?.basis !== 'estimate') errors.push(`${where}: price.basis — rosstat или estimate`);
     if (g.price?.rub > 0 && !g.price?.note) errors.push(`${where}: у цены нет пояснения (позиция Росстата или диапазон оценки)`);
@@ -122,7 +139,15 @@ export function build(): BuildReport {
     for (const a of s.after ?? []) if (!troubles.some(x => x.id === a.trouble)) errors.push(`решение ${s.id}: нет беды ${a.trouble}`);
   }
 
-  return { bundle: { shops, goods, troubles, solutions, scenarios }, errors, todo, assumptions };
+  // реплики семьи: живость, а не факт — без чисел, поэтому без источника
+  const voices: Voice[] = read('voices.yaml');
+  for (const v of voices) {
+    const where = `реплика ${v.when} (${v.who})`;
+    text(where, v.text);
+    for (const e of voiceErrors(v, scenarios, solutions)) errors.push(`${where}: ${e}`);
+  }
+
+  return { bundle: { shops, goods, troubles, solutions, scenarios, voices }, errors, todo, assumptions };
 }
 
 if (import.meta.main) {

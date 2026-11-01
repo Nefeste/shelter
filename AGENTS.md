@@ -1,4 +1,4 @@
-This is an Expo/React Native mobile game («Убежище», Shelter) for RuStore: a short-session game
+This is an Expo/React Native mobile game («Наготове», formerly «Убежище»; repository and app id `shelter`) for RuStore: a short-session game
 about preparing for real emergencies. Each level is a chain «беда → решение → новая беда»: the
 player picks one of four solutions with different costs, can upgrade a cheap one later, and then
 lives through 14 days of the emergency, computed day by day. Prioritize mobile-first patterns,
@@ -101,7 +101,9 @@ tag by `android.yml`, with the kit's signing and contents actions).
 - `src/state/game.ts` — the run; `src/screens/` — title, intro, prep, days, result, about;
   `src/ui/` — tokens from the studio brand, kit, drawings in `react-native-svg` (`Scene.tsx` — the
   house of the 14 days and the result, `icons.tsx` — trouble icons, `Snow.tsx`); `src/audio/sound.ts`
-  — expo-audio, sound on/off in settings; `src/i18n/` — all UI text.
+  — expo-audio, sound on/off in settings; `src/i18n/` — all UI text. `src/state/checklist.ts` —
+  «Мой список» by category with prices and totals; `src/state/voices.ts` + `src/ui/Bubble.tsx` — the
+  family's lines from `content/voices.yaml` (flavour, not facts: no numbers, no sources).
 - `assets/audio/` — synthesized sounds, made by `npm run sound` (`tools/sound/gen.ts`, byte-exact
   test); never edit or add recordings by hand.
 - `tools/test/` — engine, content, guardrails, i18n, sound, version; `tools/e2e/browser.ts` — the browser scenario.

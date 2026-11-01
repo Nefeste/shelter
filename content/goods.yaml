@@ -5,6 +5,7 @@
 - id: tap-water
   name: Вода из водопровода в своих ёмкостях
   shop: home
+  category: water
   price: { rub: 0, basis: estimate, note: "набирают дома, пока работает водопровод" }
   volumeL: 0
   provides: { waterDl: 200 }
@@ -13,6 +14,7 @@
 - id: water-5l
   name: Вода питьевая, 5 л
   shop: super
+  category: water
   price: { rub: 225, basis: rosstat, note: "«Вода питьевая, л» — 45,00 ₽ × 5 л; в цене Росстата все фасовки, пятилитровая бутыль в рознице обычно дешевле" }
   volumeL: 5
   provides: { waterDl: 50 }
@@ -21,6 +23,7 @@
 - id: canister-20l
   name: Канистра для воды, 20 л
   shop: hardware
+  category: water
   price: { rub: 700, basis: estimate, note: "оценка: обычно 500–1000 ₽" }
   volumeL: 20
   sources: [ready-list]
@@ -28,6 +31,7 @@
 - id: canned-meat
   name: Тушёнка говяжья, ж/б 325 г
   shop: super
+  category: food
   price: { rub: 239, basis: rosstat, note: "«Консервы мясные, кг» — 735,41 ₽ × 0,325 кг; в позиции Росстата все мясные консервы" }
   volumeL: 1
   provides: { kcal: 715 }
@@ -36,6 +40,7 @@
 - id: buckwheat
   name: Гречка, 1 кг
   shop: super
+  category: food
   needsCooking: true
   price: { rub: 90, basis: rosstat, note: "«Крупа гречневая-ядрица, кг» — 90,08 ₽" }
   volumeL: 1
@@ -45,6 +50,7 @@
 - id: bread
   name: Батон нарезной, 400 г
   shop: near
+  category: food
   price: { rub: 50, basis: rosstat, note: "«Хлеб и булочные изделия из пшеничной муки различных сортов, кг» — 125,86 ₽ × 0,4 кг" }
   volumeL: 1
   provides: { kcal: 1050 }
@@ -53,6 +59,7 @@
 - id: frozen-dumplings
   name: Пельмени замороженные, 1 кг
   shop: super
+  category: food
   price: { rub: 449, basis: rosstat, note: "«Пельмени, манты, равиоли, кг» — 449,26 ₽" }
   volumeL: 1
   provides: { kcal: 2500 }
@@ -62,6 +69,7 @@
 - id: camp-burner
   name: Туристическая газовая горелка
   shop: hardware
+  category: food
   cooks: true
   price: { rub: 1500, basis: estimate, note: "оценка: обычно 600–2500 ₽" }
   volumeL: 3
@@ -70,6 +78,7 @@
 - id: gas-heater
   name: Туристический газовый обогреватель
   shop: hardware
+  category: heat
   price: { rub: 3000, basis: estimate, note: "оценка: обычно 2000–4000 ₽" }
   volumeL: 5
   sources: [mchs-kuzbass-co, cpsc-co]
@@ -77,6 +86,7 @@
 - id: gas-cartridge
   name: Газовый баллон 220 г, всесезонная смесь
   shop: hardware
+  category: heat
   price: { rub: 220, basis: estimate, note: "оценка: обычно 150–300 ₽ за баллон 220 г" }
   # запасные баллоны хранят вне дома (МЧС) — места в кладовой не занимают
   volumeL: 0
@@ -89,6 +99,7 @@
 - id: stove
   name: Печь-буржуйка с дымоходом
   shop: hardware
+  category: heat
   cooks: true
   price: { rub: 9000, basis: estimate, note: "оценка: печь обычно 5000–10 000 ₽, дымоход — отдельно" }
   volumeL: 0
@@ -97,6 +108,7 @@
 - id: firewood
   name: Дрова колотые, мешок около 20 кг
   shop: hardware
+  category: heat
   price: { rub: 250, basis: estimate, note: "оценка: 150–400 ₽ за мешок; у Росстата дрова — кубометрами навалом (3116 ₽ за м³), это другой товар" }
   # дрова лежат во дворе под навесом — места в доме не занимают
   volumeL: 0
@@ -108,6 +120,7 @@
 - id: blanket
   name: Одеяло тёплое
   shop: super
+  category: heat
   price: { rub: 2164, basis: rosstat, note: "«Одеяло стеганое, шт.» — 2163,97 ₽" }
   volumeL: 10
   sources: [mchs-tyva-utilities, rosstat-prices-2026-09]
@@ -115,6 +128,7 @@
 - id: window-film
   name: Плёнка для утепления окон со скотчем
   shop: hardware
+  category: heat
   price: { rub: 400, basis: estimate, note: "оценка: 200–600 ₽ за комплект на окно" }
   volumeL: 1
   sources: [mchs-tyva-utilities]
@@ -122,6 +136,7 @@
 - id: co-detector
   name: Датчик угарного газа на батарейках
   shop: hardware
+  category: safety
   price: { rub: 1800, basis: estimate, note: "оценка: обычно 1200–2500 ₽" }
   volumeL: 0
   sources: [mchs-stavropol-detector, cdc-co]
@@ -129,6 +144,7 @@
 - id: candles
   name: Свечи хозяйственные, упаковка 8 шт.
   shop: near
+  category: light
   price: { rub: 200, basis: estimate, note: "оценка: 100–300 ₽ за упаковку" }
   volumeL: 1
   provides: { lightH: 40 }
@@ -139,6 +155,7 @@
 - id: headlamp
   name: Фонарь налобный
   shop: super
+  category: light
   price: { rub: 800, basis: estimate, note: "оценка: 300–1500 ₽" }
   volumeL: 1
   sources: [mchs-kit, ready-outage]
@@ -146,6 +163,7 @@
 - id: batteries
   name: Батарейки АА, 4 шт.
   shop: super
+  category: light
   price: { rub: 297, basis: rosstat, note: "«Батарейки электрические типа АА, шт.» — 74,23 ₽ × 4" }
   volumeL: 0
   provides: { lightH: 15 }
@@ -156,6 +174,7 @@
 - id: lantern
   name: Фонарь кемпинговый
   shop: hardware
+  category: light
   price: { rub: 1000, basis: estimate, note: "оценка: обычно 500–1500 ₽" }
   volumeL: 2
   provides: { lightH: 30 }
@@ -167,6 +186,7 @@
 - id: powerbank
   name: Внешний аккумулятор для телефона
   shop: market
+  category: comms
   price: { rub: 1700, basis: estimate, note: "оценка: 900–2500 ₽ на 10 000 мА·ч" }
   volumeL: 0
   provides: { commsDays: 4 }
@@ -178,6 +198,7 @@
 - id: crank-radio
   name: Радиоприёмник с динамо
   shop: market
+  category: comms
   price: { rub: 2000, basis: estimate, note: "оценка: обычно 1500–3000 ₽" }
   volumeL: 1
   provides: { commsDays: 14 }
@@ -186,6 +207,7 @@
 - id: home-meds
   name: Лекарства, которые есть дома
   shop: home
+  category: health
   price: { rub: 0, basis: estimate, note: "уже дома" }
   volumeL: 0
   provides: { medsDays: 5 }
@@ -196,6 +218,7 @@
 - id: meds-14
   name: Постоянные лекарства на 14 дней, по рецепту
   shop: pharmacy
+  category: health
   price: { rub: 1500, basis: estimate, note: "оценка: 300–2000 ₽ — зависит от назначения" }
   volumeL: 0
   provides: { medsDays: 14 }
@@ -204,6 +227,7 @@
 - id: random-pills
   name: Таблетки «от давления» без рецепта
   shop: pharmacy
+  category: health
   price: { rub: 250, basis: estimate, note: "оценка: 100–400 ₽" }
   volumeL: 0
   sources: [minzdrav-2023-01-20]
@@ -211,6 +235,7 @@
 - id: first-aid
   name: Аптечка
   shop: pharmacy
+  category: health
   firstAid: true
   price: { rub: 1200, basis: estimate, note: "оценка: 500–2200 ₽ за готовую домашнюю аптечку" }
   volumeL: 1
@@ -219,6 +244,7 @@
 - id: bucket
   name: Ведро с крышкой
   shop: near
+  category: hygiene
   price: { rub: 400, basis: estimate, note: "оценка: 200–600 ₽ за ведро 10–15 л" }
   volumeL: 10
   provides: { sanitationDays: 5 }
@@ -229,6 +255,7 @@
 - id: trash-bags
   name: Мешки для мусора прочные, 10 шт.
   shop: near
+  category: hygiene
   price: { rub: 300, basis: estimate, note: "оценка: 150–450 ₽ за рулон" }
   volumeL: 1
   provides: { sanitationDays: 4 }
@@ -239,6 +266,7 @@
 - id: sawdust
   name: Древесный наполнитель, 10 кг
   shop: super
+  category: hygiene
   price: { rub: 350, basis: estimate, note: "оценка: обычно 300–450 ₽" }
   volumeL: 15
   provides: { sanitationDays: 5 }
@@ -249,6 +277,7 @@
 - id: extinguisher
   name: Огнетушитель порошковый
   shop: hardware
+  category: safety
   price: { rub: 900, basis: estimate, note: "оценка: обычно 700–1100 ₽ за порошковый на 2–4 кг" }
   volumeL: 3
   sources: [mchs-pskov-extinguisher, mchs-bashkiria-extinguisher]
@@ -256,6 +285,7 @@
 - id: own-phone
   name: Свой телефон, заряженный заранее
   shop: home
+  category: comms
   price: { rub: 0, basis: estimate, note: "уже есть" }
   volumeL: 0
   provides: { commsDays: 3 }

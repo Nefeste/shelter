@@ -1,21 +1,26 @@
 // Подготовка: беды списком, по касанию — карточка с четырьмя решениями (спецификация, раздел 3).
 // Решения на карточке — в постоянном перемешанном порядке, без подписи «правильное»: какое из них
 // ловушка, игрок узнаёт сам (по цене сортировать нельзя — ловушка почти всегда дешевле всех).
+// Названия решений не подсказывают, хватит ли их: «Что входит» показывает состав — то, что попадёт
+// в «Мой список», — а считать игрок может сам. После выбора кто-то из семьи откликается.
 import React, { useEffect, useMemo, useState } from 'react';
-import { BackHandler, ScrollView, StyleSheet, View } from 'react-native';
+import { BackHandler, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { T } from '../i18n';
 import { Button, Card, Txt } from '../ui/kit';
-import { C } from '../ui/theme';
+import { C, S } from '../ui/theme';
 import { canChoose, costOf, minutesLeft, minutesToday, openTroubles, placeTotal, usedPlace } from '../engine';
 import { fnv1a } from '../engine/core/hash';
 import { TroubleIcon } from '../ui/icons';
 import { play } from '../audio/sound';
+import { Bubble } from '../ui/Bubble';
+import { type Said, voice } from '../state/voices';
 import { type Game, world } from '../state/game';
 
 export function PrepScreen({ game }: { game: Game }) {
   const s = game.prep;
   const sc = world.scenario(s.scenario);
   const [open, setOpen] = useState<string | null>(null);
+  const [said, setSaid] = useState<Said | null>(null);
   // «Назад» на телефоне сначала закрывает карточку беды, а не уводит с подготовки
   useEffect(() => {
     if (!open) return;
@@ -33,9 +38,10 @@ export function PrepScreen({ game }: { game: Game }) {
         <Txt dim testID="prep-money">{[T.prep.money(s.money), T.prep.today(minutesToday(world, s)), T.prep.total(minutesLeft(world, s)), T.prep.place(usedPlace(world, s), placeTotal(world, s))].join(' · ')}</Txt>
       </View>
       {open ? (
-        <TroubleCard game={game} trouble={open} onClose={() => setOpen(null)} />
+        <TroubleCard game={game} trouble={open} onClose={() => setOpen(null)} onChosen={id => setSaid(voice(world, s.scenario, `choose:${id}`))} />
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
+          {said ? <Bubble said={said} testID="voice" /> : null}
           {troubles.map(t => {
             const chosen = s.chosen[t];
             return (
@@ -56,9 +62,10 @@ export function PrepScreen({ game }: { game: Game }) {
   );
 }
 
-function TroubleCard({ game, trouble, onClose }: { game: Game; trouble: string; onClose: () => void }) {
+function TroubleCard({ game, trouble, onClose, onChosen }: { game: Game; trouble: string; onClose: () => void; onChosen: (id: string) => void }) {
   const s = game.prep;
   const t = world.trouble(trouble);
+  const [more, setMore] = useState<string | null>(null);
   const options = useMemo(() => [...t.solutions].sort((a, b) => fnv1a(a) - fnv1a(b)), [t]);
   const current = s.chosen[trouble];
   return (
@@ -78,13 +85,19 @@ function TroubleCard({ game, trouble, onClose }: { game: Game; trouble: string; 
             <Txt style={styles.troubleName}>{sol.name}</Txt>
             <Txt>{sol.text}</Txt>
             {isCurrent ? null : <Txt dim>{c.rub || c.minutes || c.volumeL ? T.prep.cost(c.rub, c.minutes, c.volumeL) : T.prep.free}</Txt>}
+            {sol.goods.length || sol.workMin ? (
+              <Pressable testID={`more-${id}`} accessibilityRole="button" onPress={() => setMore(more === id ? null : id)}>
+                <Txt style={styles.link}>{more === id ? T.prep.less : T.prep.more}</Txt>
+              </Pressable>
+            ) : null}
+            {more === id ? <Contents id={id} /> : null}
             {!isCurrent && c.late.length ? <Txt dim style={styles.warn}>{T.prep.late}</Txt> : null}
             {isCurrent ? (
               <Txt dim>{T.prep.chosen}</Txt>
             ) : why ? (
               <Txt dim style={styles.warn}>{T.prep.refusal[why]}</Txt>
             ) : (
-              <Button testID={`choose-${id}`} label={current ? T.prep.replace : T.prep.choose} onPress={() => { play('choose'); game.choose(id); onClose(); }} />
+              <Button testID={`choose-${id}`} label={current ? T.prep.replace : T.prep.choose} onPress={() => { play('choose'); game.choose(id); onChosen(id); onClose(); }} />
             )}
           </Card>
         );
@@ -94,7 +107,32 @@ function TroubleCard({ game, trouble, onClose }: { game: Game; trouble: string; 
   );
 }
 
+/** Состав решения: товары с ценой и магазином, что уже куплено или есть дома, работа по дому. */
+function Contents({ id }: { id: string }) {
+  const sol = world.solution(id);
+  return (
+    <View style={styles.contents} testID={`contents-${id}`}>
+      {sol.goods.map(({ good, qty }) => {
+        const g = world.good(good);
+        const home = g.shop === 'home';
+        const gives = g.provides ? T.prep.gives(g.provides, qty) : '';
+        return (
+          <View key={good}>
+            <Txt>{home ? g.name : T.prep.item(g.name, qty, g.price.rub)}</Txt>
+            <Txt dim style={styles.small}>{home ? T.prep.itemHome : T.prep.itemShop(world.shop(g.shop).name, g.price.rub * qty)}</Txt>
+            {gives ? <Txt dim style={styles.small}>{gives}</Txt> : null}
+          </View>
+        );
+      })}
+      {sol.workMin ? <Txt dim style={styles.small}>{T.prep.work(sol.workMin)}</Txt> : null}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  link: { color: C.spruce, fontWeight: '700', textDecorationLine: 'underline' },
+  contents: { gap: 6, paddingLeft: 10, borderLeftWidth: 2, borderColor: C.line },
+  small: { fontSize: S.small },
   screen: { flex: 1, maxWidth: 560, width: '100%', alignSelf: 'center' },
   bar: { padding: 14, borderBottomWidth: 1, borderColor: C.line, backgroundColor: C.paper, gap: 2 },
   barMain: { fontWeight: '700' },

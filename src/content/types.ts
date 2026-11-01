@@ -45,11 +45,16 @@ export interface Provides {
   sanitationDays?: number;
 }
 
+/** Раздел «Моего списка»: так покупки группируются дома. */
+export type Category = 'water' | 'food' | 'heat' | 'light' | 'comms' | 'health' | 'hygiene' | 'safety';
+export const CATEGORIES: readonly Category[] = ['water', 'food', 'heat', 'light', 'comms', 'health', 'hygiene', 'safety'];
+
 export interface Good {
   id: string;
   /** обычное название, без марки: «вода питьевая, 5 л» */
   name: string;
   shop: string;
+  category: Category;
   price: Price;
   /** сколько места занимает на полке; установленное (печь) — 0 */
   volumeL: number;
@@ -156,10 +161,25 @@ export interface Scenario {
   review: Review;
 }
 
+/**
+ * Реплика семьи — живость, а не факт: без чисел и советов (это проверяет сборка), поэтому без
+ * источника. `when`: `intro`; `choose:<решение>` — после выбора; `day:<что случилось>` — в расчёте
+ * дней (`cold`, `food`, `water`, `light`, `comms`, `sanitation`, `care`, `injury`, `thaw`, `clog`,
+ * `ok`, `last`); `result:home` или `result:evac`.
+ */
+export interface Voice {
+  scenario: string;
+  /** id человека из семьи сценария */
+  who: string;
+  when: string;
+  text: string;
+}
+
 export interface Bundle {
   shops: Shop[];
   goods: Good[];
   troubles: Trouble[];
   solutions: Solution[];
   scenarios: Scenario[];
+  voices: Voice[];
 }

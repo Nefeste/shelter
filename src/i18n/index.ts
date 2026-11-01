@@ -1,6 +1,8 @@
 // Все тексты интерфейса (AGENTS.md): экраны читают `T.раздел.ключ` в момент отрисовки.
 // Тексты бед, решений и товаров — в content/. В прототипе — только русский; английский — к срезу.
+import type { Category, Provides } from '../content/types';
 import type { EvacReason, Refusal, ReviewLine, Shortage } from '../engine';
+import type { ListGroup } from '../state/checklist';
 
 const nb = ' ';
 /** «12 500 ₽» — разряды и знак через неразрывный пробел (голос студии). */
@@ -24,6 +26,30 @@ const dayN = (d: number) => `${d + 1}-й день`;
 /** «−12 °C», «+3 °C», «0 °C» — минус, а не дефис. */
 const deg = (c: number) => `${c > 0 ? '+' : c < 0 ? '−' : ''}${Math.abs(c)}${nb}°C`;
 
+const CATEGORY: Record<Category, string> = {
+  water: 'Вода',
+  food: 'Еда',
+  heat: 'Тепло',
+  light: 'Свет',
+  comms: 'Связь',
+  health: 'Аптечка и лекарства',
+  hygiene: 'Туалет и мусор',
+  safety: 'Безопасность',
+};
+
+/** «Мой список» текстом — для копирования: разделы, строки с ценой, итог. */
+const listText = (groups: ListGroup[], have: ReadonlySet<string>, total: number, left: number) => {
+  const out: string[] = ['Мой список на случай отключения света и тепла'];
+  for (const g of groups) {
+    out.push('', `${CATEGORY[g.category]} — ${rub(g.sum)}`);
+    for (const r of g.rows) out.push(`${have.has(r.good) ? '☑' : '☐'} ${r.name} — ${r.qty} × ${rub(r.price)} = ${rub(r.sum)} (${r.shop.toLowerCase()})`);
+  }
+  out.push('', `Всего: ${rub(total)}`);
+  if (left !== total) out.push(`Осталось купить: ${rub(left)}`);
+  out.push('Цены — средние по Росстату или оценка.');
+  return out.join('\n');
+};
+
 const EVAC: Record<EvacReason, string> = {
   cold: 'в доме стало слишком холодно два дня подряд',
   thirst: 'кончилась вода на питьё',
@@ -46,7 +72,7 @@ const SHORT: Record<Shortage, string> = {
 
 export const T = {
   app: {
-    title: 'Убежище',
+    title: 'Наготове',
     studio: 'Игра студии «Горница»',
   },
   title: {
@@ -79,6 +105,24 @@ export const T = {
     choose: 'Выбрать',
     replace: 'Заменить',
     chosen: 'Выбрано',
+    more: 'Что входит',
+    less: 'Свернуть',
+    item: (name: string, qty: number, price: number) => `${name} — ${qty} × ${rub(price)}`,
+    itemShop: (shop: string, sum: number) => `${shop.toLowerCase()} · ${rub(sum)}`,
+    itemHome: 'уже дома',
+    /** что даёт товар в этом количестве: «воды 180 л · 25 тыс. ккал» */
+    gives: (p: Provides, qty: number) => {
+      const out: string[] = [];
+      if (p.waterDl) out.push(`воды ${water(p.waterDl * qty)}`);
+      if (p.kcal) out.push(`${String(Math.round((p.kcal * qty) / 100) / 10).replace('.', ',')} тыс.${nb}ккал`);
+      if (p.lightH) out.push(`света ${p.lightH * qty}${nb}ч`);
+      if (p.fuelH) out.push(`топлива на ${p.fuelH * qty}${nb}ч`);
+      if (p.commsDays) out.push(`связи на ${p.commsDays * qty}${nb}${plural(p.commsDays * qty, 'день', 'дня', 'дней')}`);
+      if (p.medsDays) out.push(`лекарств на ${p.medsDays * qty}${nb}${plural(p.medsDays * qty, 'день', 'дня', 'дней')}`);
+      if (p.sanitationDays) out.push(`туалета на ${p.sanitationDays * qty}${nb}${plural(p.sanitationDays * qty, 'день', 'дня', 'дней')}`);
+      return out.length ? `даёт: ${out.join(' · ')}` : '';
+    },
+    work: (m: number) => `работа по дому: ${minutes(m)}`,
     close: 'Назад',
     refusal: {
       money: 'не хватает денег',
@@ -130,6 +174,14 @@ export const T = {
     },
     source: (title: string) => `Источник: ${title}`,
     checklist: 'Мой список',
+    listNote: 'Отметьте, что уже есть дома, — останется то, что купить.',
+    category: CATEGORY,
+    row: (qty: number, price: number, sum: number, estimate: boolean) => `${qty} × ${rub(price)} = ${rub(sum)}${estimate ? ' · оценка' : ''}`,
+    groupSum: (n: number) => rub(n),
+    total: (n: number) => `Всего: ${rub(n)}`,
+    left: (n: number) => `Осталось купить: ${rub(n)}`,
+    have: 'есть дома',
+    listText,
     copy: 'Скопировать список',
     copied: 'Список скопирован',
     again: 'Переиграть',

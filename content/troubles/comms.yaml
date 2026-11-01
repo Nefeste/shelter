@@ -5,7 +5,7 @@ trouble:
 solutions:
   - id: comms-saving
     tier: cheap
-    name: Телефон в экономии
+    name: Беречь заряд телефона
     text: Включать телефон пару раз в день.
     goods: [{ good: own-phone, qty: 1 }]
     workMin: 0
@@ -15,7 +15,7 @@ solutions:
   - id: comms-powerbanks
     tier: mid
     name: Внешние аккумуляторы
-    text: Два внешних аккумулятора. Заказать заранее — доставка 1–2 дня.
+    text: Заряжать телефон от аккумуляторов. Доставка — 1–2 дня.
     goods: [{ good: own-phone, qty: 1 }, { good: powerbank, qty: 2 }]
     workMin: 0
     why: Запасной аккумулятор для телефона — в списке того, что держат на случай отключения света.
@@ -23,8 +23,8 @@ solutions:
     review: draft
   - id: comms-radio
     tier: right
-    name: Радиоприёмник с динамо и аккумуляторы
-    text: Радио узнает новости без связи и света, аккумуляторы — для звонков.
+    name: Радио с динамо и аккумуляторы
+    text: Приёмник с ручной зарядкой — для новостей, аккумуляторы — для звонков.
     goods: [{ good: own-phone, qty: 1 }, { good: crank-radio, qty: 1 }, { good: powerbank, qty: 2 }]
     workMin: 0
     why: Переносной приёмник с ручной зарядкой работает все две недели — по радио передают, когда и где помощь.
@@ -32,8 +32,8 @@ solutions:
     review: draft
   - id: comms-trust
     tier: trap
-    name: Связь и так будет
-    text: Сотовая связь работает всегда — ничего не нужно.
+    name: Обойтись телефоном
+    text: Связь есть всегда — дозвонимся, если что.
     goods: [{ good: own-phone, qty: 1 }]
     keepsPct: 34
     workMin: 0

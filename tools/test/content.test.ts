@@ -1,7 +1,8 @@
 // Содержание (критерий 3): у каждой беды четыре решения, у каждой записи — источник и review,
 // проверка не пропускает марку, название магазина, дозу и латиницу.
 import { describe, expect, test } from 'bun:test';
-import { BRANDS, DOSE, LATIN, SCHEDULE, build } from '../content/build';
+import { BRANDS, DOSE, LATIN, SCHEDULE, build, voiceErrors } from '../content/build';
+import { CATEGORIES } from '../../src/content/types';
 
 describe('содержание', () => {
   const { bundle, errors } = build();
@@ -12,6 +13,18 @@ describe('содержание', () => {
 
   test('ни одного факта без источника: числа без источника — только «допущения игры»', () => {
     expect(build().todo).toEqual([]);
+  });
+
+  test('у каждого товара — раздел «Моего списка»', () => {
+    for (const g of bundle.goods) expect({ id: g.id, ok: CATEGORIES.includes(g.category) }).toEqual({ id: g.id, ok: true });
+  });
+
+  test('реплика семьи: с числом, чужим человеком или неизвестным поводом не собирается', () => {
+    const ok = { scenario: 'ice-rain', who: 'son', when: 'day:ok', text: 'Играем!' };
+    expect(voiceErrors(ok, bundle.scenarios, bundle.solutions)).toEqual([]);
+    expect(voiceErrors({ ...ok, text: 'Купим 5 бутылок' }, bundle.scenarios, bundle.solutions).length).toBe(1);
+    expect(voiceErrors({ ...ok, who: 'cat' }, bundle.scenarios, bundle.solutions).length).toBe(1);
+    expect(voiceErrors({ ...ok, when: 'choose:nothing' }, bundle.scenarios, bundle.solutions).length).toBe(1);
   });
 
   test('у каждой цены — пояснение: позиция Росстата или диапазон оценки', () => {

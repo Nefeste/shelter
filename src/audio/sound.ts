@@ -1,4 +1,4 @@
-// из skazy: src/audio/sound.ts @ 2789f72 — без музыки и вибрации; звуки «Убежища» (tools/sound/gen.ts),
+// из skazy: src/audio/sound.ts @ 2789f72 — без музыки и вибрации; звуки «Наготове» (tools/sound/gen.ts),
 // один выключатель звука. В движке звуков нет: их зовёт интерфейс по событиям.
 import { type AudioPlayer, createAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import { Platform } from 'react-native';
