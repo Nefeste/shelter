@@ -138,6 +138,7 @@ export const T = {
     draft: 'Прототип: записи — черновики, человек их ещё не проверил.',
     site: 'gornitsa.games',
     mail: 'support@gornitsa.games',
+    version: (v: string) => `Версия ${v}`,
     sources: 'Источники',
     assumptions: 'Допущения игры',
     back: 'Назад',

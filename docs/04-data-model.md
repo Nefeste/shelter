@@ -1,0 +1,72 @@
+# Данные «Убежища»
+
+Три вида данных: **записи содержания** (`content/`, в сборке игры), **состояние движка** (живёт,
+пока идёт партия) и **сохранение на телефоне**. Типы — `src/content/types.ts`,
+`src/engine/prep.ts`, `src/engine/days.ts`, `src/engine/review.ts`, `src/state/run.ts`.
+
+## 1. Записи содержания
+
+Единицы — целые числа: рубли, минуты, литры места, децилитры воды, килокалории, °C.
+**Идентификаторы вечные** (устав, `05-rules.md`): выпущенный id не переименовывается и не
+переиспользуется — по нему читается сохранение.
+
+| Запись | Файл | Поля |
+|---|---|---|
+| Источник | `content/sources.yaml` | ключ → `title`, `url`. В записи источник — ключ, `{ assumption: "…" }` (допущение игры, видно в «Об игре») или `{ todo: "…" }` (не сверен, в выпуск не идёт) |
+| Магазин | `content/shops.yaml` | `id`, `name` (обычное место, без сети), `travelMin` (туда и обратно), `deliveryDays` (только маркетплейс) |
+| Товар | `content/goods.yaml` | `id`, `name` (без марки), `shop`, `price {rub, basis: rosstat\|estimate, note}`, `volumeL`, `provides {waterDl, kcal, lightH, commsDays, medsDays, fuelH, sanitationDays}`, `spoilsInThaw`, `sources`, `review` |
+| Беда | `content/troubles/<id>.yaml`, блок `trouble` | `id` (= имя файла), `name`, `text` |
+| Решение | там же, `solutions` — ровно четыре | `id`, `tier` (`cheap`, `mid`, `right`, `trap`), `name`, `text`, `goods [{good, qty}]`, `workMin`, `beforeEvent`, `heatC`, `fuelHPerDay`, `heatLossC`, `keepsPct`, `risks`, `guards [{risk, stopsPct}]`, `creates`, `after [{trouble, extraMin}]`, `why`, `sources`, `review` |
+| Сценарий | `content/scenarios/<id>.yaml` | `id`, `name`, `text`, `family [{id, name, kind: adult\|child\|elder}]`, `prepDays`, `minutesPerDay`, `money [по дням]`, `pantryL`, `porchL`, `eventDays`, `outdoorC [по дням]`, `houseC`, `troubles` (начальные), `norms {waterDl, drinkDl по виду человека; kcal; lightH; coldC; coldEvacC; maxC}`, `needsMeds`, `sources`, `review` |
+
+Риски (`Risk`) — `co` (угарный газ), `fire` (пожар), `clog` (забитая канализация).
+
+**Проверка `review`.** Каждая запись с фактами — `review: draft`; `checked` ставит только
+человек (устав). Сборка не пускает другие значения.
+
+## 2. Состояние движка
+
+**Подготовка — `PrepState`:**
+
+| Поле | Что |
+|---|---|
+| `scenario` | id сценария |
+| `day` | день подготовки с нуля |
+| `money` | рубли сейчас |
+| `usedMin` | минуты работы, потраченные за всю подготовку |
+| `chosen` | беда → выбранное решение |
+| `history` | порядок выборов (по нему открываются созданные беды) |
+| `bought` | покупки `{good, qty, day, arrivesDay}` — купленное не исчезает при замене решения |
+| `visited` | магазины, где уже были сегодня (второй раз — без дороги) |
+| `done` | решения, законченные до события |
+
+Отказ команды — `Refusal`: `money`, `time`, `place`, `closed` (беды нет в списке), `same`
+(уже выбрано), `unknown`.
+
+**Исход 14 дней — `Outcome`:** `days` (по дню: улица, дом, остаток воды, калорий, света, чего не
+хватило, событие «оттепель» или «засор»), `stayed`, `evacuated {day, reason}` (`cold`, `thirst`,
+`hunger`, `meds`, `co`, `fire`), `traps`, `late` (не пришло до события), `unfinished` (не успели),
+`start` и `need` (было и нужно: вода, калории, свет, связь, туалет), `moneyLeft`, `hardDays`.
+
+**Разбор — `ReviewLine`:** `evacuated`, `trap`, `unfinished`, `late`, `ranOut {what, day, had,
+need}` (вода, еда, свет, связь, туалет), `allGood`. Слова — в `src/i18n`, источник —
+`sourceOf(world, prep, line)`.
+
+## 3. Сохранение
+
+На телефоне, AsyncStorage (`src/state/storage.ts`). Не прочиталось — игра идёт без него.
+
+| Ключ | Что | Формат |
+|---|---|---|
+| `shelter.run.v1` | начатая партия | `SavedRun`: `{v: 1, phase: intro\|prep\|days\|result, attempt, prep: PrepState}` строкой JSON |
+| `shelter.best.v1` | лучший результат | сценарий → звёзды |
+| `shelter.settings.v1` | настройки | `{sound}` |
+
+**Сохранение — это выборы, а не результат.** 14 дней пересчитываются из `prep` и `attempt` тем же
+движком (ADR студии 0004). При разборе (`unpackRun`) проверяется, что сценарий, решения и товары
+ещё есть в содержании; нет — партия начинается заново, без ошибки.
+
+**Изменился формат** — поле переименовано, удалено или поменяло смысл — новый `v` и шаг
+перевода старого сохранения, тест на образец старого. Новое необязательное поле `v` не меняет.
+До выпуска 1.0.0 сохранение старой версии можно не переводить, а начинать заново — так и
+записать в разделе версии в `README.md`.

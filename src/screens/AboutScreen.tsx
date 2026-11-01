@@ -5,6 +5,7 @@ import { T } from '../i18n';
 import { Button, Card, Txt } from '../ui/kit';
 import { bundle } from '../content';
 import type { Game } from '../state/game';
+import { APP_VERSION } from '../version';
 
 export function AboutScreen({ game }: { game: Game }) {
   const titles = new Set<string>();
@@ -24,6 +25,7 @@ export function AboutScreen({ game }: { game: Game }) {
         <Txt>{T.app.studio}</Txt>
         <Txt dim>{T.about.site}</Txt>
         <Txt dim>{T.about.mail}</Txt>
+        <Txt dim testID="version">{T.about.version(APP_VERSION)}</Txt>
       </Card>
       <Card>
         <Txt style={styles.head}>{T.about.sources}</Txt>
