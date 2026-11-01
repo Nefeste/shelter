@@ -1,0 +1,51 @@
+trouble:
+  id: heat
+  name: Тепло
+  text: Без света встанет и отопление. Дом остывает за сутки-двое.
+solutions:
+  - id: heat-one-room
+    tier: cheap
+    name: Одна комната и одеяла
+    text: Собраться всем в одной комнате, тепло одеться, закрыть двери.
+    goods: [{ good: blanket, qty: 2 }]
+    workMin: 30
+    heatC: 8
+    why: Одна закрытая комната остывает медленнее всего дома, но в сильный мороз этого мало.
+    sources: [ready-list]
+    review: draft
+  - id: heat-gas-heater
+    tier: mid
+    name: Туристический газовый обогреватель
+    text: Греет быстро, но сжигает воздух в комнате. Нужны баллоны на каждый день.
+    goods: [{ good: gas-heater, qty: 1 }, { good: gas-cartridge, qty: 14 }, { good: window-film, qty: 1 }]
+    workMin: 60
+    heatC: 22
+    risks: [co]
+    creates: [co]
+    why: Обогреватель держит тепло, пока есть газ, но в закрытой комнате копится угарный газ.
+    sources: [{ todo: "памятка о газовых обогревателях в помещении" }]
+    review: draft
+  - id: heat-stove
+    tier: right
+    name: Печь с дымоходом и дрова
+    text: Поставить печь с выводом трубы наружу и запасти дров на две недели. Ставить долго — надо успеть до дождя.
+    goods: [{ good: stove, qty: 1 }, { good: firewood, qty: 14 }, { good: window-film, qty: 1 }]
+    workMin: 480
+    beforeEvent: true
+    heatC: 34
+    risks: [co]
+    creates: [co]
+    why: Печь с дымоходом греет весь дом и не зависит от света, но и у печи бывает угарный газ — если рано закрыть заслонку.
+    sources: [{ todo: "правила печного отопления МЧС" }]
+    review: draft
+  - id: heat-gas-stove
+    tier: trap
+    name: Греться газовой плитой
+    text: Плита на кухне есть — включить конфорки и духовку на ночь.
+    goods: []
+    workMin: 0
+    heatC: 18
+    risks: [co]
+    why: Газовая плита не предназначена для обогрева — в закрытой кухне копится угарный газ, а пламя может погаснуть.
+    sources: [mchs-gas]
+    review: draft

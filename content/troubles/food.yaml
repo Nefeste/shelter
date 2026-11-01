@@ -1,0 +1,41 @@
+trouble:
+  id: food
+  name: Еда и готовка
+  text: Плита и холодильник без света не работают. Нужно 2300 ккал на человека в сутки.
+solutions:
+  - id: food-cold
+    tier: cheap
+    name: Хлеб и консервы
+    text: То, что можно есть холодным.
+    goods: [{ good: bread, qty: 10 }, { good: canned-meat, qty: 30 }]
+    workMin: 0
+    why: Холодная еда не требует плиты, но на две недели её нужно много, а хлеб быстро черствеет.
+    sources: [mchs-norms]
+    review: draft
+  - id: food-burner
+    tier: mid
+    name: Консервы, крупы и горелка
+    text: Крупы и консервы, туристическая горелка — готовить на улице или под навесом.
+    goods: [{ good: canned-meat, qty: 20 }, { good: buckwheat, qty: 25 }, { good: camp-burner, qty: 1 }]
+    workMin: 30
+    why: Крупы дают много калорий на рубль, горелка позволяет готовить без света.
+    sources: [mchs-norms]
+    review: draft
+  - id: food-full
+    tier: right
+    name: Запас по калориям на 14 дней
+    text: Консервы и крупы ровно по норме на всех, готовить на печи или горелке.
+    goods: [{ good: canned-meat, qty: 25 }, { good: buckwheat, qty: 35 }, { good: camp-burner, qty: 1 }]
+    workMin: 30
+    why: "Норма — 2300 ккал на человека в сутки: на четверых за две недели это почти 130 тысяч ккал."
+    sources: [mchs-norms]
+    review: draft
+  - id: food-frozen
+    tier: trap
+    name: Замороженное впрок
+    text: Пельмени дешевле — набить морозилку, а потом вынести на веранду.
+    goods: [{ good: frozen-dumplings, qty: 40 }]
+    workMin: 0
+    why: Без холодильника замороженное держится только в мороз — в оттепель всё пропадёт.
+    sources: [{ todo: "памятка: хранение продуктов при отключении электроэнергии" }]
+    review: draft

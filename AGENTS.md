@@ -66,5 +66,28 @@ follow «Expo has changed» in the charter's `AGENTS.md`.
 
 ## Commands
 
-There is no code yet: the prototype specification comes first (charter `docs/04-process.md`).
-The commands appear here with the first code PR.
+```bash
+npm ci                              # dependencies (Bun runs tests and tools)
+npx expo install <package>          # ALWAYS instead of npm/yarn/bun add for Expo/RN packages
+npm run content                     # build and validate content/ → src/content/generated (not in git)
+npx expo start                      # dev server
+npm run typecheck                   # content + tsc (app) + tsc -p tools
+npm run lint                        # zero warnings
+npm test                            # content + bun test tools/test
+EXPO_OFFLINE=1 npm run export:web && npm run e2e   # web build + Playwright scenario, screenshots in tools/e2e/out
+```
+
+Run content, typecheck, lint and tests before every push; for UI changes also the browser scenario
+(`.github/workflows/pr.yml` runs the first four on every PR; the APK is built only on a `vX.Y.Z`
+tag by `android.yml`, with the kit's signing and contents actions).
+
+## Project map
+
+- `content/` — scenario, troubles with their four solutions, goods, shops, sources (YAML; player
+  texts live here and in `src/i18n`). `tools/content/build.ts` validates: four tiers per trouble,
+  a source or a `todo` on every record, no brands, shop names, doses or Latin in player text.
+- `src/engine/` — `prep.ts` (choose, replace/upgrade, money, hours, place, shop trips, delivery),
+  `days.ts` (14 days, integers, seeded risks and thaw, evacuation instead of death), `review.ts`.
+- `src/state/game.ts` — the run; `src/screens/` — title, intro, prep, days, result, about;
+  `src/ui/` — tokens from the studio brand, kit, the house drawn by code; `src/i18n/` — all UI text.
+- `tools/test/` — engine, content, guardrails, i18n; `tools/e2e/browser.ts` — the browser scenario.

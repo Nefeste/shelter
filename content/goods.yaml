@@ -1,0 +1,232 @@
+# Товары — обычные названия, без марок (AGENTS.md). Цены — оценка, пока не сверены со средними
+# потребительскими ценами Росстата; что даёт единица (литры, калории, часы) — тоже оценка до сверки.
+- id: tap-water
+  name: Вода из водопровода в своих ёмкостях
+  shop: home
+  price: { rub: 0, basis: estimate }
+  volumeL: 0
+  provides: { waterDl: 200 }
+  sources: [{ todo: "нужна памятка: запас воды заранее, пока работает насос и водопровод" }]
+  review: draft
+- id: water-5l
+  name: Вода питьевая, 5 л
+  shop: super
+  price: { rub: 120, basis: estimate }
+  volumeL: 5
+  provides: { waterDl: 50 }
+  sources: [mchs-norms]
+  review: draft
+- id: canister-20l
+  name: Канистра для воды, 20 л
+  shop: hardware
+  price: { rub: 500, basis: estimate }
+  volumeL: 20
+  sources: [ready-list]
+  review: draft
+- id: canned-meat
+  name: Тушёнка говяжья, ж/б 325 г
+  shop: super
+  price: { rub: 250, basis: estimate }
+  volumeL: 1
+  provides: { kcal: 700 }
+  sources: [{ todo: "калорийность — по справочнику химического состава продуктов" }]
+  review: draft
+- id: buckwheat
+  name: Гречка, 1 кг
+  shop: super
+  price: { rub: 120, basis: estimate }
+  volumeL: 1
+  provides: { kcal: 3300 }
+  sources: [{ todo: "калорийность — по справочнику химического состава продуктов" }]
+  review: draft
+- id: bread
+  name: Хлеб, батон
+  shop: near
+  price: { rub: 60, basis: estimate }
+  volumeL: 1
+  provides: { kcal: 1000 }
+  sources: [{ todo: "калорийность — по справочнику химического состава продуктов" }]
+  review: draft
+- id: frozen-dumplings
+  name: Пельмени замороженные, 1 кг
+  shop: super
+  price: { rub: 450, basis: estimate }
+  volumeL: 1
+  provides: { kcal: 2500 }
+  spoilsInThaw: true
+  sources: [{ todo: "калорийность — по справочнику; хранение замороженного без холодильника" }]
+  review: draft
+- id: camp-burner
+  name: Туристическая газовая горелка
+  shop: hardware
+  price: { rub: 1500, basis: estimate }
+  volumeL: 3
+  sources: [{ todo: "памятка о туристических газовых приборах в помещении" }]
+  review: draft
+- id: gas-heater
+  name: Туристический газовый обогреватель
+  shop: hardware
+  price: { rub: 3500, basis: estimate }
+  volumeL: 5
+  sources: [{ todo: "памятка о газовых обогревателях в помещении и угарном газе" }]
+  review: draft
+- id: gas-cartridge
+  name: Газовый баллон для обогревателя, на сутки
+  shop: hardware
+  price: { rub: 300, basis: estimate }
+  volumeL: 2
+  provides: { fuelDays: 1 }
+  sources: [{ todo: "расход газа обогревателем в сутки — по паспорту типового прибора" }]
+  review: draft
+- id: stove
+  name: Печь-буржуйка с дымоходом
+  shop: hardware
+  price: { rub: 15000, basis: estimate }
+  volumeL: 0
+  sources: [{ todo: "правила печного отопления МЧС: установка, дымоход, разделка" }]
+  review: draft
+- id: firewood
+  name: Дрова колотые, мешок
+  shop: hardware
+  price: { rub: 300, basis: estimate }
+  volumeL: 25
+  provides: { fuelDays: 1 }
+  sources: [{ todo: "расход дров на сутки для небольшой печи — оценить по справочнику" }]
+  review: draft
+- id: blanket
+  name: Одеяло тёплое
+  shop: super
+  price: { rub: 1200, basis: estimate }
+  volumeL: 10
+  sources: [ready-list]
+  review: draft
+- id: window-film
+  name: Плёнка для утепления окон со скотчем
+  shop: hardware
+  price: { rub: 400, basis: estimate }
+  volumeL: 1
+  sources: [{ todo: "памятка об утеплении жилья при отключении отопления" }]
+  review: draft
+- id: co-detector
+  name: Датчик угарного газа на батарейках
+  shop: hardware
+  price: { rub: 1800, basis: estimate }
+  volumeL: 0
+  sources: [{ todo: "памятка МЧС о датчиках угарного газа" }]
+  review: draft
+- id: candles
+  name: Свечи хозяйственные, упаковка
+  shop: near
+  price: { rub: 150, basis: estimate }
+  volumeL: 1
+  provides: { lightH: 40 }
+  sources: [{ todo: "время горения хозяйственной свечи — по ГОСТ или паспорту" }]
+  review: draft
+- id: headlamp
+  name: Фонарь налобный
+  shop: super
+  price: { rub: 600, basis: estimate }
+  volumeL: 1
+  sources: [mchs-kit]
+  review: draft
+- id: batteries
+  name: Батарейки АА, 4 шт.
+  shop: super
+  price: { rub: 250, basis: estimate }
+  volumeL: 0
+  provides: { lightH: 15 }
+  sources: [{ todo: "время работы фонаря на комплекте батареек — по паспорту типового фонаря" }]
+  review: draft
+- id: lantern
+  name: Фонарь кемпинговый
+  shop: hardware
+  price: { rub: 1500, basis: estimate }
+  volumeL: 2
+  provides: { lightH: 30 }
+  sources: [ready-list]
+  review: draft
+- id: powerbank
+  name: Внешний аккумулятор для телефона
+  shop: market
+  price: { rub: 2000, basis: estimate }
+  volumeL: 0
+  provides: { commsDays: 4 }
+  sources: [ready-list]
+  review: draft
+- id: crank-radio
+  name: Радиоприёмник с динамо
+  shop: market
+  price: { rub: 1800, basis: estimate }
+  volumeL: 1
+  provides: { commsDays: 14 }
+  sources: [mchs-kit]
+  review: draft
+- id: home-meds
+  name: Лекарства, которые есть дома
+  shop: home
+  price: { rub: 0, basis: estimate }
+  volumeL: 0
+  provides: { medsDays: 5 }
+  sources: [{ todo: "оценка: сколько дней обычно остаётся у человека с постоянными лекарствами" }]
+  review: draft
+- id: meds-14
+  name: Постоянные лекарства на 14 дней, по рецепту
+  shop: pharmacy
+  price: { rub: 1500, basis: estimate }
+  volumeL: 0
+  provides: { medsDays: 14 }
+  sources: [mchs-kit]
+  review: draft
+- id: random-pills
+  name: Таблетки «от давления» без рецепта
+  shop: pharmacy
+  price: { rub: 400, basis: estimate }
+  volumeL: 0
+  sources: [{ todo: "почему нельзя заменять назначенные лекарства — памятка Минздрава" }]
+  review: draft
+- id: first-aid
+  name: Аптечка
+  shop: pharmacy
+  price: { rub: 1200, basis: estimate }
+  volumeL: 1
+  sources: [mchs-kit]
+  review: draft
+- id: bucket
+  name: Ведро с крышкой
+  shop: near
+  price: { rub: 300, basis: estimate }
+  volumeL: 10
+  provides: { sanitationDays: 5 }
+  sources: [{ todo: "памятка: туалет без воды при ЧС" }]
+  review: draft
+- id: trash-bags
+  name: Мешки для мусора прочные
+  shop: near
+  price: { rub: 150, basis: estimate }
+  volumeL: 1
+  provides: { sanitationDays: 4 }
+  sources: [{ todo: "памятка: туалет без воды при ЧС" }]
+  review: draft
+- id: sawdust
+  name: Древесный наполнитель, 10 кг
+  shop: super
+  price: { rub: 400, basis: estimate }
+  volumeL: 15
+  provides: { sanitationDays: 5 }
+  sources: [{ todo: "памятка: туалет без воды при ЧС (шведская памятка советует опилки)" }]
+  review: draft
+- id: extinguisher
+  name: Огнетушитель
+  shop: hardware
+  price: { rub: 1500, basis: estimate }
+  volumeL: 3
+  sources: [{ todo: "памятка МЧС: огнетушитель дома" }]
+  review: draft
+- id: own-phone
+  name: Свой телефон, заряженный заранее
+  shop: home
+  price: { rub: 0, basis: estimate }
+  volumeL: 0
+  provides: { commsDays: 3 }
+  sources: [{ todo: "оценка: сколько дней держит телефон в режиме экономии" }]
+  review: draft

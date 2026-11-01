@@ -1,0 +1,44 @@
+trouble:
+  id: fire
+  name: Пожар
+  text: Свечи и огонь в доме — риск пожара, а пожарные доедут не сразу.
+solutions:
+  - id: fire-holders
+    tier: cheap
+    name: Подставки и присмотр
+    text: Свечи — только в устойчивых негорючих подставках, не оставлять без присмотра.
+    goods: []
+    workMin: 15
+    guards: [{ risk: fire, stopsPct: 60 }]
+    why: Подставка и присмотр снижают риск, но ночью и с ребёнком в доме его не убрать совсем.
+    sources: [{ todo: "памятка МЧС: свечи и пожарная безопасность" }]
+    review: draft
+  - id: fire-extinguisher
+    tier: mid
+    name: Огнетушитель
+    text: Огнетушитель на кухне и в комнате со свечами.
+    goods: [{ good: extinguisher, qty: 1 }]
+    workMin: 15
+    guards: [{ risk: fire, stopsPct: 80 }]
+    why: Огнетушитель гасит начавшийся пожар, если он под рукой.
+    sources: [{ todo: "памятка МЧС: огнетушитель дома" }]
+    review: draft
+  - id: fire-both
+    tier: right
+    name: Подставки, присмотр и огнетушитель
+    text: Свечи в подставках под присмотром и огнетушитель рядом.
+    goods: [{ good: extinguisher, qty: 1 }]
+    workMin: 30
+    guards: [{ risk: fire, stopsPct: 100 }]
+    why: Огонь под присмотром и средство потушить — так свечи безопасны.
+    sources: [{ todo: "памятка МЧС: свечи и пожарная безопасность" }]
+    review: draft
+  - id: fire-window
+    tier: trap
+    name: Свечи на подоконнике
+    text: На подоконнике светлее и не мешают.
+    goods: []
+    workMin: 0
+    why: Шторы у свечи загораются за секунды.
+    sources: [{ todo: "памятка МЧС: свечи и пожарная безопасность" }]
+    review: draft

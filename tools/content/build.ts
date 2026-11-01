@@ -1,0 +1,137 @@
+// Сборка содержания (по образцу «Сказов», tools/content/): content/*.yaml → проверка →
+// src/content/generated/bundle.json. Любая ошибка — сборка останавливается: лучше не собрать
+// игру, чем собрать её с выдуманным фактом, маркой или дозой (AGENTS.md, «Hard rules»).
+//
+//   bun tools/content/build.ts           — собрать и проверить
+//   bun tools/content/build.ts --check   — только проверить, ничего не писать
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import YAML from 'yaml';
+import { type Bundle, type Good, type Scenario, type Shop, type Solution, type Source, TIERS, type Trouble } from '../../src/content/types';
+
+const ROOT = join(import.meta.dir, '../..');
+const CONTENT = join(ROOT, 'content');
+const OUT = join(ROOT, 'src/content/generated');
+
+type RawSource = string | Source;
+type Raw<T> = Omit<T, 'sources'> & { sources: RawSource[] };
+
+const read = (file: string) => YAML.parse(readFileSync(join(CONTENT, file), 'utf8'));
+
+/** Марки, магазины и маркетплейсы, которых в игре нет (AGENTS.md); список растёт с содержанием. */
+export const BRANDS = /озон|ozon|вайлдберриз|wildberries|яндекс|маркет\s|магнит|пят[её]рочк|перекр[её]ст|ашан|леруа|петрович|ситилинк|эльдорадо|м\.видео|аптека\.ру|ригла|горздрав|®|™/i;
+/** Доза: число с единицей лекарства (ADR 0012 «Анамнеза») — во всех текстах. */
+export const DOSE = /\d+\s*(мг|мкг|мл|ед\.|таблет|капсул)|по\s+\d+\s+(таб|капс)/i;
+/** Схема приёма — в текстах о лекарствах (беда «Лекарства», товары аптеки). */
+export const SCHEDULE = /раз[аы]?\s+в\s+(день|сутки)|утром\s+и\s+вечером|перед\s+едой|после\s+еды/i;
+/** Латиница в тексте для игрока — почти всегда марка. */
+export const LATIN = /[a-z]/i;
+
+export interface BuildReport { bundle: Bundle; errors: string[]; todo: string[] }
+
+export function build(): BuildReport {
+  const errors: string[] = [];
+  const todo: string[] = [];
+  const sources: Record<string, { title: string; url?: string }> = read('sources.yaml');
+
+  const resolve = (where: string, list: RawSource[] | undefined): Source[] => {
+    if (!list || !list.length) {
+      errors.push(`${where}: нет источника (sources)`);
+      return [];
+    }
+    return list.map(s => {
+      if (typeof s === 'string') {
+        if (!sources[s]) errors.push(`${where}: неизвестный источник «${s}»`);
+        return sources[s] ?? { todo: s };
+      }
+      if ('todo' in s) todo.push(`${where}: ${s.todo}`);
+      return s;
+    });
+  };
+  const text = (where: string, ...parts: (string | undefined)[]) => {
+    const medical = where.startsWith('meds') || where.includes(' meds');
+    for (const t of parts) {
+      if (!t) continue;
+      if (BRANDS.test(t)) errors.push(`${where}: марка или название магазина — «${t}»`);
+      if (DOSE.test(t)) errors.push(`${where}: доза — «${t}»`);
+      if (medical && SCHEDULE.test(t)) errors.push(`${where}: схема приёма — «${t}»`);
+      if (LATIN.test(t)) errors.push(`${where}: латиница в тексте для игрока — «${t}»`);
+    }
+  };
+  const review = (where: string, r: unknown) => {
+    if (r !== 'draft' && r !== 'checked') errors.push(`${where}: review должен быть draft или checked`);
+  };
+
+  const shops: Shop[] = read('shops.yaml');
+  for (const s of shops) text(`магазин ${s.id}`, s.name);
+
+  const goods: Good[] = (read('goods.yaml') as Raw<Good>[]).map(g => {
+    const where = `товар ${g.id}`;
+    text(g.shop === 'pharmacy' ? `${where} meds` : where, g.name);
+    review(where, g.review);
+    if (!shops.some(s => s.id === g.shop)) errors.push(`${where}: нет магазина ${g.shop}`);
+    if (!Number.isInteger(g.price?.rub) || g.price.rub < 0) errors.push(`${where}: цена — целые рубли`);
+    if (g.price?.basis !== 'rosstat' && g.price?.basis !== 'estimate') errors.push(`${where}: price.basis — rosstat или estimate`);
+    return { ...g, sources: resolve(where, g.sources) };
+  });
+
+  const troubles: Trouble[] = [];
+  const solutions: Solution[] = [];
+  for (const file of readdirSync(join(CONTENT, 'troubles')).filter(f => f.endsWith('.yaml')).sort()) {
+    const raw = read(`troubles/${file}`) as { trouble: Omit<Trouble, 'solutions'>; solutions: (Raw<Omit<Solution, 'trouble'>>)[] };
+    const t = raw.trouble;
+    if (`${t.id}.yaml` !== file) errors.push(`troubles/${file}: id беды «${t.id}» не совпадает с именем файла`);
+    text(t.id === 'meds' ? `беда ${t.id} meds` : `беда ${t.id}`, t.name, t.text);
+    const sols = raw.solutions.map(s => ({ ...s, trouble: t.id, sources: resolve(`решение ${s.id}`, s.sources) }) as Solution);
+    const tiers = sols.map(s => s.tier).sort();
+    if (sols.length !== 4 || TIERS.some(x => !tiers.includes(x))) errors.push(`беда ${t.id}: нужно ровно четыре решения — cheap, mid, right, trap`);
+    for (const s of sols) {
+      text(t.id === 'meds' ? `решение ${s.id} meds` : `решение ${s.id}`, s.name, s.text, s.why);
+      review(`решение ${s.id}`, s.review);
+      if (!Number.isInteger(s.workMin) || s.workMin < 0) errors.push(`решение ${s.id}: workMin — целые минуты`);
+    }
+    troubles.push({ ...t, solutions: TIERS.map(tier => sols.find(s => s.tier === tier)?.id ?? '') });
+    solutions.push(...sols);
+  }
+
+  const scenarios: Scenario[] = [];
+  for (const file of readdirSync(join(CONTENT, 'scenarios')).filter(f => f.endsWith('.yaml')).sort()) {
+    const raw = read(`scenarios/${file}`) as Raw<Scenario>;
+    const where = `сценарий ${raw.id}`;
+    text(where, raw.name, raw.text, ...raw.family.map(p => p.name));
+    review(where, raw.review);
+    if (raw.money.length !== raw.prepDays) errors.push(`${where}: деньги — на каждый день подготовки`);
+    if (raw.outdoorC.length !== raw.eventDays) errors.push(`${where}: погода — на каждый день события`);
+    for (const t of raw.troubles) if (!troubles.some(x => x.id === t)) errors.push(`${where}: нет беды ${t}`);
+    for (const id of raw.needsMeds) if (!raw.family.some(p => p.id === id)) errors.push(`${where}: нет человека ${id}`);
+    scenarios.push({ ...raw, sources: resolve(where, raw.sources) });
+  }
+
+  // ссылки между записями
+  const ids = new Set<string>();
+  for (const x of [...shops, ...goods, ...troubles, ...solutions, ...scenarios]) {
+    if (ids.has(x.id)) errors.push(`id «${x.id}» встречается дважды`);
+    ids.add(x.id);
+  }
+  for (const s of solutions) {
+    for (const g of s.goods) if (!goods.some(x => x.id === g.good)) errors.push(`решение ${s.id}: нет товара ${g.good}`);
+    for (const c of s.creates ?? []) if (!troubles.some(x => x.id === c)) errors.push(`решение ${s.id}: нет беды ${c}`);
+    for (const a of s.after ?? []) if (!troubles.some(x => x.id === a.trouble)) errors.push(`решение ${s.id}: нет беды ${a.trouble}`);
+  }
+
+  return { bundle: { shops, goods, troubles, solutions, scenarios }, errors, todo };
+}
+
+if (import.meta.main) {
+  const { bundle, errors, todo } = build();
+  if (errors.length) {
+    console.error(`Содержание не собрано — ошибок: ${errors.length}`);
+    for (const e of errors) console.error(`  ${e}`);
+    process.exit(1);
+  }
+  if (!process.argv.includes('--check')) {
+    mkdirSync(OUT, { recursive: true });
+    writeFileSync(join(OUT, 'bundle.json'), `${JSON.stringify(bundle, null, 1)}\n`);
+  }
+  console.log(`Содержание: бед ${bundle.troubles.length}, решений ${bundle.solutions.length}, товаров ${bundle.goods.length}; без источника — ${todo.length} (черновики)`);
+}

@@ -1,0 +1,42 @@
+trouble:
+  id: comms
+  name: Связь и новости
+  text: Без света телефоны сядут, а вышки связи держатся на резервном питании не все дни.
+solutions:
+  - id: comms-saving
+    tier: cheap
+    name: Телефон в экономии
+    text: Включать телефон пару раз в день.
+    goods: [{ good: own-phone, qty: 1 }]
+    workMin: 0
+    why: Экономия растягивает заряд на несколько дней, но не на две недели.
+    sources: [{ todo: "памятка: связь при отключении электроэнергии" }]
+    review: draft
+  - id: comms-powerbanks
+    tier: mid
+    name: Внешние аккумуляторы
+    text: Два внешних аккумулятора. Заказать заранее — доставка 1–2 дня.
+    goods: [{ good: own-phone, qty: 1 }, { good: powerbank, qty: 2 }]
+    workMin: 0
+    why: Аккумуляторы держат телефоны около недели.
+    sources: [ready-list]
+    review: draft
+  - id: comms-radio
+    tier: right
+    name: Радиоприёмник с динамо и аккумуляторы
+    text: Радио узнает новости без связи и света, аккумуляторы — для звонков.
+    goods: [{ good: own-phone, qty: 1 }, { good: crank-radio, qty: 1 }, { good: powerbank, qty: 2 }]
+    workMin: 0
+    why: Радио с ручной зарядкой работает все две недели — так узнают, когда и где помощь.
+    sources: [mchs-kit]
+    review: draft
+  - id: comms-trust
+    tier: trap
+    name: Связь и так будет
+    text: Сотовая связь работает всегда — ничего не нужно.
+    goods: [{ good: own-phone, qty: 1 }]
+    keepsPct: 34
+    workMin: 0
+    why: Вышки связи без электричества работают на аккумуляторах лишь часы или сутки.
+    sources: [{ todo: "сколько работают базовые станции на резервном питании — источник" }]
+    review: draft

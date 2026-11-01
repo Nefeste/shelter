@@ -1,0 +1,42 @@
+trouble:
+  id: toilet
+  name: Туалет и мусор
+  text: Без воды унитаз не смыть, а мусор не вывезут две недели.
+solutions:
+  - id: toilet-bucket
+    tier: cheap
+    name: Ведро с крышкой
+    text: Ведро с плотной крышкой на холодной веранде.
+    goods: [{ good: bucket, qty: 1 }]
+    workMin: 0
+    why: Ведро выручит на несколько дней, дальше нужны мешки и наполнитель.
+    sources: [{ todo: "памятка: туалет без воды при ЧС" }]
+    review: draft
+  - id: toilet-bags
+    tier: mid
+    name: Мешки и наполнитель
+    text: Прочные мешки в унитаз и древесный наполнитель.
+    goods: [{ good: trash-bags, qty: 2 }, { good: sawdust, qty: 1 }]
+    workMin: 15
+    why: Мешок с наполнителем убирает запах; использованные — в плотный мешок на улицу.
+    sources: [{ todo: "памятка: туалет без воды при ЧС (шведская памятка)" }]
+    review: draft
+  - id: toilet-full
+    tier: right
+    name: Мешки, наполнитель и ведро на все дни
+    text: Мешков и наполнителя на две недели, ведро для мусора.
+    goods: [{ good: trash-bags, qty: 2 }, { good: sawdust, qty: 1 }, { good: bucket, qty: 1 }]
+    workMin: 15
+    why: Запаса хватает на все дни, мусор — в одном месте.
+    sources: [{ todo: "памятка: туалет без воды при ЧС (шведская памятка)" }]
+    review: draft
+  - id: toilet-snow
+    tier: trap
+    name: Смывать снегом
+    text: Снега много — смывать им.
+    goods: []
+    workMin: 0
+    risks: [clog]
+    why: Снега для смыва нужно очень много, а без давления в трубах канализацию забьёт.
+    sources: [{ todo: "памятка: канализация при отключении водоснабжения" }]
+    review: draft
