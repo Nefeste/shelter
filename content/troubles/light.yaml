@@ -6,7 +6,7 @@ solutions:
   - id: light-candles
     tier: cheap
     name: Свечи
-    text: Дёшево и светло, но это открытый огонь.
+    text: Свечи хозяйственные — дёшево и светло.
     goods: [{ good: candles, qty: 2 }]
     workMin: 0
     risks: [fire]
@@ -16,8 +16,8 @@ solutions:
     review: draft
   - id: light-headlamps
     tier: mid
-    name: Налобные фонари и батарейки
-    text: Два налобных фонаря и запас батареек.
+    name: Налобные фонари
+    text: Два налобных фонаря и батарейки.
     goods: [{ good: headlamp, qty: 2 }, { good: batteries, qty: 4 }]
     workMin: 0
     why: Фонари безопасны, но батареек нужно столько, чтобы хватило на все вечера, — а на холоде они садятся быстрее.
@@ -25,8 +25,8 @@ solutions:
     review: draft
   - id: light-lanterns
     tier: right
-    name: Кемпинговый фонарь, налобные и батарейки по расчёту
-    text: Фонарь на стол и налобные — с батарейками на все две недели.
+    name: Кемпинговый фонарь и налобные
+    text: Фонарь на стол и налобные фонари с батарейками.
     goods: [{ good: lantern, qty: 1 }, { good: headlamp, qty: 2 }, { good: batteries, qty: 4 }]
     workMin: 0
     why: Свет на все вечера без огня — батареек по часам, а не на глаз.
@@ -34,8 +34,8 @@ solutions:
     review: draft
   - id: light-car
     tier: trap
-    name: Заряжать фонари в машине в гараже
-    text: Машина есть — заводить её в гараже и заряжать от неё фонарь и телефоны.
+    name: Заряжать фонари от машины
+    text: Заводить машину в гараже и заряжать от неё фонарь и телефоны.
     goods: [{ good: headlamp, qty: 1 }]
     workMin: 0
     risks: [co]

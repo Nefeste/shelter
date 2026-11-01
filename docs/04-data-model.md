@@ -1,4 +1,4 @@
-# Данные «Убежища»
+# Данные «Наготове»
 
 Три вида данных: **записи содержания** (`content/`, в сборке игры), **состояние движка** (живёт,
 пока идёт партия) и **сохранение на телефоне**. Типы — `src/content/types.ts`,
@@ -14,10 +14,12 @@
 |---|---|---|
 | Источник | `content/sources.yaml` | ключ → `title`, `url`. В записи источник — ключ, `{ assumption: "…" }` (допущение игры, видно в «Об игре») или `{ todo: "…" }` (не сверен, в выпуск не идёт) |
 | Магазин | `content/shops.yaml` | `id`, `name` (обычное место, без сети), `travelMin` (туда и обратно), `deliveryDays` (только маркетплейс) |
-| Товар | `content/goods.yaml` | `id`, `name` (без марки), `shop`, `price {rub, basis: rosstat\|estimate, note}`, `volumeL`, `provides {waterDl, kcal, lightH, commsDays, medsDays, fuelH, sanitationDays}`, `spoilsInThaw`, `cooks` (печь, горелка), `needsCooking` (крупа), `firstAid` (аптечка), `sources`, `review` |
+| Товар | `content/goods.yaml` | `id`, `name` (без марки), `shop`, `price {rub, basis: rosstat\|estimate, note}`, `volumeL`, `provides {waterDl, kcal, lightH, commsDays, medsDays, fuelH, sanitationDays}`, `category` (раздел «Моего списка»: `water`, `food`, `heat`, `light`, `comms`, `health`, `hygiene`, `safety`), `spoilsInThaw`, `cooks` (печь, горелка), `needsCooking` (крупа), `firstAid` (аптечка), `sources`, `review` |
 | Беда | `content/troubles/<id>.yaml`, блок `trouble` | `id` (= имя файла), `name`, `text` |
 | Решение | там же, `solutions` — ровно четыре | `id`, `tier` (`cheap`, `mid`, `right`, `trap`), `name`, `text`, `goods [{good, qty}]`, `workMin`, `beforeEvent`, `heatC`, `fuelHPerDay`, `heatLossC`, `keepsPct`, `risks`, `guards [{risk, stopsPct}]`, `creates`, `after [{trouble, extraMin}]`, `why`, `sources`, `review` |
 | Сценарий | `content/scenarios/<id>.yaml` | `id`, `name`, `text`, `family [{id, name, kind: adult\|child\|elder}]`, `prepDays`, `minutesPerDay`, `money [по дням]`, `pantryL`, `porchL`, `eventDays`, `outdoorC [по дням]`, `houseC`, `troubles` (начальные), `norms {waterDl, drinkDl по виду человека; kcal; lightH; coldC; coldEvacC; maxC}`, `needsMeds`, `injury {pct, from, to}` (порез или простуда), `sources`, `review` |
+
+| Реплика семьи | `content/voices.yaml` | `scenario`, `who` (id из семьи), `when` (`intro`, `choose:<решение>`, `day:<повод>`, `result:home\|evac`), `text` — без чисел, без источника (не факт) |
 
 Риски (`Risk`) — `co` (угарный газ), `fire` (пожар), `clog` (забитая канализация).
 
@@ -61,6 +63,7 @@ need}` (вода, еда, свет, связь, туалет), `injury {day}` (�
 | `shelter.run.v1` | начатая партия | `SavedRun`: `{v: 1, phase: intro\|prep\|days\|result, attempt, prep: PrepState}` строкой JSON |
 | `shelter.best.v1` | лучший результат | сценарий → звёзды |
 | `shelter.settings.v1` | настройки | `{sound}` |
+| `shelter.list.v1` | что из «Моего списка» уже есть дома | id товаров — общие для всех попыток |
 
 **Сохранение — это выборы, а не результат.** 14 дней пересчитываются из `prep` и `attempt` тем же
 движком (ADR студии 0004). При разборе (`unpackRun`) проверяется, что сценарий, решения и товары

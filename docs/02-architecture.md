@@ -1,4 +1,4 @@
-# Как устроено «Убежище»
+# Как устроено «Наготове»
 
 Expo SDK 57, React Native, TypeScript (ADR студии 0003). Игра целиком на телефоне: сети и сервера
 нет ([`03-server-api.md`](03-server-api.md)). Здесь — слои, кто от кого зависит и почему так.
@@ -27,9 +27,9 @@ content/*.yaml ──(tools/content/build.ts)──► src/content/generated/bun
 | `content/` | беды, решения, товары, магазины, сценарий, источники — YAML ([`09-content.md`](09-content.md)) | кода |
 | `src/content/` | типы записей (`types.ts`) и собранный пакет (`generated/`, не в git) | правил |
 | `src/engine/` | `prep.ts` — подготовка; `days.ts` — расчёт дней и звёзды; `review.ts` — разбор и источник строки; `core/` — зерно и хеш | React, `Date`, `Math.random`, дробей в состоянии |
-| `src/state/` | `game.ts` — партия как хук React; `run.ts` — упаковка сохранения; `storage.ts` — AsyncStorage | расчёта |
+| `src/state/` | `game.ts` — партия как хук React; `run.ts` — упаковка сохранения; `storage.ts` — AsyncStorage; `checklist.ts` — «Мой список» по разделам с суммами; `voices.ts` — какая реплика семьи к какому поводу | расчёта |
 | `src/screens/` | первый экран, вводная, подготовка, дни, итог, «Об игре» | текстов (они в `src/i18n`) |
-| `src/ui/` | кнопки и карточки (`kit.tsx`), токены бренда (`theme.ts`, копия `brand/tokens.css` устава), рисунки (`Scene.tsx`, `House.tsx`, `icons.tsx`, `Snow.tsx`) | — |
+| `src/ui/` | кнопки и карточки (`kit.tsx`), токены бренда (`theme.ts`, копия `brand/tokens.css` устава), рисунки (`Scene.tsx`, `House.tsx`, `icons.tsx`, `Snow.tsx`), реплика семьи (`Bubble.tsx`) | — |
 | `src/audio/` | `sound.ts` — звуки и петли через `expo-audio` | — |
 | `src/i18n/` | все строки для игрока | — |
 | `src/version.ts` | номер версии для «Об игре» | — |

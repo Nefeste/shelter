@@ -1,0 +1,83 @@
+# Реплики семьи (docs/08-game-design.md, «Живость»): что говорят люди, когда игрок выбирает решение
+# и когда идут дни. Это не факты и не советы — без чисел (проверяет сборка), без марок и доз;
+# источник им не нужен. Факты — только в бедах, решениях и товарах. Тон — спокойный и тёплый.
+# when: intro · choose:<решение> · day:<cold|food|water|light|comms|sanitation|care|injury|thaw|clog|ok|last> · result:<home|evac>
+
+- { scenario: ice-rain, who: dad, when: intro, text: "Три дня на сборы. Успеем — если с умом." }
+- { scenario: ice-rain, who: gran, when: intro, text: "Бывало и хуже. Справимся." }
+
+# тепло
+- { scenario: ice-rain, who: dad, when: "choose:heat-stove", text: "Печку поставлю сам. Ну, почти сам — с инструкцией." }
+- { scenario: ice-rain, who: son, when: "choose:heat-gas-heater", text: "Как в походе! Только дома." }
+- { scenario: ice-rain, who: gran, when: "choose:heat-one-room", text: "В тесноте, да не в обиде." }
+- { scenario: ice-rain, who: gran, when: "choose:heat-gas-stove", text: "Мы в молодости так и грелись — у плиты." }
+
+# вода
+- { scenario: ice-rain, who: son, when: "choose:water-drink", text: "А умываться чем будем?" }
+- { scenario: ice-rain, who: dad, when: "choose:water-canisters", text: "Наберу, пока из крана течёт." }
+- { scenario: ice-rain, who: mom, when: "choose:water-full", text: "Канистры по всему дому. Зато спокойно." }
+- { scenario: ice-rain, who: dad, when: "choose:water-porch", text: "На веранде им самое место — не мешают." }
+
+# еда
+- { scenario: ice-rain, who: son, when: "choose:food-cold", text: "Бутерброды каждый день? Ура… наверное." }
+- { scenario: ice-rain, who: gran, when: "choose:food-stove", text: "Гречку сварю — было бы на чём." }
+- { scenario: ice-rain, who: dad, when: "choose:food-full", text: "Горелку — только на крыльце, договорились." }
+- { scenario: ice-rain, who: son, when: "choose:food-frozen", text: "Пельмени! Лучший план." }
+
+# свет
+- { scenario: ice-rain, who: son, when: "choose:light-candles", text: "Можно я буду дежурным по свечкам?" }
+- { scenario: ice-rain, who: son, when: "choose:light-headlamps", text: "Налобный фонарик — чур мой!" }
+- { scenario: ice-rain, who: mom, when: "choose:light-lanterns", text: "Фонарь на стол — и как будто свет дали." }
+- { scenario: ice-rain, who: dad, when: "choose:light-car", text: "Машина всё равно стоит без дела." }
+
+# связь
+- { scenario: ice-rain, who: mom, when: "choose:comms-saving", text: "Телефон — только по делу. Все слышали?" }
+- { scenario: ice-rain, who: son, when: "choose:comms-powerbanks", text: "А мультики на них можно?" }
+- { scenario: ice-rain, who: gran, when: "choose:comms-radio", text: "Радио! Как в старые добрые." }
+- { scenario: ice-rain, who: dad, when: "choose:comms-trust", text: "Связь есть всегда, не переживай." }
+
+# лекарства
+- { scenario: ice-rain, who: gran, when: "choose:meds-home", text: "Да у меня всё есть… кажется." }
+- { scenario: ice-rain, who: gran, when: "choose:meds-stock", text: "Вот теперь я спокойна." }
+- { scenario: ice-rain, who: mom, when: "choose:meds-kit", text: "Пластырь и бинт — с мальчишкой в доме пригодятся." }
+- { scenario: ice-rain, who: gran, when: "choose:meds-random", text: "Соседка такие пьёт — и ничего." }
+
+# туалет
+- { scenario: ice-rain, who: son, when: "choose:toilet-bucket", text: "Фу." }
+- { scenario: ice-rain, who: dad, when: "choose:toilet-bags", text: "Неприятно, но по-человечески." }
+- { scenario: ice-rain, who: mom, when: "choose:toilet-full", text: "С запасом — так с запасом." }
+- { scenario: ice-rain, who: dad, when: "choose:toilet-snow", text: "Снега полно — смоем." }
+
+# угарный газ
+- { scenario: ice-rain, who: mom, when: "choose:co-airing", text: "Поставлю будильник — проветривать." }
+- { scenario: ice-rain, who: son, when: "choose:co-sensor", text: "А он правда пищит? Можно проверить?" }
+- { scenario: ice-rain, who: dad, when: "choose:co-detector-airing", text: "Датчик — у кроватей, форточку — по часам." }
+- { scenario: ice-rain, who: gran, when: "choose:co-seal", text: "Заткнём все щели — тепло и не уйдёт." }
+
+# пожар
+- { scenario: ice-rain, who: mom, when: "choose:fire-holders", text: "Свечи — только при мне." }
+- { scenario: ice-rain, who: dad, when: "choose:fire-extinguisher", text: "Огнетушитель — на видное место." }
+- { scenario: ice-rain, who: son, when: "choose:fire-both", text: "Я знаю, где огнетушитель!" }
+- { scenario: ice-rain, who: gran, when: "choose:fire-window", text: "На окошке-то красиво." }
+
+# дни
+- { scenario: ice-rain, who: gran, when: "day:cold", text: "Внучек, неси второе одеяло." }
+- { scenario: ice-rain, who: dad, when: "day:food", text: "Делим, что осталось, поровну." }
+- { scenario: ice-rain, who: mom, when: "day:water", text: "Умываемся по очереди и по чуть-чуть." }
+- { scenario: ice-rain, who: son, when: "day:light", text: "Темно… Давайте рассказывать страшилки. Нестрашные." }
+- { scenario: ice-rain, who: mom, when: "day:comms", text: "Ни связи, ни новостей. Ждём." }
+- { scenario: ice-rain, who: son, when: "day:sanitation", text: "Без комментариев." }
+- { scenario: ice-rain, who: mom, when: "day:care", text: "Чем бы заклеить? Пластыря-то нет." }
+- { scenario: ice-rain, who: mom, when: "day:injury", text: "Пластырь — и до свадьбы заживёт." }
+- { scenario: ice-rain, who: dad, when: "day:thaw", text: "Оттепель. С веранды что-то капает." }
+- { scenario: ice-rain, who: dad, when: "day:clog", text: "Кажется, у нас беда с трубой." }
+- { scenario: ice-rain, who: son, when: "day:ok", text: "Давайте ещё партию в настольную!" }
+- { scenario: ice-rain, who: gran, when: "day:ok", text: "Тепло, светло — и ладно." }
+- { scenario: ice-rain, who: mom, when: "day:ok", text: "Чай есть, все дома. Хороший день." }
+- { scenario: ice-rain, who: dad, when: "day:ok", text: "Провода во льду, а у нас тихо." }
+- { scenario: ice-rain, who: son, when: "day:ok", text: "Я нарисовал карту дома. С сокровищами." }
+- { scenario: ice-rain, who: mom, when: "day:last", text: "Слышите? Кажется, едут ремонтники." }
+
+# итог
+- { scenario: ice-rain, who: gran, when: "result:home", text: "Все дома, все целы. Молодцы." }
+- { scenario: ice-rain, who: dad, when: "result:evac", text: "Ничего, переждём у людей. В другой раз подготовимся лучше." }

@@ -8,7 +8,9 @@ import { Button, Card, Txt } from '../ui/kit';
 import { Scene } from '../ui/Scene';
 import { C, R } from '../ui/theme';
 import { play, setLoop } from '../audio/sound';
-import type { Game } from '../state/game';
+import { type Game, world } from '../state/game';
+import { Bubble } from '../ui/Bubble';
+import { dayWhen, voice } from '../state/voices';
 
 const DAY_MS = 3000;
 /** Дым и треск — только если стоит печь. */
@@ -54,15 +56,19 @@ export function DaysScreen({ game }: { game: Game }) {
         </View>
       </View>
       <ScrollView contentContainerStyle={styles.list}>
-        {[...days].reverse().map(d => (
+        {[...days].reverse().map(d => {
+          const said = voice(world, game.prep.scenario, dayWhen(o.days, d.day, total), String(d.day));
+          return (
           <Card key={d.day}>
             <Txt>{T.days.day(d.day)}</Txt>
             {d.event === 'thaw' ? <Txt dim>{T.days.thaw}</Txt> : null}
             {d.event === 'clog' ? <Txt dim>{T.days.clog}</Txt> : null}
             {d.event === 'injury' ? <Txt dim>{T.days.injury}</Txt> : null}
             {d.short.length ? <Txt dim>{d.short.map(x => T.days.short[x]).join(', ')}</Txt> : null}
+            {said ? <Bubble said={said} testID={`voice-day-${d.day}`} /> : null}
           </Card>
-        ))}
+          );
+        })}
       </ScrollView>
       <View style={styles.buttons}>
         {!done ? <Button testID="faster" kind="ghost" label={T.days.faster} onPress={() => setFast(true)} /> : null}

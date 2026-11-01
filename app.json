@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Shelter",
+    "name": "Nagotove",
     "slug": "shelter",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "backgroundColor": "#ECEDE6",
     "android": {
       "package": "games.gornitsa.shelter",
-      "versionCode": 7,
+      "versionCode": 8,
       "allowBackup": false,
       "predictiveBackGestureEnabled": false,
       "blockedPermissions": [
@@ -27,7 +27,7 @@
     "locales": {
       "ru": {
         "android": {
-          "app_name": "Убежище"
+          "app_name": "Наготове"
         }
       }
     },

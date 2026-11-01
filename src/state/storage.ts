@@ -59,3 +59,24 @@ export async function saveSettings(s: Settings): Promise<void> {
     // не сохранилось — настройка действует, пока приложение открыто
   }
 }
+
+const HAVE = 'shelter.list.v1';
+
+/** Что из «Моего списка» игрок отметил как «есть дома». */
+export async function loadHave(): Promise<string[]> {
+  try {
+    const raw = await AsyncStorage.getItem(HAVE);
+    const v = raw ? (JSON.parse(raw) as unknown) : [];
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function saveHave(ids: string[]): Promise<void> {
+  try {
+    await AsyncStorage.setItem(HAVE, JSON.stringify(ids));
+  } catch {
+    // не сохранилось — отметки живут, пока открыт итог
+  }
+}

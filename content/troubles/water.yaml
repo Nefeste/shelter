@@ -5,8 +5,8 @@ trouble:
 solutions:
   - id: water-drink
     tier: cheap
-    name: Вода на питьё
-    text: Питьевая вода в бутылках — только чтобы пить.
+    name: Питьевая вода
+    text: Бутилированная вода.
     goods: [{ good: water-5l, qty: 36 }]
     workMin: 0
     why: "Норма на питьё — 2,5 л взрослому и 5 л ребёнку в сутки; на готовку и умывание нужно ещё 7,5 л на человека."
@@ -14,8 +14,8 @@ solutions:
     review: draft
   - id: water-canisters
     tier: mid
-    name: Питьевая вода и канистры из крана
-    text: Бутылки на питьё и канистры, наполненные из крана, пока он работает.
+    name: Вода и канистры из крана
+    text: Бутилированная вода и канистры, наполненные из крана, пока он работает.
     goods: [{ good: water-5l, qty: 36 }, { good: canister-20l, qty: 10 }, { good: tap-water, qty: 10 }]
     workMin: 60
     beforeEvent: true
@@ -24,8 +24,8 @@ solutions:
     review: draft
   - id: water-full
     tier: right
-    name: Полная норма на две недели
-    text: Бутылки на питьё и столько канистр, чтобы хватило на готовку и умывание на все дни.
+    name: Вода и много канистр
+    text: Бутилированная вода и канистры из крана — сколько поместится в кладовую.
     goods: [{ good: water-5l, qty: 36 }, { good: canister-20l, qty: 21 }, { good: tap-water, qty: 21 }]
     workMin: 90
     beforeEvent: true
@@ -34,8 +34,8 @@ solutions:
     review: draft
   - id: water-porch
     tier: trap
-    name: Канистры на холодной веранде
-    text: Места в доме мало — поставить канистры на веранду.
+    name: Канистры на веранде
+    text: Места в доме мало — канистры поставить на веранду.
     goods: [{ good: water-5l, qty: 36 }, { good: canister-20l, qty: 10 }, { good: tap-water, qty: 10 }]
     workMin: 60
     beforeEvent: true
