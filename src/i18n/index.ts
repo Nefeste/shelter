@@ -41,6 +41,7 @@ const SHORT: Record<Shortage, string> = {
   comms: 'нет связи',
   sanitation: 'нет туалета',
   cold: 'холодно',
+  care: 'нечем обработать порез или простуду',
 };
 
 export const T = {
@@ -100,6 +101,7 @@ export const T = {
     light: (h: number) => `свет ${h}${nb}ч`,
     short: SHORT,
     thaw: 'Оттепель: замороженное на веранде оттаяло',
+    injury: 'Кто-то порезался или простыл',
     clog: 'Канализацию забило',
     faster: 'Быстрее',
     toResult: 'К итогу',
@@ -117,6 +119,7 @@ export const T = {
         case 'late': return `Не пришло до дождя: ${l.goods.map(name).join(', ')}.`;
         case 'unfinished': return `Не успели до дождя: «${name(l.solution)}».`;
         case 'allGood': return `Всё сработало. Осталось ${rub(l.moneyLeft)}.`;
+        case 'injury': return `${dayN(l.day)} — порез или простуда, а аптечки дома не было.`;
         case 'ranOut':
           if (l.what === 'water') return `Вода на готовку и умывание кончилась на ${l.day + 1}-й день: было ${water(l.had)}, на две недели нужно ${water(l.need)}.`;
           if (l.what === 'food') return `Еда кончилась на ${l.day + 1}-й день: было ${Math.round(l.had / 1000)} тыс. ккал, нужно ${Math.round(l.need / 1000)} тыс.`;

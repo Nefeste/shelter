@@ -36,6 +36,7 @@
 - id: buckwheat
   name: Гречка, 1 кг
   shop: super
+  needsCooking: true
   price: { rub: 90, basis: rosstat, note: "«Крупа гречневая-ядрица, кг» — 90,08 ₽" }
   volumeL: 1
   provides: { kcal: 3080 }
@@ -61,6 +62,7 @@
 - id: camp-burner
   name: Туристическая газовая горелка
   shop: hardware
+  cooks: true
   price: { rub: 1500, basis: estimate, note: "оценка: обычно 600–2500 ₽" }
   volumeL: 3
   sources: [cdc-co, cpsc-co]
@@ -87,6 +89,7 @@
 - id: stove
   name: Печь-буржуйка с дымоходом
   shop: hardware
+  cooks: true
   price: { rub: 9000, basis: estimate, note: "оценка: печь обычно 5000–10 000 ₽, дымоход — отдельно" }
   volumeL: 0
   sources: [ppr-1479, sp-7-13130]
@@ -208,6 +211,7 @@
 - id: first-aid
   name: Аптечка
   shop: pharmacy
+  firstAid: true
   price: { rub: 1200, basis: estimate, note: "оценка: 500–2200 ₽ за готовую домашнюю аптечку" }
   volumeL: 1
   sources: [mchs-kit]

@@ -17,12 +17,12 @@ export function prep(days: string[][]): PrepState {
 
 /**
  * План на три звезды — всего хватает на 14 дней: печь и датчик в первый день, радио с маркетплейса —
- * сразу; вода и еда — на деньги второго дня. Свет — свечи на подставках с присмотром: на фонари по
- * расчёту денег уже нет.
+ * сразу; вода и еда — на деньги второго дня. Крупу варят на печи — горелка не нужна; аптечка — на
+ * случай пореза или простуды; свет — фонари, без открытого огня.
  */
 export const GOOD_PLAN = [
-  ['heat-stove', 'comms-radio', 'co-detector-airing', 'light-candles', 'fire-both', 'toilet-full', 'meds-stock'],
-  ['water-full', 'food-full'],
+  ['heat-stove', 'comms-radio', 'co-detector-airing', 'light-lanterns', 'toilet-full'],
+  ['water-full', 'food-stove', 'meds-kit'],
 ];
 
 /** План на две звезды: здоровье в порядке, но вода на умывание, свет и связь кончаются раньше. */

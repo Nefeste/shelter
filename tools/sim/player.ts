@@ -153,7 +153,8 @@ export function score(ids: string[], policy: Policy, seeds: number): { run: Run;
   const got: number[] = [];
   for (let seed = 1; seed <= seeds; seed++) {
     const o = runDays(world, run.s, seed);
-    outcomes.push(o);
+    // хранится только исход первого зерна — для примеров разбора; иначе миллионы исходов не влезут в память
+    if (seed === 1) outcomes.push(o);
     got.push(stars(o));
   }
   return { run, got, outcomes };
@@ -440,7 +441,7 @@ if (import.meta.main) {
     const i = process.argv.indexOf(name);
     return i >= 0 ? process.argv[i + 1] : undefined;
   };
-  const seeds = Number(arg('--seeds') ?? 10);
+  const seeds = Number(arg('--seeds') ?? 30);
   const t0 = performance.now();
   const rows = simulate(seeds);
   const ms = performance.now() - t0;

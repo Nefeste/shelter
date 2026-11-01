@@ -10,6 +10,7 @@ export type ReviewLine =
   | { kind: 'trap'; solution: string }
   | { kind: 'late'; goods: string[] }
   | { kind: 'unfinished'; solution: string }
+  | { kind: 'injury'; day: number }
   | { kind: 'allGood'; moneyLeft: number };
 
 /** Первый день, когда не хватило `what`. */
@@ -34,6 +35,8 @@ export function review(s: PrepState, o: Outcome): ReviewLine[] {
   if (comms !== null) lines.push({ kind: 'ranOut', what: 'comms', day: comms, had: o.start.commsDays, need: o.need.commsDays });
   const sanitation = firstShort(o, ['sanitation']);
   if (sanitation !== null) lines.push({ kind: 'ranOut', what: 'sanitation', day: sanitation, had: o.start.sanitationDays, need: o.need.sanitationDays });
+  const care = firstShort(o, ['care']);
+  if (care !== null) lines.push({ kind: 'injury', day: care });
   if (!lines.length) lines.push({ kind: 'allGood', moneyLeft: s.money });
   return lines.slice(0, 5);
 }
@@ -41,7 +44,7 @@ export function review(s: PrepState, o: Outcome): ReviewLine[] {
 /** О какой беде строка разбора: по ней ищется источник. */
 const TROUBLE: Record<string, string> = {
   water: 'water', food: 'food', light: 'light', comms: 'comms', sanitation: 'toilet',
-  cold: 'heat', thirst: 'water', hunger: 'food', meds: 'meds', co: 'co', fire: 'fire',
+  cold: 'heat', thirst: 'water', hunger: 'food', meds: 'meds', co: 'co', fire: 'fire', injury: 'meds',
 };
 
 /**
@@ -52,7 +55,10 @@ const TROUBLE: Record<string, string> = {
 export function sourceOf(w: World, s: PrepState, line: ReviewLine): Extract<Source, { title: string }> | undefined {
   let sid: string | undefined;
   if (line.kind === 'trap' || line.kind === 'unfinished') sid = line.solution;
-  else if (line.kind === 'ranOut' || line.kind === 'evacuated') {
+  else if (line.kind === 'injury') {
+    // о пользе аптечки говорит источник правильного решения, а не выбранного
+    sid = w.trouble('meds').solutions.find(x => w.solution(x).tier === 'right');
+  } else if (line.kind === 'ranOut' || line.kind === 'evacuated') {
     const t = TROUBLE[line.kind === 'ranOut' ? line.what : line.reason];
     // угарный газ без беды «угарный газ» — от ловушки, которая его не показывает: источник — у неё
     const trap = Object.values(s.chosen).find(x => w.solution(x).tier === 'trap' && (w.solution(x).risks ?? []).includes(t as never));

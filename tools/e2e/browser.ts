@@ -34,8 +34,8 @@ async function pick(p: Page, trouble: string, solution: string) {
 
 // тот же план, что GOOD_PLAN в tools/test/plans.ts: всего хватает на 14 дней — три звезды
 const GOOD = [
-  [['heat', 'heat-stove'], ['comms', 'comms-radio'], ['co', 'co-detector-airing'], ['light', 'light-candles'], ['fire', 'fire-both'], ['toilet', 'toilet-full'], ['meds', 'meds-stock']],
-  [['water', 'water-full'], ['food', 'food-full']],
+  [['heat', 'heat-stove'], ['comms', 'comms-radio'], ['co', 'co-detector-airing'], ['light', 'light-lanterns'], ['toilet', 'toilet-full']],
+  [['water', 'water-full'], ['food', 'food-stove'], ['meds', 'meds-kit']],
 ];
 const CHEAP = [[['heat', 'heat-one-room'], ['water', 'water-drink'], ['food', 'food-cold'], ['light', 'light-candles'], ['fire', 'fire-holders'], ['comms', 'comms-saving'], ['meds', 'meds-home'], ['toilet', 'toilet-bucket']]];
 

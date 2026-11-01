@@ -106,5 +106,5 @@ tag by `android.yml`, with the kit's signing and contents actions).
   test); never edit or add recordings by hand.
 - `tools/test/` — engine, content, guardrails, i18n, sound, version; `tools/e2e/browser.ts` — the browser scenario.
 - `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes): every combination of
-  solutions, four ordering habits, seeds 1…10; writes `docs/reports/2026-11-virtual-player.md`. Any
+  solutions, four ordering habits, seeds 1…30; writes `docs/reports/2026-11-virtual-player.md`. Any
   change to content numbers, prices or the engine re-runs it, and the report goes into the same PR.

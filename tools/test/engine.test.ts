@@ -66,6 +66,54 @@ describe('14 дней', () => {
   });
 });
 
+describe('развилки', () => {
+  const swap = (from: string, to: string) => GOOD_PLAN.map(day => day.map(id => (id === from ? to : id)));
+  // обогреватель дороже печи: в первый день — он, радио, датчик и свет, остальное — на второй
+  const heaterPlan = (food: string) => [
+    ['heat-gas-heater', 'comms-radio', 'co-detector-airing', 'light-lanterns'],
+    ['water-canisters', food, 'meds-stock'],
+  ];
+
+  test('крупу варят на печи: без печи и горелки от неё нет калорий', () => {
+    const good = runDays(world, prep(GOOD_PLAN), 1);
+    expect(good.days.some(d => d.short.includes('food'))).toBe(false);
+    // обогреватель вместо печи: тепло есть, а сварить крупу не на чем — остались консервы
+    const heater = runDays(world, prep(heaterPlan('food-stove')), 1);
+    expect(heater.start.kcal).toBe(25 * world.good('canned-meat').provides!.kcal!);
+    // с горелкой — калории те же, что с печью
+    expect(runDays(world, prep(heaterPlan('food-full')), 1).start.kcal).toBe(good.start.kcal);
+  });
+
+  test('обогреватель в утеплённой комнате держит не ниже нормы, но стоит больше печи', () => {
+    const o = runDays(world, prep(heaterPlan('food-full')), 1);
+    expect(o.days.every(d => !d.short.includes('cold'))).toBe(true);
+    const s = startPrep(world, SCENARIO);
+    expect(costOf(world, s, 'heat-gas-heater').rub).toBeGreaterThan(costOf(world, s, 'heat-stove').rub);
+    expect(costOf(world, s, 'heat-gas-heater').minutes).toBeLessThan(costOf(world, s, 'heat-stove').minutes);
+  });
+
+  test('аптечка: без неё порез или простуда — трудный день и не больше двух звёзд', () => {
+    const noKit = prep(swap('meds-kit', 'meds-stock'));
+    let hurt = 0;
+    for (let seed = 1; seed <= 20; seed++) {
+      const o = runDays(world, noKit, seed);
+      const day = o.days.find(d => d.event === 'injury');
+      if (!day) continue;
+      hurt += 1;
+      expect(day.short).toContain('care');
+      expect(stars(o)).toBe(2);
+      expect(review(noKit, o).some(l => l.kind === 'injury')).toBe(true);
+      // с аптечкой тот же день — не трудный
+      expect(runDays(world, prep(GOOD_PLAN), seed).days[day.day].short).not.toContain('care');
+    }
+    expect(hurt).toBeGreaterThan(0);
+  });
+
+  test('свечи даже с присмотром и огнетушителем оставляют риск пожара', () => {
+    expect(world.solution('fire-both').guards?.[0]?.stopsPct).toBeLessThan(100);
+  });
+});
+
 describe('подготовка', () => {
   test('улучшение: купленное идёт в дело — платится разница', () => {
     let s = startPrep(world, SCENARIO);
@@ -78,7 +126,7 @@ describe('подготовка', () => {
   test('улучшение до печи — только на деньги второго дня', () => {
     let s = startPrep(world, SCENARIO);
     s = choose(world, s, 'heat-gas-heater');
-    s = choose(world, s, 'water-canisters');
+    s = choose(world, s, 'water-drink');
     expect(canChoose(world, s, 'heat-stove')).toBe('money');
     s = nextDay(world, s);
     expect(canChoose(world, s, 'heat-stove')).toBeNull();
