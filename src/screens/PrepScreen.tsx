@@ -1,8 +1,8 @@
 // Подготовка: беды списком, по касанию — карточка с четырьмя решениями (спецификация, раздел 3).
 // Решения на карточке — в постоянном перемешанном порядке, без подписи «правильное»: какое из них
 // ловушка, игрок узнаёт сам (по цене сортировать нельзя — ловушка почти всегда дешевле всех).
-import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BackHandler, ScrollView, StyleSheet, View } from 'react-native';
 import { T } from '../i18n';
 import { Button, Card, Txt } from '../ui/kit';
 import { C } from '../ui/theme';
@@ -14,6 +14,12 @@ export function PrepScreen({ game }: { game: Game }) {
   const s = game.prep;
   const sc = world.scenario(s.scenario);
   const [open, setOpen] = useState<string | null>(null);
+  // «Назад» на телефоне сначала закрывает карточку беды, а не уводит с подготовки
+  useEffect(() => {
+    if (!open) return;
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => { setOpen(null); return true; });
+    return () => sub.remove();
+  }, [open]);
   const troubles = openTroubles(world, s);
   const unsolved = troubles.filter(t => !s.chosen[t]).length;
   const last = s.day + 1 >= sc.prepDays;

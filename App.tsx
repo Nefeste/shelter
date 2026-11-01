@@ -15,6 +15,8 @@ import { C } from './src/ui/theme';
 export default function App() {
   const game = useGame();
   const { screen, setScreen } = game;
+  // «Назад» на телефоне — на первый экран; начатая партия сохранена, там — «Продолжить».
+  // С первого экрана — выход из приложения.
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (screen === 'title') return false;

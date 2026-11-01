@@ -50,6 +50,10 @@ export const T = {
   },
   title: {
     play: 'Играть',
+    resume: { intro: 'Продолжить', prep: 'Продолжить подготовку', days: 'Продолжить: две недели', result: 'Итог прошлой игры' },
+    restart: 'Начать заново',
+    restartText: 'Начать заново? Всё, что выбрано в подготовке, пропадёт.',
+    cancel: 'Отмена',
     about: 'Об игре',
     best: (stars: number) => `Лучший результат: ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}`,
   },
