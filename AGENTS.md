@@ -26,7 +26,14 @@ The project documents itself in [`docs/`](docs/README.md), in Russian. Start the
 - `docs/README.md` — index and reading order.
 - `docs/01-product.md` — what we promise the player, what is deliberately absent, the vocabulary
   (UI and code terms must match it).
+- `docs/08-game-design.md` — the game as it should ship in 1.0; **rule numbers live there, record
+  numbers only in `content/`**.
+- `docs/09-content.md` — where facts and prices come from; read before any record in `content/`.
+- `docs/02-architecture.md`, `docs/03-server-api.md` (no server), `docs/04-data-model.md` — how it is built.
+- `docs/05-process.md`, `docs/06-testing.md` — versions, CI, release; what to run.
+- `docs/07-roadmap.md` — stages, what is left in the prototype, the line of scenarios, owner decisions.
 - `docs/specs/2026-11-prototype.md` — the live specification: what the prototype must answer.
+- `docs/10-money.md`, `docs/11-market.md`; `docs/journal/YYYY-MM.md` — the journal, one file a month.
 - `docs/adr/` — decisions that are expensive to reverse; read the relevant one *before*
   proposing the opposite. `docs/adr/0001-studio-adrs.md` says how the studio ADRs apply here.
 
@@ -89,13 +96,15 @@ tag by `android.yml`, with the kit's signing and contents actions).
   a source or a `todo` on every record, no brands, shop names, doses or Latin in player text.
 - `src/engine/` — `prep.ts` (choose, replace/upgrade, money, hours, place, shop trips, delivery),
   `days.ts` (14 days, integers, seeded risks and thaw, evacuation instead of death), `review.ts`.
+- `src/version.ts` — the version for «Об игре», checked by `tools/test/version.test.ts` against
+  `app.json`, `package.json`, `package-lock.json` and `STATUS.md`.
 - `src/state/game.ts` — the run; `src/screens/` — title, intro, prep, days, result, about;
   `src/ui/` — tokens from the studio brand, kit, drawings in `react-native-svg` (`Scene.tsx` — the
   house of the 14 days and the result, `icons.tsx` — trouble icons, `Snow.tsx`); `src/audio/sound.ts`
   — expo-audio, sound on/off in settings; `src/i18n/` — all UI text.
 - `assets/audio/` — synthesized sounds, made by `npm run sound` (`tools/sound/gen.ts`, byte-exact
   test); never edit or add recordings by hand.
-- `tools/test/` — engine, content, guardrails, i18n, sound; `tools/e2e/browser.ts` — the browser scenario.
+- `tools/test/` — engine, content, guardrails, i18n, sound, version; `tools/e2e/browser.ts` — the browser scenario.
 - `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes): every combination of
   solutions, four ordering habits, seeds 1…10; writes `docs/reports/2026-11-virtual-player.md`. Any
   change to content numbers, prices or the engine re-runs it, and the report goes into the same PR.
