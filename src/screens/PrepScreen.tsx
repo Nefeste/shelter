@@ -14,6 +14,7 @@ import { TroubleIcon } from '../ui/icons';
 import { play } from '../audio/sound';
 import { Bubble } from '../ui/Bubble';
 import { Pantry } from '../ui/Pantry';
+import { Bike } from '../ui/Bike';
 import { type Said, voice } from '../state/voices';
 import { type Game, world } from '../state/game';
 
@@ -43,7 +44,7 @@ export function PrepScreen({ game }: { game: Game }) {
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
           {said ? <Bubble said={said} testID="voice" /> : null}
-          <Pantry world={world} prep={s} />
+          {sc.kind === 'ride' ? <Bike world={world} prep={s} /> : <Pantry world={world} prep={s} />}
           {troubles.map(t => {
             const chosen = s.chosen[t];
             return (
@@ -70,6 +71,8 @@ function TroubleCard({ game, trouble, onClose, onChosen }: { game: Game; trouble
   const [more, setMore] = useState<string | null>(null);
   const options = useMemo(() => [...t.solutions].sort((a, b) => fnv1a(a) - fnv1a(b)), [t]);
   const current = s.chosen[trouble];
+  // в поездке у решения есть вес: всё взятое везти на себе
+  const ride = world.scenario(s.scenario).kind === 'ride';
   return (
     <ScrollView contentContainerStyle={styles.list}>
       <View style={styles.row}>
@@ -86,13 +89,13 @@ function TroubleCard({ game, trouble, onClose, onChosen }: { game: Game; trouble
           <Card key={id} testID={`solution-${id}`} style={isCurrent ? styles.current : undefined}>
             <Txt style={styles.troubleName}>{sol.name}</Txt>
             <Txt>{sol.text}</Txt>
-            {isCurrent ? null : <Txt dim>{c.rub || c.minutes || c.volumeL ? T.prep.cost(c.rub, c.minutes, c.volumeL) : T.prep.free}</Txt>}
+            {isCurrent ? null : <Txt dim>{[c.rub || c.minutes || c.volumeL ? T.prep.cost(c.rub, c.minutes, c.volumeL) : T.prep.free, ride ? T.prep.mass(massOf(id)) : ''].filter(Boolean).join(' · ')}</Txt>}
             {sol.goods.length || sol.workMin ? (
               <Pressable testID={`more-${id}`} accessibilityRole="button" onPress={() => setMore(more === id ? null : id)}>
                 <Txt style={styles.link}>{more === id ? T.prep.less : T.prep.more}</Txt>
               </Pressable>
             ) : null}
-            {more === id ? <Contents id={id} /> : null}
+            {more === id ? <Contents id={id} ride={world.scenario(s.scenario).kind === 'ride'} /> : null}
             {!isCurrent && c.late.length ? <Txt dim style={styles.warn}>{T.prep.late(world.scenario(s.scenario).words.until)}</Txt> : null}
             {isCurrent ? (
               <Txt dim>{T.prep.chosen}</Txt>
@@ -110,7 +113,13 @@ function TroubleCard({ game, trouble, onClose, onChosen }: { game: Game; trouble
 }
 
 /** Состав решения: товары с ценой и магазином, что уже куплено или есть дома, работа по дому. */
-function Contents({ id }: { id: string }) {
+/** Вес решения в граммах: всё, что в нём, вместе с водой в бутылках. */
+function massOf(id: string): number {
+  return world.solution(id).goods.reduce((n, g) => n + (world.good(g.good).massG ?? 0) * g.qty, 0);
+}
+
+/** `ride` — в поездке рядом с ценой вес: всё взятое везти на себе. */
+function Contents({ id, ride }: { id: string; ride: boolean }) {
   const sol = world.solution(id);
   return (
     <View style={styles.contents} testID={`contents-${id}`}>
@@ -121,7 +130,7 @@ function Contents({ id }: { id: string }) {
         return (
           <View key={good}>
             <Txt>{home ? g.name : T.prep.item(g.name, qty, g.price.rub)}</Txt>
-            <Txt dim style={styles.small}>{home ? T.prep.itemHome : T.prep.itemShop(world.shop(g.shop).name, g.price.rub * qty)}</Txt>
+            <Txt dim style={styles.small}>{[home ? T.prep.itemHome : T.prep.itemShop(world.shop(g.shop).name, g.price.rub * qty), ride && g.massG ? T.prep.mass(g.massG * qty) : ''].filter(Boolean).join(' · ')}</Txt>
             {gives ? <Txt dim style={styles.small}>{gives}</Txt> : null}
           </View>
         );

@@ -5,11 +5,12 @@ import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { FONT_FILES } from './src/ui/fonts';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { useGame } from './src/state/game';
+import { useGame, world } from './src/state/game';
 import { TitleScreen } from './src/screens/TitleScreen';
 import { IntroScreen } from './src/screens/IntroScreen';
 import { PrepScreen } from './src/screens/PrepScreen';
 import { DaysScreen } from './src/screens/DaysScreen';
+import { RideScreen } from './src/screens/RideScreen';
 import { ResultScreen } from './src/screens/ResultScreen';
 import { AboutScreen } from './src/screens/AboutScreen';
 import { C } from './src/ui/theme';
@@ -39,7 +40,7 @@ export default function App() {
               {screen === 'title' ? <TitleScreen game={game} /> : null}
               {screen === 'intro' ? <IntroScreen game={game} /> : null}
               {screen === 'prep' ? <PrepScreen game={game} /> : null}
-              {screen === 'days' ? <DaysScreen game={game} /> : null}
+              {screen === 'days' ? (world.scenario(game.prep.scenario).kind === 'ride' ? <RideScreen game={game} /> : <DaysScreen game={game} />) : null}
               {screen === 'result' ? <ResultScreen game={game} /> : null}
               {screen === 'about' ? <AboutScreen game={game} /> : null}
             </>

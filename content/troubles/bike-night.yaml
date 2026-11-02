@@ -1,0 +1,42 @@
+trouble:
+  id: bike-night
+  name: Ночлег у озера
+  text: Ночь в конце июня короткая, но у воды прохладно, а земля холодная.
+solutions:
+  - id: night-blankets
+    tier: cheap
+    name: Палатка и одеяла из дома
+    text: Палатку купить, а спать — под своими одеялами.
+    goods: [{ good: tent-3, qty: 1 }, { good: home-blanket, qty: 3 }]
+    workMin: 0
+    why: Одеяла бесплатны, но занимают много места и весят, а греют хуже спальника.
+    sources: [pioner-bike, { assumption: "одеяло из дома греет примерно втрое слабее, чем спальник с ковриком — допущение игры" }]
+    review: draft
+  - id: night-bags
+    tier: mid
+    name: Палатка и спальники
+    text: Палатка и по лёгкому летнему спальнику на каждого.
+    goods: [{ good: tent-3, qty: 1 }, { good: sleeping-bag, qty: 3 }]
+    workMin: 0
+    why: Тонкий лёгкий спальник — то, что нужно в июне, но без коврика земля тянет тепло.
+    sources: [pioner-bike]
+    review: draft
+  - id: night-mats
+    tier: right
+    name: Палатка, спальники и коврики
+    text: Палатка, летние спальники и туристические коврики на троих.
+    goods: [{ good: tent-3, qty: 1 }, { good: sleeping-bag, qty: 3 }, { good: sleeping-mat, qty: 3 }]
+    workMin: 0
+    why: "Спальник и коврик — так собирают ночлег на конец июня: тонкий спальник греет, коврик отделяет от холодной земли."
+    sources: [pioner-bike]
+    review: draft
+  - id: night-burner
+    tier: trap
+    name: Палатка, спальники и горелка — погреться
+    text: Если ночью станет зябко, зажечь горелку прямо в палатке.
+    goods: [{ good: tent-3, qty: 1 }, { good: sleeping-bag, qty: 3 }, { good: trail-burner, qty: 1 }, { good: trail-gas, qty: 1 }]
+    workMin: 0
+    risks: [co]
+    why: Газ в закрытом пространстве даёт угарный газ — греться горелкой в палатке нельзя, как газовой плитой дома.
+    sources: [mchs-crimea-co, cdc-co]
+    review: draft

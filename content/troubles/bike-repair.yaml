@@ -1,0 +1,45 @@
+trouble:
+  id: bike-repair
+  name: Поломка в пути
+  text: Сто километров по асфальту и грунту. Самое частое в велопоходе — прокол и лопнувшая спица.
+solutions:
+  - id: repair-pump
+    tier: cheap
+    name: Насос
+    text: Взять насос — подкачать колесо, если спустит.
+    goods: [{ good: bike-pump, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: flat, stopsPct: 20 }]
+    why: Насос подкачает медленный прокол, но без камеры и заплаток пробитое колесо не починить — дальше пешком.
+    sources: [pioner-bike, { assumption: "с одним насосом прокол обходится без долгой ходьбы в одном случае из пяти — допущение игры" }]
+    review: draft
+  - id: repair-kit
+    tier: mid
+    name: Ремнабор
+    text: Насос, запасная камера, заплатки с клеем и мультиключ — на всю компанию.
+    goods: [{ good: bike-pump, qty: 1 }, { good: inner-tube, qty: 2 }, { good: patch-kit, qty: 1 }, { good: multitool, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: flat, stopsPct: 95 }]
+    why: С ремнабором прокол чинят на привале за полчаса, но серьёзную поломку в пути не исправить.
+    sources: [pioner-bike, { assumption: "с ремнабором прокол почти никогда не становится трудным этапом — допущение игры: 95 %" }]
+    review: draft
+  - id: repair-service
+    tier: right
+    name: Мастерская до похода и ремнабор со спицами
+    text: Отдать велосипеды на осмотр в первый вечер, забрать на второй; в дорогу — ремнабор и запасные спицы.
+    goods: [{ good: bike-service, qty: 3 }, { good: bike-pump, qty: 1 }, { good: inner-tube, qty: 2 }, { good: patch-kit, qty: 1 }, { good: multitool, qty: 1 }, { good: spokes, qty: 1 }]
+    workMin: 30
+    guards: [{ risk: flat, stopsPct: 95 }, { risk: break, stopsPct: 90 }]
+    why: Главный способ избежать ремонта в пути — осмотреть велосипед до похода и заменить всё подозрительное; ремнабор выручит с проколом.
+    sources: [pioner-bike, { assumption: "осмотр в мастерской предотвращает девять серьёзных поломок из десяти — допущение игры" }]
+    review: draft
+  - id: repair-toolbox
+    tier: trap
+    name: Взять весь ящик инструментов
+    text: Чтобы починить что угодно, — взять с собой ящик инструментов из гаража.
+    goods: [{ good: garage-toolbox, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: flat, stopsPct: 30 }]
+    why: Везти с собой целую мастерскую не получится — это килограммы, а запасной камеры в ящике всё равно нет.
+    sources: [pioner-bike]
+    review: draft

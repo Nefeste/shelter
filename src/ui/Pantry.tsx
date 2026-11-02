@@ -20,6 +20,9 @@ const BOX: Record<Category, string> = {
   health: '#4f9a6b',
   hygiene: C.inkSoft,
   safety: '#d0703a',
+  bags: '#8a6d4b',
+  repair: '#6b7f8c',
+  camp: '#3f6f5a',
 };
 
 export function Pantry({ world, prep }: { world: World; prep: PrepState }) {

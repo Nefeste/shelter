@@ -30,6 +30,10 @@ export const POLICIES: Policy[] = ['list', 'plan', 'reverse', 'upgrade'];
 const POLICY_NAME: Record<Policy, string> = { list: '«по списку»', plan: '«с расчётом»', reverse: '«наоборот»', upgrade: '«дёшево, потом лучше»' };
 
 const sc = world.scenario(SCENARIO);
+/** Поездка считается этапами и сходом с маршрута, дом — днями и эвакуацией. */
+const RIDE = sc.kind === 'ride';
+const OFF = RIDE ? 'Сход с маршрута' : 'Эвакуация';
+const stageName = (i: number) => sc.ride?.stages[i]?.name ?? `${i + 1}-й день`;
 const troubleOf = (sid: string) => world.solution(sid).trouble;
 const options = (t: string) => world.trouble(t).solutions;
 const tierOf = (sid: string) => world.solution(sid).tier;
@@ -203,7 +207,7 @@ export function report(rows: Row[], seeds: number): string {
   L.push('');
   L.push(`Собран \`bun tools/sim/player.ts\` (перебор детерминирован: тот же код и то же содержание — тот же отчёт): ${total.toLocaleString('ru-RU')} сочетаний решений, четыре привычки порядка, зёрна 1…${seeds} (в игре зерно — номер попытки).`);
   L.push('');
-  L.push(`Сочетание — по одному решению на каждую из начальных бед (${sc.troubles.length}) и на беды, которые создали выбранные решения (${allCreated().map(t => `«${world.trouble(t).name}»`).join(', ') || 'нет'}). Звёзды — как в игре: 1 — продержались все ${sc.eventDays} дней, 2 — без ловушек и без дней без питья, еды и тепла, 3 — ни одного дня, когда чего-то не хватало.`);
+  L.push(`Сочетание — по одному решению на каждую из начальных бед (${sc.troubles.length}) и на беды, которые создали выбранные решения (${allCreated().map(t => `«${world.trouble(t).name}»`).join(', ') || 'нет'}). Звёзды — как в игре: ${RIDE ? `1 — проехали все ${sc.eventDays} этапов без схода, 2 — без ловушек, без жажды, голода, холодной ночи и клеща, 3 — ни одного трудного этапа.` : `1 — продержались все ${sc.eventDays} дней, 2 — без ловушек и без дней без питья, еды и тепла, 3 — ни одного дня, когда чего-то не хватало.`}`);
   L.push('');
 
   // 1. распределение
@@ -211,7 +215,7 @@ export function report(rows: Row[], seeds: number): string {
   L.push('');
   L.push('Доля пар «сочетание × зерно». «Не собрать» — привычка не смогла выбрать всё задуманное: не хватило денег, часов или места.');
   L.push('');
-  L.push('| Привычка | Не собрать | Эвакуация | ★ | ★★ | ★★★ |');
+  L.push(`| Привычка | Не собрать | ${OFF} | ★ | ★★ | ★★★ |`);
   L.push('|---|---|---|---|---|---|');
   for (const p of POLICIES) {
     const c = [0, 0, 0, 0];
@@ -243,7 +247,7 @@ export function report(rows: Row[], seeds: number): string {
   L.push('| Критерий | Итог | Выполнен |');
   L.push('|---|---|---|');
   L.push(`| Три звезды достижимы | ${three.length} сочетаний | ${ok(three.length > 0)} |`);
-  L.push(`| «Всё дешёвое» — эвакуация или одна звезда | лучшее — ${cheapMax < 0 ? 'не собрать' : `${cheapMax} ★`} | ${ok(cheapMax <= 1)} |`);
+  L.push(`| «Всё дешёвое» — ${OFF.toLowerCase()} или одна звезда | лучшее — ${cheapMax < 0 ? 'не собрать' : `${cheapMax} ★`} | ${ok(cheapMax <= 1)} |`);
   L.push(`| Нет решения, которое лучше всех во всех сочетаниях | ${dom.length ? dom.map(d => `«${nm(d)}»`).join(', ') : 'такого нет'} | ${ok(!dom.length)} |`);
   L.push(`| Ни одна ловушка не даёт три звезды | лучшее с ловушкой — ${trapMax} ★ | ${ok(trapMax < 3)} |`);
   L.push('');
@@ -430,12 +434,12 @@ function reviewSamples(rows: Row[], count: number): Sample[] {
       const sig = `${b.got[0]}:${lines.map(l => (l.kind === 'ranOut' ? `${l.kind}-${l.what}` : l.kind === 'evacuated' ? `${l.kind}-${l.reason}` : l.kind)).join('+')}`;
       if (seen.has(sig)) continue;
       seen.add(sig);
-      const title = `${'★'.repeat(b.got[0]) || 'эвакуация'} — ${r.ids.map(sid => `${nm(sid)} (${tier(sid)})`).join('; ')}`;
+      const title = `${'★'.repeat(b.got[0]) || OFF.toLowerCase()} — ${r.ids.map(sid => `${nm(sid)} (${tier(sid)})`).join('; ')}`;
       out.push({
         title,
         top: b.got[0] === 3,
         lines: lines.map(l => ({
-          text: T.result.line(l, id => (world.solutions.has(id) ? nm(id) : world.good(id).name)),
+          text: T.result.line(l, id => (world.solutions.has(id) ? nm(id) : world.good(id).name), stageName),
           source: sourceOf(world, b.s, l)?.title,
           // у «всё сработало» и «не пришло до дождя» источника не бывает
           needs: l.kind !== 'allGood' && l.kind !== 'late',

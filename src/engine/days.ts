@@ -4,11 +4,38 @@
 import type { Provides, Risk, Solution } from '../content/types';
 import { Rng } from './core/rng';
 import { type PrepState, type World } from './prep';
+import { runRide } from './ride';
 
-export type EvacReason = 'cold' | 'thirst' | 'hunger' | 'meds' | 'co' | 'fire';
+/** Дома — эвакуация; в поездке — сход с маршрута (`break`, `dark`, `stomach`, `co`). */
+export type EvacReason = 'cold' | 'thirst' | 'hunger' | 'meds' | 'co' | 'fire' | 'break' | 'dark' | 'stomach';
 
 /** Чего не хватило в день — для разбора. */
-export type Shortage = 'water' | 'drink' | 'food' | 'light' | 'comms' | 'sanitation' | 'cold' | 'care' | 'road';
+export type Shortage = 'water' | 'drink' | 'food' | 'light' | 'comms' | 'sanitation' | 'cold' | 'care' | 'road'
+  // поездка: опоздали к стоянке, ехали в темноте, промокли, прокол без ремнабора, упали, клещ,
+  // опоздали на электричку, в дождь без света
+  | 'late' | 'dark' | 'wet' | 'flat' | 'fall' | 'tick' | 'train' | 'visibility';
+
+/** Этап маршрута в итоге поездки (src/engine/ride.ts). */
+export interface StageLog {
+  stage: string;
+  kind: 'ride' | 'night';
+  km: number;
+  road: 'asphalt' | 'dirt';
+  /** выезд и прибытие, минуты от полуночи */
+  startMin: number;
+  endMin: number;
+  /** срок, если он есть у этапа */
+  deadlineMin?: number;
+  rain: boolean;
+  /** ветер: проценты скорости, + попутный */
+  wind: number;
+  /** на сколько процентов медленнее из-за груза */
+  slowPct: number;
+  /** груз на взрослый велосипед, кг */
+  loadKg: number;
+  /** прокол починили на привале */
+  fixed?: boolean;
+}
 
 export interface DayLog {
   day: number;
@@ -19,7 +46,9 @@ export interface DayLog {
   lightH: number;
   short: Shortage[];
   /** событие дня, если было */
-  event?: 'thaw' | 'clog' | 'injury' | 'stuck';
+  event?: 'thaw' | 'clog' | 'injury' | 'stuck' | 'rain' | 'flat' | 'break' | 'tick' | 'fall';
+  /** поездка: этап маршрута вместо дня */
+  ride?: StageLog;
 }
 
 export interface Outcome {
@@ -62,6 +91,7 @@ function active(w: World, s: PrepState): Solution[] {
  */
 export function runDays(w: World, s: PrepState, seed: number): Outcome {
   const sc = w.scenario(s.scenario);
+  if (sc.kind === 'ride') return runRide(w, s, seed);
   const rng = Rng.seeded(seed).fork('days');
   const sols = active(w, s);
   const late = s.bought.filter(p => p.arrivesDay >= sc.prepDays).map(p => p.good);
@@ -244,7 +274,7 @@ export function runDays(w: World, s: PrepState, seed: number): Outcome {
  */
 export function stars(o: Outcome): 0 | 1 | 2 | 3 {
   if (o.evacuated) return 0;
-  const health = o.days.some(d => d.short.some(x => x === 'drink' || x === 'food' || x === 'cold'));
+  const health = o.days.some(d => d.short.some(x => x === 'drink' || x === 'food' || x === 'cold' || x === 'tick'));
   if (o.traps.length || health) return 1;
   return o.hardDays === 0 ? 3 : 2;
 }

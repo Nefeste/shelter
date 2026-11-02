@@ -34,6 +34,7 @@
   category: food
   price: { rub: 239, basis: rosstat, note: "«Консервы мясные, кг» — 735,41 ₽ × 0,325 кг; в позиции Росстата все мясные консервы" }
   volumeL: 1
+  massG: 360
   provides: { kcal: 715 }
   sources: [skurikhin-2002, rosstat-prices-2026-09]
   review: draft
@@ -44,6 +45,7 @@
   needsCooking: true
   price: { rub: 90, basis: rosstat, note: "«Крупа гречневая-ядрица, кг» — 90,08 ₽" }
   volumeL: 1
+  massG: 1000
   provides: { kcal: 3080 }
   sources: [skurikhin-2002, rosstat-prices-2026-09]
   review: draft
@@ -53,6 +55,7 @@
   category: food
   price: { rub: 50, basis: rosstat, note: "«Хлеб и булочные изделия из пшеничной муки различных сортов, кг» — 125,86 ₽ × 0,4 кг" }
   volumeL: 1
+  massG: 400
   provides: { kcal: 1050 }
   sources: [skurikhin-2002, rosstat-prices-2026-09]
   review: draft
@@ -73,6 +76,7 @@
   cooks: true
   price: { rub: 1500, basis: estimate, note: "оценка: обычно 600–2500 ₽" }
   volumeL: 3
+  massG: 350
   sources: [cdc-co, cpsc-co]
   review: draft
 - id: gas-heater
@@ -90,6 +94,7 @@
   price: { rub: 220, basis: estimate, note: "оценка: обычно 150–300 ₽ за баллон 220 г" }
   # запасные баллоны хранят вне дома (МЧС) — места в кладовой не занимают
   volumeL: 0
+  massG: 360
   provides: { fuelH: 2 }
   sources:
     - nist-butane
@@ -157,8 +162,11 @@
   shop: super
   category: light
   clicks: true
+  bikeLight: head
+  atHand: true
   price: { rub: 800, basis: estimate, note: "оценка: 300–1500 ₽" }
   volumeL: 1
+  massG: 100
   sources: [mchs-kit, ready-outage]
   review: draft
 - id: batteries
@@ -167,6 +175,7 @@
   category: light
   price: { rub: 297, basis: rosstat, note: "«Батарейки электрические типа АА, шт.» — 74,23 ₽ × 4" }
   volumeL: 0
+  massG: 100
   provides: { lightH: 15 }
   sources:
     - rosstat-prices-2026-09
@@ -191,6 +200,7 @@
   category: comms
   price: { rub: 1700, basis: estimate, note: "оценка: 900–2500 ₽ на 10 000 мА·ч" }
   volumeL: 0
+  massG: 250
   provides: { commsDays: 4 }
   sources:
     - mchs-yakutia-outage
@@ -242,6 +252,7 @@
   firstAid: true
   price: { rub: 1200, basis: estimate, note: "оценка: 500–2200 ₽ за готовую домашнюю аптечку" }
   volumeL: 1
+  massG: 300
   sources: [mchs-kit]
   review: draft
 - id: bucket
@@ -291,6 +302,7 @@
   category: comms
   price: { rub: 0, basis: estimate, note: "уже есть" }
   volumeL: 0
+  massG: 200
   provides: { commsDays: 3 }
   sources:
     - mchs-yakutia-outage
@@ -348,4 +360,330 @@
   price: { rub: 0, basis: estimate, note: "уже на даче" }
   volumeL: 0
   sources: [mchs-adygea-stove]
+  review: draft
+
+# Велопоход выходного дня (docs/specs/2026-11-bike-weekend.md). Масса — допущение игры по типичным
+# паспортам (в граммах), цены — оценка: велосумок, фар и палаток в таблице Росстата нет.
+- id: own-backpack
+  name: Рюкзак походный, свой
+  shop: home
+  category: bags
+  price: { rub: 0, basis: estimate, note: "уже есть" }
+  volumeL: 0
+  massG: 1500
+  bag: { slot: back, liters: 50, handL: 1 }
+  sources: [pioner-bike, { assumption: "свой рюкзак — около 50 л и 1,5 кг" }]
+  review: draft
+- id: rear-rack
+  name: Багажник велосипедный задний
+  shop: sport
+  category: bags
+  price: { rub: 1500, basis: estimate, note: "оценка: обычно 900–3000 ₽" }
+  volumeL: 0
+  massG: 700
+  sources: [pioner-bike, { assumption: "багажник — около 0,7 кг" }]
+  review: draft
+- id: cargo-straps
+  name: Резинки для крепления груза, комплект
+  shop: sport
+  category: bags
+  price: { rub: 300, basis: estimate, note: "оценка: обычно 150–500 ₽" }
+  volumeL: 0
+  massG: 150
+  sources: [pioner-bike]
+  review: draft
+- id: rack-pannier
+  name: Велорюкзак на багажник, 60 л
+  shop: sport
+  category: bags
+  price: { rub: 2500, basis: estimate, note: "оценка: обычно 1500–5000 ₽" }
+  volumeL: 0
+  massG: 1300
+  bag: { slot: rack, liters: 60 }
+  sources: [pioner-bike, { assumption: "велорюкзак на багажник — 60 л и около 1,3 кг; в источнике для некатегорийных походов 60–65 л" }]
+  review: draft
+- id: bar-bag
+  name: Сумка на руль, 5 л
+  shop: sport
+  category: bags
+  price: { rub: 900, basis: estimate, note: "оценка: обычно 600–2000 ₽" }
+  volumeL: 0
+  massG: 400
+  bag: { slot: bar, liters: 5, handL: 5 }
+  sources: [pioner-bike, { assumption: "сумка на руль — 5 л и около 0,4 кг" }]
+  review: draft
+- id: bar-straps
+  name: Ремни, чтобы привязать палатку и коврики к рулю
+  shop: sport
+  category: bags
+  price: { rub: 300, basis: estimate, note: "оценка: обычно 200–500 ₽" }
+  volumeL: 0
+  massG: 100
+  bag: { slot: bar, liters: 30 }
+  sources: [pioner-bike, { assumption: "к рулю привязывают около 30 л груза — палатку и коврики" }]
+  review: draft
+- id: bike-pump
+  name: Насос велосипедный ручной
+  shop: sport
+  category: repair
+  price: { rub: 900, basis: estimate, note: "оценка: обычно 500–1500 ₽" }
+  volumeL: 1
+  massG: 150
+  sources: [pioner-bike]
+  review: draft
+- id: inner-tube
+  name: Камера велосипедная запасная
+  shop: sport
+  category: repair
+  price: { rub: 400, basis: estimate, note: "оценка: обычно 300–700 ₽" }
+  volumeL: 1
+  massG: 150
+  sources: [pioner-bike]
+  review: draft
+- id: patch-kit
+  name: Заплатки и клей для камер
+  shop: sport
+  category: repair
+  price: { rub: 200, basis: estimate, note: "оценка: обычно 100–400 ₽" }
+  volumeL: 0
+  massG: 50
+  sources: [pioner-bike]
+  review: draft
+- id: multitool
+  name: Мультиключ велосипедный
+  shop: sport
+  category: repair
+  price: { rub: 900, basis: estimate, note: "оценка: обычно 500–2000 ₽" }
+  volumeL: 1
+  massG: 200
+  sources: [pioner-bike]
+  review: draft
+- id: spokes
+  name: Спицы запасные под свои колёса
+  shop: sport
+  category: repair
+  price: { rub: 300, basis: estimate, note: "оценка: обычно 200–500 ₽ за несколько спиц" }
+  volumeL: 0
+  massG: 100
+  sources: [pioner-bike]
+  review: draft
+- id: bike-service
+  name: Осмотр и настройка велосипеда в мастерской
+  shop: bike-shop
+  category: repair
+  price: { rub: 1500, basis: estimate, note: "оценка: обычно 1000–2500 ₽ за велосипед" }
+  volumeL: 0
+  massG: 0
+  sources: [pioner-bike, { assumption: "мастерская держит велосипед до следующего вечера" }]
+  review: draft
+- id: garage-toolbox
+  name: Ящик инструментов из гаража
+  shop: home
+  category: repair
+  price: { rub: 0, basis: estimate, note: "уже есть" }
+  volumeL: 10
+  massG: 7000
+  sources: [pioner-bike, { assumption: "домашний ящик инструментов — около 7 кг" }]
+  review: draft
+- id: home-blanket
+  name: Одеяло из дома
+  shop: home
+  category: camp
+  price: { rub: 0, basis: estimate, note: "уже есть" }
+  volumeL: 20
+  massG: 1800
+  sleepC: 5
+  sources: [{ assumption: "ватное одеяло — около 20 л и 1,8 кг, утепляет примерно как треть хорошего ночлега" }]
+  review: draft
+- id: tent-3
+  name: Палатка трёхместная
+  shop: sport
+  category: camp
+  price: { rub: 8000, basis: estimate, note: "оценка: обычно 5000–15 000 ₽" }
+  volumeL: 15
+  massG: 3500
+  sleepC: 4
+  sources: [pioner-bike, { assumption: "палатка на троих — около 15 л и 3,5 кг" }]
+  review: draft
+- id: sleeping-bag
+  name: Спальник лёгкий летний
+  shop: sport
+  category: camp
+  price: { rub: 2500, basis: estimate, note: "оценка: обычно 1500–4000 ₽" }
+  volumeL: 8
+  massG: 1100
+  sleepC: 8
+  sources: [pioner-bike, { assumption: "летний спальник — около 8 л и 1,1 кг" }]
+  review: draft
+- id: sleeping-mat
+  name: Коврик туристический
+  shop: sport
+  category: camp
+  price: { rub: 600, basis: estimate, note: "оценка: обычно 400–1200 ₽" }
+  volumeL: 8
+  massG: 300
+  sleepC: 4
+  sources: [pioner-bike, { assumption: "коврик отделяет от холодной земли: около 4 °C к ночлегу" }]
+  review: draft
+- id: bike-flask
+  name: Фляга велосипедная с флягодержателем, 0,75 л
+  shop: sport
+  category: water
+  price: { rub: 700, basis: estimate, note: "оценка: обычно 400–1200 ₽ за флягу с держателем" }
+  volumeL: 0
+  massG: 150
+  flaskDl: 7
+  sources: [pioner-bike]
+  review: draft
+- id: water-1500
+  name: Вода питьевая, 1,5 л
+  shop: super
+  category: water
+  price: { rub: 68, basis: rosstat, note: "«Вода питьевая, л» — 45,00 ₽ × 1,5 л" }
+  volumeL: 2
+  massG: 1550
+  provides: { waterDl: 15 }
+  sources: [rpn-moscow-water, rosstat-prices-2026-09]
+  review: draft
+- id: camp-pot
+  name: Котелок походный
+  shop: sport
+  category: water
+  shared: true
+  boils: true
+  price: { rub: 900, basis: estimate, note: "оценка: обычно 500–1500 ₽" }
+  volumeL: 3
+  massG: 400
+  sources: [pioner-bike, rpn-kostroma-nature]
+  review: draft
+- id: trail-snacks
+  name: Сушки простые, 500 г
+  shop: super
+  category: food
+  atHand: true
+  price: { rub: 150, basis: estimate, note: "оценка: обычно 100–250 ₽ за полкило" }
+  volumeL: 1
+  massG: 500
+  provides: { kcal: 1710 }
+  sources: [gost-7128, pioner-bike]
+  review: draft
+- id: deli-picnic
+  name: Колбаса, сыр и салаты в контейнерах
+  shop: super
+  category: food
+  price: { rub: 900, basis: estimate, note: "оценка: обычно 600–1200 ₽ на компанию" }
+  volumeL: 3
+  massG: 1500
+  provides: { kcal: 4500 }
+  sources: [rpn-kostroma-nature, { assumption: "калорийность набора для пикника — оценка игры: в жару он всё равно портится к вечеру" }]
+  review: draft
+- id: mosquito-spray
+  name: Средство от комаров, аэрозоль
+  shop: pharmacy
+  category: health
+  atHand: true
+  price: { rub: 350, basis: estimate, note: "оценка: обычно 200–500 ₽" }
+  volumeL: 0
+  massG: 150
+  sources: [pioner-bike]
+  review: draft
+- id: tick-spray
+  name: Средство от клещей для одежды, аэрозоль
+  shop: pharmacy
+  category: health
+  price: { rub: 450, basis: estimate, note: "оценка: обычно 300–600 ₽" }
+  volumeL: 0
+  massG: 150
+  sources: [rpn-kostroma-nature, rpn-eao-ticks]
+  review: draft
+- id: light-long-clothes
+  name: Светлая одежда с длинным рукавом и брюки, свои
+  shop: home
+  category: health
+  price: { rub: 0, basis: estimate, note: "уже есть" }
+  volumeL: 2
+  massG: 400
+  sources: [rpn-kostroma-nature, rpn-eao-ticks]
+  review: draft
+- id: bike-front-light
+  name: Фара велосипедная белая
+  shop: sport
+  category: light
+  bikeLight: front
+  price: { rub: 1200, basis: estimate, note: "оценка: обычно 600–2500 ₽" }
+  volumeL: 0
+  massG: 100
+  sources: [pdd-bike]
+  review: draft
+- id: bike-rear-light
+  name: Фонарь велосипедный задний красный
+  shop: sport
+  category: light
+  bikeLight: rear
+  price: { rub: 600, basis: estimate, note: "оценка: обычно 300–1200 ₽" }
+  volumeL: 0
+  massG: 50
+  sources: [pdd-bike]
+  review: draft
+- id: reflectors
+  name: Световозвращатели на велосипед и жилет со световозвращающими полосами
+  shop: sport
+  category: light
+  bikeLight: reflect
+  price: { rub: 700, basis: estimate, note: "оценка: обычно 400–1000 ₽ за комплект и жилет" }
+  volumeL: 1
+  massG: 200
+  sources: [pdd-bike]
+  review: draft
+- id: plastic-bags
+  name: Пакеты для вещей, рулон
+  shop: near
+  category: camp
+  rain: gear
+  price: { rub: 100, basis: estimate, note: "оценка: обычно 60–150 ₽" }
+  volumeL: 0
+  massG: 100
+  sources: [pioner-bike]
+  review: draft
+- id: rain-poncho
+  name: Дождевик-плащ
+  shop: sport
+  category: camp
+  rain: people
+  atHand: true
+  price: { rub: 500, basis: estimate, note: "оценка: обычно 300–1200 ₽" }
+  volumeL: 1
+  massG: 250
+  sources: [pioner-bike]
+  review: draft
+- id: bag-cover
+  name: Чехол от дождя на велорюкзак
+  shop: sport
+  category: camp
+  rain: gear
+  price: { rub: 500, basis: estimate, note: "оценка: обычно 300–900 ₽" }
+  volumeL: 0
+  massG: 100
+  sources: [pioner-bike]
+  review: draft
+- id: trail-burner
+  name: Горелка туристическая газовая
+  shop: sport
+  category: food
+  shared: true
+  cooks: true
+  price: { rub: 1500, basis: estimate, note: "оценка: обычно 600–2500 ₽" }
+  volumeL: 1
+  massG: 300
+  sources: [pioner-bike, cdc-co]
+  review: draft
+- id: trail-gas
+  name: Газовый баллон 230 г для горелки
+  shop: sport
+  category: food
+  shared: true
+  price: { rub: 350, basis: estimate, note: "оценка: обычно 250–450 ₽" }
+  volumeL: 1
+  massG: 370
+  sources: [pioner-bike]
   review: draft

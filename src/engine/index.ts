@@ -3,3 +3,4 @@
 export * from './prep';
 export * from './days';
 export * from './review';
+export * from './ride';

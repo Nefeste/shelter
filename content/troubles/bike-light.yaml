@@ -1,0 +1,41 @@
+trouble:
+  id: bike-light
+  name: Свет и видимость
+  text: Если задержимся, к озеру доберёмся в сумерках; в дождь видно хуже.
+solutions:
+  - id: blight-headlamps
+    tier: cheap
+    name: Налобные фонари
+    text: По налобному фонарю на каждого — и в палатке пригодится.
+    goods: [{ good: headlamp, qty: 3 }, { good: batteries, qty: 1 }]
+    workMin: 0
+    why: Налобный фонарь освещает дорогу, но сзади велосипед не видно — нужен красный фонарь или световозвращатель.
+    sources: [pdd-bike]
+    review: draft
+  - id: blight-reflect
+    tier: mid
+    name: Световозвращатели и жилеты
+    text: Световозвращатели на велосипеды и жилеты с полосами.
+    goods: [{ good: reflectors, qty: 3 }]
+    workMin: 20
+    why: Вне населённых пунктов световозвращатели обязательны в темноте — машины вас увидят, но дорогу вперёд они не осветят.
+    sources: [pdd-bike]
+    review: draft
+  - id: blight-bike
+    tier: right
+    name: Фары, задние фонари и световозвращатели
+    text: Белая фара спереди, красный фонарь сзади, световозвращатели и налобный фонарь для стоянки.
+    goods: [{ good: bike-front-light, qty: 3 }, { good: bike-rear-light, qty: 3 }, { good: reflectors, qty: 3 }, { good: headlamp, qty: 1 }]
+    workMin: 30
+    why: "Так велосипед оборудуют по правилам: спереди белый свет, сзади красный, а налобный фонарь — для лагеря."
+    sources: [pdd-bike]
+    review: draft
+  - id: blight-none
+    tier: trap
+    name: Без света — к темноте будем на месте
+    text: Ехать будем днём, фонари ни к чему.
+    goods: []
+    workMin: 0
+    why: Ездить в темноте без света нельзя, а задержаться можно всегда — поэтому ночлег ищут за два часа до темноты и всё равно берут фонари.
+    sources: [pdd-bike, pioner-bike]
+    review: draft

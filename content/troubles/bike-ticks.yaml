@@ -1,0 +1,45 @@
+trouble:
+  id: bike-ticks
+  name: Клещи и комары
+  text: Привалы в лесу и ночёвка у воды. Конец июня — клещи ещё активны.
+solutions:
+  - id: ticks-mosquito
+    tier: cheap
+    name: Средство от комаров
+    text: Аэрозоль от комаров — под рукой.
+    goods: [{ good: mosquito-spray, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: tick, stopsPct: 10 }]
+    why: Средство от комаров клещей почти не отпугивает.
+    sources: [pioner-bike, { assumption: "средство от комаров защищает от клеща в одном случае из десяти — допущение игры" }]
+    review: draft
+  - id: ticks-clothes
+    tier: mid
+    name: Закрытая светлая одежда
+    text: На привалах — светлые брюки и рубашки с длинным рукавом.
+    goods: [{ good: mosquito-spray, qty: 1 }, { good: light-long-clothes, qty: 3 }]
+    workMin: 0
+    guards: [{ risk: tick, stopsPct: 60 }]
+    why: Закрытая одежда мешает клещу добраться до кожи, а на светлой его видно.
+    sources: [rpn-kostroma-nature, rpn-eao-ticks, { assumption: "закрытая одежда предотвращает шесть укусов из десяти — допущение игры" }]
+    review: draft
+  - id: ticks-spray
+    tier: right
+    name: Одежда, средство от клещей и осмотры
+    text: Закрытая одежда, обработанная средством от клещей, и осмотр друг друга на каждом привале.
+    goods: [{ good: mosquito-spray, qty: 1 }, { good: light-long-clothes, qty: 3 }, { good: tick-spray, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: tick, stopsPct: 95 }]
+    why: Противоклещевое средство на одежде и частые осмотры — так советует Роспотребнадзор.
+    sources: [rpn-kostroma-nature, rpn-eao-ticks, { assumption: "средство и осмотры предотвращают почти все укусы — допущение игры: 95 %" }]
+    review: draft
+  - id: ticks-grass
+    tier: trap
+    name: Шорты — и отдыхать на траве
+    text: Жарко — едем в шортах, а на привалах валяемся на траве.
+    goods: [{ good: mosquito-spray, qty: 1 }]
+    workMin: 0
+    risks: [tick]
+    why: "На траву садиться нельзя: клещи сидят в траве, а одежда должна закрывать руки и ноги."
+    sources: [rpn-eao-ticks, rpn-kostroma-nature]
+    review: draft

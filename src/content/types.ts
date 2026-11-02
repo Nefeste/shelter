@@ -46,8 +46,12 @@ export interface Provides {
 }
 
 /** Раздел «Моего списка»: так покупки группируются дома. */
-export type Category = 'water' | 'food' | 'heat' | 'light' | 'comms' | 'health' | 'hygiene' | 'safety';
-export const CATEGORIES: readonly Category[] = ['water', 'food', 'heat', 'light', 'comms', 'health', 'hygiene', 'safety'];
+export type Category = 'water' | 'food' | 'heat' | 'light' | 'comms' | 'health' | 'hygiene' | 'safety' | 'bags' | 'repair' | 'camp';
+export const CATEGORIES: readonly Category[] = ['bags', 'water', 'food', 'heat', 'camp', 'light', 'comms', 'repair', 'health', 'hygiene', 'safety'];
+
+/** Место сумки на велосипеде (docs/specs/2026-11-bike-weekend.md, «Сумки — это место»). */
+export type BagSlot = 'bar' | 'frame' | 'rack' | 'back';
+export const BAG_SLOTS: readonly BagSlot[] = ['bar', 'frame', 'rack', 'back'];
 
 export interface Good {
   id: string;
@@ -71,6 +75,24 @@ export interface Good {
   radio?: boolean;
   /** фонарь с кнопкой: в сумерки слышен щелчок (звук с видимой причиной) */
   clicks?: boolean;
+  /** масса одной штуки в граммах — в маршруте тяжелее значит медленнее; дома вес не считается */
+  massG?: number;
+  /** сумка: на какое место велосипеда и сколько литров даёт; `handL` — из них «под рукой»: достать на ходу */
+  bag?: { slot: BagSlot; liters: number; handL?: number };
+  /** вещь, которой место под рукой: дождевик, перекус, фонарь, средство от комаров */
+  atHand?: boolean;
+  /** фляга во флягодержателе: столько децилитров, доливается на остановках */
+  flaskDl?: number;
+  /** котелок: на стоянке можно вскипятить воду, если есть горелка */
+  boils?: boolean;
+  /** общее снаряжение: один котелок служит и воде, и еде — нужное разным бедам не складывается */
+  shared?: boolean;
+  /** свет на велосипеде (ПДД 19.1): `front` — фара, `rear` — задний фонарь, `head` — налобный, `reflect` — световозвращатели */
+  bikeLight?: 'front' | 'rear' | 'head' | 'reflect';
+  /** дождевик или чехол: от чего защищает в дождь */
+  rain?: 'people' | 'gear';
+  /** ночлег: на сколько градусов теплее спать (палатка, спальник, коврик складываются) */
+  sleepC?: number;
   sources: Source[];
   review: Review;
 }
@@ -80,7 +102,7 @@ export const TIERS: readonly Tier[] = ['cheap', 'mid', 'right', 'trap'];
 
 /** Беда, которую решение может создать или от которой защищает. */
 /** `stuck` — машину занесло в дороге (сценарии поездок, `Scenario.stuck`). */
-export type Risk = 'co' | 'fire' | 'clog' | 'stuck';
+export type Risk = 'co' | 'fire' | 'clog' | 'stuck' | 'flat' | 'break' | 'tick' | 'fall' | 'stomach';
 
 export interface Solution {
   id: string;
@@ -107,6 +129,10 @@ export interface Solution {
   guards?: { risk: Risk; stopsPct: number }[];
   /** новые беды, которые появляются, если выбрать это решение */
   creates?: string[];
+  /** груз за спиной (рюкзак на себе): в маршруте замедляет сильнее */
+  onBack?: boolean;
+  /** уложено так, что вещи «под рукой» оказались на дне (ловушка «уложить поплотнее») */
+  buried?: boolean;
   /** порядок: если решение другой беды ещё не выбрано, эта работа стоит дороже */
   after?: { trouble: string; extraMin: number }[];
   /** строка разбора: почему решение работает или нет */
@@ -125,9 +151,89 @@ export interface Trouble {
 
 export type PersonKind = 'adult' | 'child' | 'elder';
 
+/** Этап маршрута: километры, дорога и срок; `night` — ночь у озера между днями. */
+export interface Stage {
+  id: string;
+  /** как этап называется в комиксе: «Станция → село» */
+  name: string;
+  /** день поездки, с нуля */
+  day: number;
+  /** `ride` — едут, `night` — ночь на стоянке */
+  kind: 'ride' | 'night';
+  km: number;
+  road: 'asphalt' | 'dirt';
+  /** выезд, минуты от полуночи: у первого этапа дня; дальше — по прибытии */
+  startMin?: number;
+  /** обед после этапа, минуты */
+  lunchMin?: number;
+  /** в конце этапа можно долить фляги (магазин в селе) */
+  refill?: boolean;
+  /** срок прибытия: `camp` — за два часа до заката, `train` — последняя электричка */
+  deadline?: 'camp' | 'train';
+}
+
+/** Маршрут сценария-поездки (`kind: ride`): числа модели — в записи, их видно в «Об игре». */
+export interface Ride {
+  stages: Stage[];
+  /** кто сколько везёт: доля в весе, у взрослого 2, у ребёнка 1 */
+  share: Record<PersonKind, number>;
+  /** литры «на себе и в карманах», когда сумок нет */
+  onBodyL: number;
+  /** одежда, телефоны и мелочи, которые не покупают: килограммы на всех */
+  baseKg: number;
+  /** до скольких килограммов на взрослый велосипед груз не замедляет */
+  lightKg: number;
+  /** на сколько процентов медленнее за каждый килограмм сверх лёгкого */
+  slowPctPerKg: number;
+  /** во сколько раз сильнее замедляет груз за спиной */
+  backFactor: number;
+  /** больше этого процента замедление не бывает */
+  slowMaxPct: number;
+  /** скорость в движении, км/ч × 10 */
+  speed: { asphalt: number; dirt: number };
+  /** в дождь грунт медленнее: процент от скорости */
+  rainDirtPct: number;
+  /** ветер: ± проценты скорости, на день по зерну */
+  windPct: number;
+  /** привал: столько минут на каждые `restEvery` минут езды */
+  restEvery: number;
+  restMin: number;
+  /** шанс дождя на одном из этапов, проценты */
+  rainPct: number;
+  /** шанс прокола на 100 км, проценты */
+  flatPer100: number;
+  /** шанс серьёзной поломки за поездку без осмотра, проценты */
+  breakPct: number;
+  /** шанс клеща за поездку без защиты, проценты */
+  tickPct: number;
+  /** шанс падения на этапе с грузом на руле, проценты */
+  fallPct: number;
+  /** закат и последняя электричка, минуты от полуночи */
+  sunsetMin: number;
+  trainMin: number;
+  /** ночью на улице, °C: от и до, по зерну */
+  nightC: [number, number];
+  /** спать тепло, если ночь + утепление не ниже этого */
+  sleepOkC: number;
+  /** питьё на час езды, децилитры, и на стоянке (вечер и утро) — на человека */
+  drinkDlPerH: Record<PersonKind, number>;
+  campDl: Record<PersonKind, number>;
+  /** калории на час езды и на стоянку (ужин и завтрак) */
+  kcal: Record<PersonKind, number>;
+  campKcal: Record<PersonKind, number>;
+  /** шанс расстройства от сырой воды или испорченной еды, проценты */
+  stomachPct: number;
+  /** прокол: сколько минут чинить с ремнабором и сколько идти пешком без него */
+  fixMin: number;
+  walkMin: number;
+}
+
 export interface Scenario {
   id: string;
   name: string;
+  /** `stay` — пережить беду дома (по умолчанию), `ride` — маршрут по этапам */
+  kind?: 'stay' | 'ride';
+  ride?: Ride;
   text: string;
   family: { id: string; name: string; kind: PersonKind }[];
   prepDays: number;

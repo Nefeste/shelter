@@ -111,9 +111,13 @@ tag by `android.yml`, with the kit's signing and contents actions).
   texts in `assets/fonts/`), applied by `Txt` in `src/ui/kit.tsx`.
 - `assets/audio/` — synthesized sounds, made by `npm run sound` (`tools/sound/gen.ts`, byte-exact
   test); never edit or add recordings by hand.
-- Scenarios: «Ледяной дождь» (home) and «Новогодние на даче» (the first «Сборы в дорогу» trip, own
-  troubles `road`, `dacha-*`, shared `co`); a scenario carries its own words, order and checks.
-- `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world, dacha; `tools/e2e/browser.ts` — the browser scenario.
+- Scenarios: «Ледяной дождь» (home), «Новогодние на даче» (the first «Сборы в дорогу» trip, own
+  troubles `road`, `dacha-*`, shared `co`) and «Велопоход выходного дня» (`kind: ride`, troubles
+  `bike-*`): bags are the place, every good has `massG`, the event is a route of stages
+  (`src/engine/ride.ts`) shown as comic pages (`src/screens/RideScreen.tsx`, `src/ui/RideScene.tsx`,
+  `src/ui/BikeArt.tsx`; the bike on the prep screen — `src/ui/Bike.tsx`, `src/state/bike.ts`); a failed
+  ride is «сход с маршрута», not an evacuation. A scenario carries its own words, order and checks.
+- `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world, dacha, bike; `tools/e2e/browser.ts` — the browser scenario.
 - `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes; `--scenario <id>` for
   another scenario): every combination of solutions, four ordering habits, seeds 1…30; writes
   `docs/reports/2026-11-virtual-player[-<scenario>].md`. Any

@@ -1,0 +1,89 @@
+id: bike-weekend
+name: Велопоход выходного дня
+kind: ride
+order: 3
+words: { until: до похода, start: В путь, place: сумки, card: сумки }
+text: >-
+  Последние выходные июня. Папа, мама и сын едут на велосипедах с ночёвкой: в субботу утром —
+  электричка за город, полсотни километров до озера, палатка на берегу; в воскресенье — ещё
+  полсотни до другой станции и последняя электричка домой. Бабушка остаётся в городе и ждёт
+  звонка. На сборы — два вечера после работы; всё, что взяли, — везти на себе.
+family:
+  - { id: dad, name: Папа, kind: adult }
+  - { id: mom, name: Мама, kind: adult }
+  - { id: son, name: Сын, kind: child }
+prepDays: 2
+minutesPerDay: 270
+money: [40000, 20000]
+# в поездке место — сумки (ride.onBodyL и сумки решения), кладовой нет
+pantryL: 0
+porchL: 0
+# четыре этапа и ночь между днями
+eventDays: 5
+outdoorC: [24, 26, 10, 22, 25]
+houseC: 0
+troubles: [bike-bags, bike-repair, bike-night, bike-water, bike-food, bike-ticks, bike-light, bike-rain]
+norms:
+  waterDl: { adult: 0, child: 0, elder: 0 }
+  drinkDl: { adult: 0, child: 0, elder: 0 }
+  kcal: 0
+  lightH: 0
+  comms: false
+  sanitation: false
+  coldC: 0
+  coldEvacC: -50
+  maxC: 40
+needsMeds: []
+ride:
+  stages:
+    - { id: village, name: Станция — село, day: 0, kind: ride, km: 25, road: asphalt, startMin: 630, lunchMin: 75, refill: true }
+    - { id: lake, name: Село — озеро, day: 0, kind: ride, km: 20, road: dirt, deadline: camp }
+    - { id: night, name: Ночь у озера, day: 0, kind: night, km: 0, road: dirt }
+    - { id: forest, name: Озеро — лесная дорога, day: 1, kind: ride, km: 30, road: dirt, startMin: 570, lunchMin: 60, refill: true }
+    - { id: station, name: Лес — станция, day: 1, kind: ride, km: 25, road: asphalt, deadline: train }
+  share: { adult: 2, child: 1, elder: 1 }
+  onBodyL: 10
+  baseKg: 10
+  lightKg: 14
+  slowPctPerKg: 3
+  backFactor: 2
+  slowMaxPct: 60
+  speed: { asphalt: 130, dirt: 100 }
+  rainDirtPct: 70
+  windPct: 15
+  restEvery: 45
+  restMin: 10
+  rainPct: 50
+  flatPer100: 50
+  breakPct: 25
+  tickPct: 35
+  fallPct: 30
+  sunsetMin: 1280
+  trainMin: 1180
+  nightC: [4, 12]
+  sleepOkC: 18
+  drinkDlPerH: { adult: 4, child: 3, elder: 4 }
+  campDl: { adult: 10, child: 8, elder: 10 }
+  kcal: { adult: 220, child: 180, elder: 200 }
+  campKcal: { adult: 1300, child: 1000, elder: 1100 }
+  stomachPct: 60
+  fixMin: 30
+  walkMin: 90
+sources:
+  - pioner-bike
+  - rpn-moscow-water
+  - mr-energy-2021
+  - pdd-bike
+  - { assumption: "маршрут, станции, озеро и расписание электричек вымышлены; закат в 21:20, последняя электричка в 19:40" }
+  - { assumption: "скорость в движении: асфальт 13 км/ч, грунт 10 км/ч, в дождь грунт на 30 % медленнее — из дневных норм «Пионера» для медленного темпа с привалами" }
+  - { assumption: "груз до 14 кг на взрослый велосипед не замедляет; дальше — на 3 % за килограмм, за спиной — вдвое быстрее и вдвое сильнее, не больше 60 %" }
+  - { assumption: "сын везёт половину доли взрослого" }
+  - { assumption: "одежда, телефоны и мелочи — 10 кг на всех; на себе и в карманах — 10 л" }
+  - { assumption: "дождь — на одном из этапов с вероятностью 50 %; ветер в день — встречный, попутный или тихо" }
+  - { assumption: "прокол — 50 % на сто километров; серьёзная поломка без осмотра — 25 % за поездку; клещ без защиты — 35 %; падение с грузом на руле — 30 % на этапе" }
+  - { assumption: "ночью у озера от +4 до +12 °C; спать тепло, если ночлег с утеплением даёт не меньше +18 °C" }
+  - { assumption: "питьё в езде — 0,4 л в час взрослому и 0,3 л ребёнку, на стоянке — литр взрослому и 0,8 л ребёнку: в пределах 4–6 л в сутки по Роспотребнадзору" }
+  - { assumption: "калории: 220 ккал в час езды взрослому и 180 ребёнку, ужин и завтрак у озера — 1300 и 1000 ккал; из суточных норм МР для высокой активности" }
+  - { assumption: "после сырой воды из озера или испорченной в жару еды живот болит в шести случаях из десяти" }
+  - { assumption: "прокол с ремнабором чинят за 30 минут, без него — 90 минут пешком до села" }
+review: draft

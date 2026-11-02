@@ -1,0 +1,44 @@
+trouble:
+  id: bike-bags
+  name: Куда сложить вещи
+  text: Палатка, спальники, еда и вода на троих — на два дня. Всё это поедет на велосипедах или на спине.
+solutions:
+  - id: bags-backs
+    tier: cheap
+    name: Свои рюкзаки за спиной
+    text: Походные рюкзаки уже есть — каждый везёт свой.
+    goods: [{ good: own-backpack, qty: 3 }]
+    workMin: 0
+    onBack: true
+    why: Рюкзак за спиной — это вес на спине весь день; велотуристы стараются везти груз на велосипеде, а не на себе.
+    sources: [pioner-bike, { assumption: "груз за спиной замедляет вдвое сильнее, чем тот же груз на багажнике — допущение игры" }]
+    review: draft
+  - id: bags-strapped
+    tier: mid
+    name: Багажники и рюкзаки на резинках
+    text: Поставить задние багажники и пристегнуть к ним свои рюкзаки.
+    goods: [{ good: own-backpack, qty: 3 }, { good: rear-rack, qty: 3 }, { good: cargo-straps, qty: 3 }]
+    workMin: 60
+    why: Обычный рюкзак тоже можно закрепить на багажнике — спина отдыхает, но до дождевика и воды на ходу не добраться.
+    sources: [pioner-bike]
+    review: draft
+  - id: bags-panniers
+    tier: right
+    name: Багажники, велорюкзаки и сумки на руль
+    text: На багажник — велорюкзак, на руль — маленькая сумка для того, что нужно на ходу.
+    goods: [{ good: rear-rack, qty: 3 }, { good: rack-pannier, qty: 3 }, { good: bar-bag, qty: 3 }]
+    workMin: 60
+    why: Велорюкзак на багажнике — спина не устаёт и остаётся сухой, а дождевик, вода и перекус лежат под рукой.
+    sources: [pioner-bike]
+    review: draft
+  - id: bags-bar-tent
+    tier: trap
+    name: Палатку и коврики — на руль
+    text: Багажник не нужен — палатку и коврики привязать к рулю, остальное — в рюкзаки.
+    goods: [{ good: own-backpack, qty: 3 }, { good: bar-straps, qty: 3 }]
+    workMin: 20
+    onBack: true
+    risks: [fall]
+    why: Груз, который «водит» руль, затрудняет управление, а упавшие на ходу вещи опасны и для едущих сзади; палатку возят на багажнике вместе с ковриком.
+    sources: [pioner-bike]
+    review: draft
