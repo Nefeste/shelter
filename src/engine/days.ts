@@ -51,6 +51,8 @@ export interface DayLog {
   event?: 'thaw' | 'clog' | 'injury' | 'stuck' | 'rain' | 'flat' | 'break' | 'tick' | 'fall';
   /** поездка: этап маршрута вместо дня */
   ride?: StageLog;
+  /** дом: «момент» дня — что случилось и есть ли нужное (src/state/moments.ts) */
+  moment?: { on: 'light' | 'injury' | 'stuck'; ok: boolean };
 }
 
 export interface Outcome {
@@ -172,6 +174,9 @@ export function runDays(w: World, s: PrepState, seed: number, misses: readonly n
   }
 
   const start = { waterDl: stock.waterDl, kcal: stock.kcal, lightH: stock.lightH, commsDays: stock.commsDays, sanitationDays: stock.sanitationDays };
+  const momentRule = (on: string) => sc.moments?.find(m => m.on === on);
+  // свет в первый вечер: был ли чем светить (по запасу на начало)
+  const hadLight = stock.lightH > 0;
   const days: DayLog[] = [];
   let coldRun = 0;
   let hungerRun = 0;
@@ -203,6 +208,13 @@ export function runDays(w: World, s: PrepState, seed: number, misses: readonly n
 
     if (stock.kcal >= kcalDay) { stock.kcal -= kcalDay; hungerRun = 0; }
     else { stock.kcal = 0; short.push('food'); hungerRun += 1; }
+
+    // «момент» дня: погас свет (первый вечер), порез, занесло — промах стоит часа света
+    let moment: DayLog['moment'];
+    if (d === stuckDay && momentRule('stuck')) moment = { on: 'stuck', ok: !stuckHard };
+    else if (d === injuryDay && momentRule('injury')) moment = { on: 'injury', ok: firstAid };
+    else if (d === 0 && momentRule('light') && sc.norms.lightH > 0) moment = { on: 'light', ok: hadLight };
+    if (moment) stock.lightH = Math.max(0, stock.lightH - (misses[d] ?? 0) * (momentRule(moment.on)?.costLightH ?? 0));
 
     // свет, связь и туалет — если сценарий их считает (на даче со светом — нет)
     if (sc.norms.lightH > 0) {
@@ -236,7 +248,7 @@ export function runDays(w: World, s: PrepState, seed: number, misses: readonly n
       if (!firstAid) short.push('care');
     }
 
-    days.push({ day: d, outdoorC, indoorC, waterDl: stock.waterDl, kcal: stock.kcal, lightH: stock.lightH, short, event });
+    days.push({ day: d, outdoorC, indoorC, waterDl: stock.waterDl, kcal: stock.kcal, lightH: stock.lightH, short, event, moment });
     if (short.length) hardDays += 1;
 
     let reason: EvacReason | undefined;

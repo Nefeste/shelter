@@ -126,15 +126,15 @@ export function build(): BuildReport {
     if (raw.outdoorC.length !== raw.eventDays) errors.push(`${where}: погода — на каждый день события`);
     for (const t of raw.troubles) if (!troubles.some(x => x.id === t)) errors.push(`${where}: нет беды ${t}`);
     for (const id of raw.needsMeds) if (!raw.family.some(p => p.id === id)) errors.push(`${where}: нет человека ${id}`);
+    for (const m of [...(raw.moments ?? []), ...(raw.ride?.moments ?? [])]) {
+      for (const g of m.want) if (!goods.some(x => x.id === g)) errors.push(`${where}: в «моменте» ${m.on} нет товара ${g}`);
+      for (const n of [m.costMin, m.costLightH]) if (n !== undefined && (!Number.isInteger(n) || n < 0)) errors.push(`${where}: «момент» ${m.on} — цена целым числом`);
+    }
     if (raw.kind === 'ride') {
       const r = raw.ride;
       if (!r) errors.push(`${where}: у поездки нет маршрута (ride)`);
       else {
         if (r.stages.length !== raw.eventDays) errors.push(`${where}: этапов ${r.stages.length}, а eventDays ${raw.eventDays}`);
-        for (const m of r.moments ?? []) {
-          for (const g of m.want) if (!goods.some(x => x.id === g)) errors.push(`${where}: в «моменте» ${m.on} нет товара ${g}`);
-          if (!Number.isInteger(m.costMin) || m.costMin < 0) errors.push(`${where}: «момент» ${m.on} — минуты целые`);
-        }
         for (const st of r.stages) {
           text(`${where}, этап ${st.id}`, st.name);
           if (st.kind === 'ride' && !(st.km > 0)) errors.push(`${where}, этап ${st.id}: нет километров`);

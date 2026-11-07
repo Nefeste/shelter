@@ -230,13 +230,16 @@ export interface Ride {
   moments?: Moment[];
 }
 
-export type MomentKind = 'flat' | 'rain' | 'dark';
+/** Поездка: прокол, дождь, темнота; дом (docs/specs/2026-11-home-comic.md): погас свет, порез, занесло. */
+export type MomentKind = 'flat' | 'rain' | 'dark' | 'light' | 'injury' | 'stuck';
 export interface Moment {
   on: MomentKind;
   /** что из уложенного помогает: хватит любого */
   want: string[];
-  /** минут на поиски за каждую ошибку */
-  costMin: number;
+  /** поездка: минут на поиски за каждую ошибку */
+  costMin?: number;
+  /** дом: часов света за каждую ошибку — светили, пока искали */
+  costLightH?: number;
 }
 
 export interface Scenario {
@@ -288,6 +291,8 @@ export interface Scenario {
    * это трудным днём.
    */
   stuck?: { pct: number; day: number };
+  /** «моменты» дней дома: в кадре случая игрок достаёт нужное (у поездок — `ride.moments`) */
+  moments?: Moment[];
   /** сколько первых дней события идёт ледяной дождь — для сцены; нет — снег */
   iceDays?: number;
   /** место в линейке: на первом экране сценарии идут по возрастанию */

@@ -29,15 +29,16 @@ export interface MomentView {
 
 /** Момент этапа: карточки — нужное (если взято и достаётся) и до трёх других вещей из уложенного. */
 export function momentOf(w: World, s: PrepState, o: Outcome, stage: number, attempt: number, picks: Picks): MomentView | null {
-  const log = o.days[stage]?.ride;
-  const m = log?.moment;
-  const rule = m && w.scenario(s.scenario).ride?.moments?.find(x => x.on === m.on);
+  const day = o.days[stage];
+  const m = day?.ride?.moment ?? day?.moment;
+  const sc = w.scenario(s.scenario);
+  const rule = m && (sc.ride?.moments ?? sc.moments)?.find(x => x.on === m.on);
   if (!m || !rule) return null;
   const late = new Set(s.bought.filter(p => p.arrivesDay >= w.scenario(s.scenario).prepDays).map(p => p.good));
   const have = packed(w, s).map(p => p.good).filter(g => !late.has(g));
   // нужное на карточках, если взято и достаётся: прокол — всегда, если камера в сумке; дождевик —
   // только когда он под рукой (иначе `ok` у дождя ложь)
-  const reach = m.on === 'flat' || m.ok;
+  const reach = m.on !== 'rain' || m.ok;
   const want = reach ? rule.want.filter(g => have.includes(g)).slice(0, 2) : [];
   const salt = (g: string) => fnv1a(`${attempt}|${stage}|${g}`);
   const others = have
