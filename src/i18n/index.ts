@@ -2,7 +2,7 @@
 // Тексты бед, решений и товаров — в content/. В прототипе — только русский; английский — к срезу.
 import type { Category, Provides } from '../content/types';
 import type { EvacReason, Refusal, ReviewLine, Shortage } from '../engine';
-import type { ListGroup } from '../state/checklist';
+import type { ListGroup, PackGroup, Where } from '../state/checklist';
 
 const nb = ' ';
 /** «12 500 ₽» — разряды и знак через неразрывный пробел (голос студии). */
@@ -35,6 +35,9 @@ const CATEGORY: Record<Category, string> = {
   health: 'Аптечка и лекарства',
   hygiene: 'Туалет и мусор',
   safety: 'Безопасность',
+  bags: 'Сумки',
+  repair: 'Ремонт',
+  camp: 'Ночлег и дождь',
 };
 
 /** «Мой список» текстом — для копирования: разделы, строки с ценой, итог. */
@@ -50,6 +53,21 @@ const listText = (groups: ListGroup[], have: ReadonlySet<string>, total: number,
   return out.join('\n');
 };
 
+const WHERE_NAME: Record<Where, string> = { bike: 'На велосипеде', hand: 'Под рукой', packed: 'В сумках' };
+
+/** «Мой список» поездки текстом: по местам, с весом и ценой. */
+const packText = (title: string, groups: PackGroup[], have: ReadonlySet<string>, total: number, left: number, massG: number) => {
+  const out: string[] = [`Мой список: ${title.toLowerCase()}`];
+  for (const g of groups) {
+    out.push('', `${WHERE_NAME[g.where]} — ${kg(g.massG)}`);
+    for (const r of g.rows) out.push(`${have.has(r.good) || r.home ? '☑' : '☐'} ${r.name} — ${r.qty} шт., ${kg(r.massG)}${r.home ? ', из дома' : `, ${rub(r.sum)} (${r.shop.toLowerCase()})`}`);
+  }
+  out.push('', `Всего купить: ${rub(total)}`, `Вес: ${kg(massG)}`);
+  if (left !== total) out.push(`Осталось купить: ${rub(left)}`);
+  out.push('Цены — средние по Росстату или оценка; вес — по типичным паспортам.');
+  return out.join('\n');
+};
+
 const EVAC: Record<EvacReason, string> = {
   cold: 'в доме стало слишком холодно два дня подряд',
   thirst: 'кончилась вода на питьё',
@@ -57,6 +75,18 @@ const EVAC: Record<EvacReason, string> = {
   meds: 'у бабушки кончились её лекарства',
   co: 'отравление угарным газом — отвезли в больницу',
   fire: 'начался пожар',
+  break: 'серьёзная поломка: такую в пути не починить',
+  dark: 'стемнело, а ехать в темноте без света нельзя',
+  stomach: 'разболелся живот',
+};
+
+/** Сход с маршрута — спокойно: свернули, за семьёй приехали. */
+const OFF: Record<EvacReason, string> = {
+  ...EVAC,
+  co: 'ночью в палатке угорели от горелки — утром к врачу',
+  break: 'серьёзная поломка — докатили велосипед до станции',
+  dark: 'стемнело, ехать без света нельзя — заночевали в деревне, утром за семьёй приехали',
+  stomach: 'разболелся живот — утром за семьёй приехали на машине',
 };
 
 const SHORT: Record<Shortage, string> = {
@@ -69,7 +99,20 @@ const SHORT: Record<Shortage, string> = {
   cold: 'холодно',
   care: 'нечем обработать порез или простуду',
   road: 'застряли в дороге',
+  late: 'к стоянке позже, чем за два часа до заката',
+  dark: 'ехали в темноте',
+  wet: 'промокли под дождём',
+  flat: 'прокол — шли пешком',
+  fall: 'упали — руль водит от груза',
+  tick: 'укусил клещ — к врачу после похода',
+  train: 'опоздали на последнюю электричку',
+  visibility: 'в дождь без фары и заднего фонаря',
 };
+
+/** «13:20» */
+export const clock = (m: number) => `${Math.floor(m / 60) % 24}:${String(m % 60).padStart(2, '0')}`;
+/** «4,5 кг» */
+export const kg = (g: number) => `${String(Math.round(g / 100) / 10).replace('.', ',')}${nb}кг`;
 
 export const T = {
   app: {
@@ -91,6 +134,7 @@ export const T = {
     money: (first: number, second: number) => (second ? `Деньги: ${rub(first)} сейчас и ${rub(second)} утром второго дня.` : `Деньги: ${rub(first)}.`),
     hours: (perDay: number, days: number) => `Свободного времени — ${minutes(perDay)} в каждый из ${days} дней.`,
     place: (where: string, l: number) => `Место: ${where} на ${litres(l)}.`,
+    ridePlace: 'Место — сумки, которые выберете: всё, что взяли, повезёте на велосипедах. Чем тяжелее, тем медленнее.',
     family: (names: string[]) => `Семья: ${names.join(', ')}.`,
     start: 'Готовиться',
   },
@@ -100,6 +144,13 @@ export const T = {
     today: (m: number) => `сегодня ${minutes(m)}`,
     total: (m: number, until: string) => `${until} ${minutes(m)}`,
     place: (used: number, total: number) => `место ${used}/${litres(total)}`,
+    weight: (g: number) => `груз ${kg(g)} на велосипед`,
+    mass: (g: number) => kg(g),
+    bike: 'Велосипед и сумки',
+    bikeHint: 'На руле — то, что нужно на ходу; на багажнике — палатка и спальники; за спиной — тяжелее всего.',
+    slot: { bar: 'руль', frame: 'рама', rack: 'багажник', back: 'спина' } as Record<string, string>,
+    hand: (l: number) => `под рукой ${litres(l)}`,
+    noBags: 'Сумок пока нет: всё, что возьмёте, — на себе и в карманах.',
     notChosen: 'не решено',
     cost: (r: number, m: number, l: number) => [rub(r), minutes(m), l ? litres(l) : ''].filter(Boolean).join(' · '),
     free: 'ничего покупать не нужно',
@@ -156,13 +207,37 @@ export const T = {
     faster: 'Быстрее',
     toResult: 'К итогу',
   },
+  ride: {
+    stage: (i: number, of: number) => `Этап ${i + 1} из ${of}`,
+    caption: (day: number, start: string, end: string, km: number) => `${day === 0 ? 'Суббота' : 'Воскресенье'}, ${start} — ${end} · ${km}${nb}км`,
+    night: (c: number, warm: number) => `Ночь у озера: снаружи ${deg(c)}, в палатке под своим — как ${deg(warm)}`,
+    load: (kg: number, pct: number) => (pct ? `груз ${kg}${nb}кг на велосипед — медленнее на ${pct}${nb}%` : `груз ${kg}${nb}кг на велосипед — едем легко`),
+    deadline: (what: 'camp' | 'train', at: string) => (what === 'camp' ? `успеть к стоянке до ${at}` : `последняя электричка в ${at}`),
+    wind: (w: number) => (w > 0 ? 'ветер попутный' : w < 0 ? 'ветер встречный' : ''),
+    sfx: { rain: 'КАП-КАП!', flat: 'ПШШШ!', fixed: 'ЧИНИМ!', break: 'КРРАК!', tick: 'КЛЕЩ!', fall: 'БУМ!', dark: 'ТЕМНОТА…', late: 'УЖЕ ВЕЧЕР!', train: 'ТУ-ТУУ… УШЛА', night: 'ЗЗЗ…', ok: 'ВПЕРЁД!' } as Record<string, string>,
+    next: 'Дальше',
+    fine: 'всё в порядке',
+    moment: {
+      ask: { flat: 'Прокол! Что достать?', rain: 'Дождь! Что достать?', dark: 'Стемнело! Что достать?' } as Record<string, string>,
+      found: { flat: 'Нашли — починили на привале.', rain: 'Нашли — надели, сухие.', dark: 'Нашли — включили свет.' } as Record<string, string>,
+      broken: 'Ремнабор достали, но колесо не спасти — катим пешком до села.',
+      wait: 'чем кончится — увидите, когда достанете',
+      none: { flat: 'Камеры и заплаток с собой нет — катим пешком до села.', rain: 'Дождевика под рукой нет — пока искали, промокли.', dark: 'Света с собой нет.' } as Record<string, string>,
+      miss: (m: number) => `Не то! ${m}${nb}мин на поиски.`,
+      hint: 'Думайте сколько нужно — ошибка стоит только минут пути.',
+    },
+    toResult: 'К итогу',
+  },
   result: {
     title: 'Итог',
     stayed: (n: number, of: number) => `Продержались дома ${n} ${plural(n, 'день', 'дня', 'дней')} из ${of}.`,
     evacuated: (day: number, reason: EvacReason) => `${dayN(day)}: семья уехала в пункт временного размещения — ${EVAC[reason]}.`,
+    rode: (n: number, of: number) => `Проехали этапов: ${n} из ${of}.`,
+    offRoute: (stage: string, reason: EvacReason) => `${stage}: сошли с маршрута — ${OFF[reason]}. Никто не пострадал всерьёз.`,
+    weight: (g: number) => `Вес на взрослый велосипед: ${kg(g)}.`,
     moneyLeft: (n: number) => `Осталось денег: ${rub(n)}.`,
     review: 'Разбор',
-    line: (l: ReviewLine, name: (id: string) => string): string => {
+    line: (l: ReviewLine, name: (id: string) => string, stage: (i: number) => string = i => dayN(i)): string => {
       switch (l.kind) {
         case 'evacuated': return `${dayN(l.day)} — эвакуация: ${EVAC[l.reason]}.`;
         case 'trap': return `Ловушка: «${name(l.solution)}».`;
@@ -171,6 +246,12 @@ export const T = {
         case 'allGood': return `Всё сработало. Осталось ${rub(l.moneyLeft)}.`;
         case 'injury': return `${dayN(l.day)} — порез или простуда, а аптечки дома не было.`;
         case 'stuck': return `${dayN(l.day)} — машину занесло в сугроб, полдня ждали помощи в холодной машине.`;
+        case 'offRoute': return `${stage(l.stage)} — сошли с маршрута: ${OFF[l.reason]}.`;
+        case 'stage':
+          if (l.what === 'late') return `${stage(l.stage)}: к стоянке приехали на ${minutes(Math.max(0, l.minutes ?? 0))} позже, чем за два часа до заката; груз — ${l.loadKg} кг на взрослый велосипед.`;
+          if (l.what === 'dark') return `${stage(l.stage)}: к озеру добрались в темноте; груз — ${l.loadKg} кг на взрослый велосипед.`;
+          if (l.what === 'train') return `${stage(l.stage)}: последняя электричка ушла на ${minutes(Math.max(0, l.minutes ?? 0))} раньше; груз — ${l.loadKg} кг на взрослый велосипед.`;
+          return `${stage(l.stage)}: ${SHORT[l.what]}.`;
         case 'ranOut':
           if (l.what === 'water') return `Вода на готовку и умывание кончилась на ${l.day + 1}-й день: было ${water(l.had)}, на две недели нужно ${water(l.need)}.`;
           if (l.what === 'food') return `Еда кончилась на ${l.day + 1}-й день: было ${Math.round(l.had / 1000)} тыс. ккал, нужно ${Math.round(l.need / 1000)} тыс.`;
@@ -189,6 +270,12 @@ export const T = {
     left: (n: number) => `Осталось купить: ${rub(n)}`,
     have: 'есть дома',
     listText,
+    packText,
+    where: WHERE_NAME,
+    packRow: (qty: number, massG: number, sum: number, home: boolean, estimate: boolean) => `${qty} шт. · ${kg(massG)}${home ? ' · из дома' : ` · ${rub(sum)}${estimate ? ' · оценка' : ''}`}`,
+    packNote: 'Что куда положить. Отметьте, что уже есть дома, — останется то, что купить.',
+    groupMass: (g: number, sum: number) => (sum ? `${kg(g)} · ${rub(sum)}` : kg(g)),
+    mass: (g: number) => `Вес всего: ${kg(g)}`,
     copy: 'Скопировать список',
     copied: 'Список скопирован',
     again: 'Переиграть',

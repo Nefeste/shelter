@@ -18,3 +18,11 @@
   name: Маркетплейс
   travelMin: 0
   deliveryDays: 2
+- id: sport
+  name: Спортивный магазин
+  travelMin: 60
+- id: bike-shop
+  name: Веломастерская
+  travelMin: 40
+  # велосипед оставляют и забирают на следующий день
+  deliveryDays: 1

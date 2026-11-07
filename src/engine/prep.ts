@@ -105,6 +105,8 @@ function owned(s: PrepState, good: string): number {
 
 /** Сколько этого товара нужно другим выбранным решениям (кроме беды `except`). */
 function neededElsewhere(w: World, s: PrepState, good: string, except: string): number {
+  // общее снаряжение (котелок, горелка) служит всем бедам сразу
+  if (w.good(good).shared) return 0;
   let n = 0;
   for (const [t, sid] of Object.entries(s.chosen)) {
     if (t === except) continue;
@@ -113,15 +115,48 @@ function neededElsewhere(w: World, s: PrepState, good: string, except: string): 
   return n;
 }
 
-/** Место, занятое купленным: литры. */
+/**
+ * Что едет в поездке: товары выбранных решений (у разных бед — свои), без заменённого — его
+ * оставляют дома. Дома место занимает всё купленное: купленное остаётся купленным.
+ */
+export function packed(w: World, s: PrepState): { good: string; qty: number }[] {
+  const out = new Map<string, number>();
+  for (const sid of Object.values(s.chosen)) {
+    for (const { good, qty } of w.solution(sid).goods) out.set(good, w.good(good).shared ? Math.max(out.get(good) ?? 0, qty) : (out.get(good) ?? 0) + qty);
+  }
+  return [...out].map(([good, qty]) => ({ good, qty }));
+}
+
+/** Место, занятое купленным (в поездке — уложенным): литры. */
 export function usedPlace(w: World, s: PrepState): number {
   let v = 0;
-  for (const p of s.bought) v += w.good(p.good).volumeL * p.qty;
+  const list = w.scenario(s.scenario).kind === 'ride' ? packed(w, s) : s.bought;
+  for (const p of list) v += w.good(p.good).volumeL * p.qty;
   return v;
+}
+
+/**
+ * Сумки, которые сейчас в деле: товары-сумки выбранных решений (купленные, но заменённые — не
+ * везут). Поездка: место — эти сумки и «на себе» (docs/specs/2026-11-bike-weekend.md).
+ */
+export function bagsInUse(w: World, s: PrepState): { good: string; qty: number }[] {
+  const out = new Map<string, number>();
+  for (const sid of Object.values(s.chosen)) {
+    for (const { good, qty } of w.solution(sid).goods) {
+      if (!w.good(good).bag) continue;
+      out.set(good, Math.max(out.get(good) ?? 0, qty));
+    }
+  }
+  return [...out].map(([good, qty]) => ({ good, qty }));
 }
 
 export function placeTotal(w: World, s: PrepState): number {
   const sc = w.scenario(s.scenario);
+  if (sc.kind === 'ride' && sc.ride) {
+    let l = sc.ride.onBodyL;
+    for (const b of bagsInUse(w, s)) l += (w.good(b.good).bag?.liters ?? 0) * b.qty;
+    return l;
+  }
   return sc.pantryL + sc.porchL;
 }
 
@@ -163,7 +198,10 @@ export function canChoose(w: World, s: PrepState, solutionId: string): Refusal |
   const c = costOf(w, s, solutionId);
   if (c.rub > s.money) return 'money';
   if (c.minutes > minutesLeft(w, s)) return 'time';
-  if (usedPlace(w, s) + c.volumeL > placeTotal(w, s)) return 'place';
+  if (w.scenario(s.scenario).kind === 'ride') {
+    const next = { ...s, chosen: { ...s.chosen, [sol.trouble]: sol.id } };
+    if (usedPlace(w, next) > placeTotal(w, next)) return 'place';
+  } else if (usedPlace(w, s) + c.volumeL > placeTotal(w, s)) return 'place';
   return null;
 }
 

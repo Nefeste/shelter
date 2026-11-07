@@ -121,3 +121,60 @@
 - { scenario: dacha-new-year, who: mom, when: "day:last", text: "Пора собираться. Хорошо отдохнули." }
 - { scenario: dacha-new-year, who: gran, when: "result:home", text: "Вот это праздник. На следующий год — опять сюда." }
 - { scenario: dacha-new-year, who: dad, when: "result:evac", text: "Ничего, вернёмся. В другой раз соберёмся лучше." }
+# Велопоход выходного дня: папа, мама, сын; бабушка — дома, о ней говорят
+- { scenario: bike-weekend, who: son, when: intro, text: "Палатка у озера! А можно я поеду впереди?" }
+- { scenario: bike-weekend, who: mom, when: intro, text: "Бабушке оставлю, где мы едем и когда вернёмся, — так спокойнее." }
+- { scenario: bike-weekend, who: dad, when: "choose:bags-backs", text: "Рюкзаки есть, покупать ничего не надо. Спина выдержит." }
+- { scenario: bike-weekend, who: mom, when: "choose:bags-panniers", text: "Велорюкзак на багажник — и спина свободная, и дождевик под рукой." }
+- { scenario: bike-weekend, who: son, when: "choose:bags-bar-tent", text: "Палатку на руль — как у настоящих путешественников!" }
+- { scenario: bike-weekend, who: dad, when: "choose:repair-toolbox", text: "Возьму весь ящик — с ним что угодно починю." }
+- { scenario: bike-weekend, who: dad, when: "choose:repair-service", text: "Отвезу велосипеды в мастерскую сегодня, завтра заберу." }
+- { scenario: bike-weekend, who: son, when: "choose:night-mats", text: "Коврик — это чтобы земля не холодила, да?" }
+- { scenario: bike-weekend, who: dad, when: "choose:night-burner", text: "Замёрзнем — горелку зажжём, в палатке сразу тепло." }
+- { scenario: bike-weekend, who: mom, when: "choose:water-bottles", text: "Воды берём с запасом. Ох и тяжело будет." }
+- { scenario: bike-weekend, who: son, when: "choose:water-lake", text: "Вода в озере прозрачная, её и пить можно!" }
+- { scenario: bike-weekend, who: mom, when: "choose:water-boil", text: "Вскипятим на стоянке — и чай, и во фляги." }
+- { scenario: bike-weekend, who: son, when: "choose:food-deli", text: "Колбаса и салатики — как на пикнике!" }
+- { scenario: bike-weekend, who: dad, when: "choose:food-cook", text: "Гречка с тушёнкой у озера — лучший ужин на свете." }
+- { scenario: bike-weekend, who: son, when: "choose:ticks-grass", text: "На траве после горки так здорово валяться." }
+- { scenario: bike-weekend, who: mom, when: "choose:ticks-spray", text: "Брюки, рукава и осматриваемся на каждом привале." }
+- { scenario: bike-weekend, who: dad, when: "choose:blight-none", text: "До темноты успеем, фонари не нужны." }
+- { scenario: bike-weekend, who: mom, when: "choose:rain-tight", text: "Утрамбую поплотнее — дождевики на дно, всё влезет." }
+- { scenario: bike-weekend, who: son, when: "day:ok", text: "Вперёд! Я вижу поворот!" }
+- { scenario: bike-weekend, who: mom, when: "day:ok", text: "Хорошо едем. Привал — у той берёзы." }
+- { scenario: bike-weekend, who: dad, when: "day:ok", text: "Ветерок, поля — вот ради чего всё это." }
+- { scenario: bike-weekend, who: son, when: "day:rain", text: "Дождь! Зато не жарко." }
+- { scenario: bike-weekend, who: mom, when: "day:night", text: "Звёзды над озером. Бабушке позвоню утром." }
+- { scenario: bike-weekend, who: son, when: "day:night", text: "Слышите? Это лягушки или утки?" }
+- { scenario: bike-weekend, who: dad, when: "day:last", text: "Станция близко — и электричка нас ждёт." }
+- { scenario: bike-weekend, who: mom, when: "day:off", text: "Ничего, главное — все целы. Дома отдохнём." }
+- { scenario: bike-weekend, who: son, when: "day:drink", text: "Пап, а вода совсем кончилась…" }
+- { scenario: bike-weekend, who: dad, when: "day:food", text: "Есть хочется так, что колёса крутятся медленнее." }
+- { scenario: bike-weekend, who: son, when: "day:cold", text: "Бррр, земля холодная, я всю ночь крутился." }
+- { scenario: bike-weekend, who: mom, when: "day:tick", text: "Клещ! Снимем аккуратно, а дома — к врачу." }
+- { scenario: bike-weekend, who: dad, when: "day:dark", text: "Темнеет. Едем медленно и рядом." }
+- { scenario: bike-weekend, who: mom, when: "day:late", text: "Палатку ставим уже в сумерках." }
+- { scenario: bike-weekend, who: son, when: "day:train", text: "Электричка ушла прямо у нас перед носом!" }
+- { scenario: bike-weekend, who: dad, when: "day:flat", text: "Колесо спустило насовсем. Катим пешком до села." }
+- { scenario: bike-weekend, who: son, when: "day:fixed", text: "Пап, я сам заплатку приклею!" }
+- { scenario: bike-weekend, who: son, when: "day:fall", text: "Руль повело — и я в кусты." }
+- { scenario: bike-weekend, who: mom, when: "day:wet", text: "Пока дождевик достали — уже насквозь." }
+- { scenario: bike-weekend, who: dad, when: "day:visibility", text: "В такой дождь нас с дороги почти не видно." }
+- { scenario: bike-weekend, who: mom, when: "result:home", text: "Устали, но как хорошо было! Повторим?" }
+- { scenario: bike-weekend, who: son, when: "result:evac", text: "Не доехали в этот раз. В следующий соберёмся лучше." }
+- { scenario: bike-weekend, who: mom, when: "choose:bags-strapped", text: "Рюкзаки на багажник — спина отдохнёт." }
+- { scenario: bike-weekend, who: son, when: "choose:repair-pump", text: "Насос беру я, я им лучше всех качаю!" }
+- { scenario: bike-weekend, who: dad, when: "choose:repair-kit", text: "Камера, заплатки, ключи — прокол нам не страшен." }
+- { scenario: bike-weekend, who: mom, when: "choose:night-blankets", text: "Одеяла из дома — зато не тратимся." }
+- { scenario: bike-weekend, who: son, when: "choose:night-bags", text: "Свой спальник! Буду спать как гусеница." }
+- { scenario: bike-weekend, who: son, when: "choose:water-one-flask", text: "Фляга на раме — как у гонщиков!" }
+- { scenario: bike-weekend, who: mom, when: "choose:food-sandwiches", text: "Хлеб и тушёнка — без всякой готовки." }
+- { scenario: bike-weekend, who: son, when: "choose:food-snacks", text: "Сушки под рукой — буду хрустеть на ходу!" }
+- { scenario: bike-weekend, who: dad, when: "choose:ticks-mosquito", text: "Побрызгаемся от комаров — и порядок." }
+- { scenario: bike-weekend, who: son, when: "choose:ticks-clothes", text: "В брюках жарко… но ладно." }
+- { scenario: bike-weekend, who: son, when: "choose:blight-headlamps", text: "Налобный фонарь — читать в палатке!" }
+- { scenario: bike-weekend, who: mom, when: "choose:blight-reflect", text: "Жилеты со светящимися полосами — нас будет видно." }
+- { scenario: bike-weekend, who: dad, when: "choose:blight-bike", text: "Спереди белый, сзади красный — всё как положено." }
+- { scenario: bike-weekend, who: mom, when: "choose:rain-packs", text: "Спальники в пакеты — пусть хоть они будут сухие." }
+- { scenario: bike-weekend, who: dad, when: "choose:rain-ponchos", text: "Дождевики есть — пусть себе капает." }
+- { scenario: bike-weekend, who: mom, when: "choose:rain-full", text: "Дождевики сверху, чехлы на сумки — дождь не страшен." }

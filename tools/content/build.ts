@@ -28,7 +28,9 @@ export const SCHEDULE = /раз[аы]?\s+в\s+(день|сутки)|утром\s
 export const LATIN = /[a-z]/i;
 
 /** Поводы реплик в днях — те, что выбирает `dayWhen` в src/state/voices.ts. */
-const DAY = ['cold', 'food', 'water', 'light', 'comms', 'sanitation', 'care', 'injury', 'thaw', 'clog', 'road', 'stuck', 'drive', 'ok', 'last'];
+const DAY = ['cold', 'food', 'water', 'light', 'comms', 'sanitation', 'care', 'injury', 'thaw', 'clog', 'road', 'stuck', 'drive', 'ok', 'last',
+  // поездка по этапам (rideWhen): сход, беды этапа, починили прокол, дождь, ночь
+  'off', 'drink', 'late', 'dark', 'wet', 'flat', 'fall', 'tick', 'train', 'visibility', 'fixed', 'rain', 'night'];
 
 /** Что не так с репликой семьи: человек, повод, число в тексте. */
 export function voiceErrors(v: Voice, scenarios: Scenario[], solutions: Solution[]): string[] {
@@ -124,6 +126,28 @@ export function build(): BuildReport {
     if (raw.outdoorC.length !== raw.eventDays) errors.push(`${where}: погода — на каждый день события`);
     for (const t of raw.troubles) if (!troubles.some(x => x.id === t)) errors.push(`${where}: нет беды ${t}`);
     for (const id of raw.needsMeds) if (!raw.family.some(p => p.id === id)) errors.push(`${where}: нет человека ${id}`);
+    if (raw.kind === 'ride') {
+      const r = raw.ride;
+      if (!r) errors.push(`${where}: у поездки нет маршрута (ride)`);
+      else {
+        if (r.stages.length !== raw.eventDays) errors.push(`${where}: этапов ${r.stages.length}, а eventDays ${raw.eventDays}`);
+        for (const m of r.moments ?? []) {
+          for (const g of m.want) if (!goods.some(x => x.id === g)) errors.push(`${where}: в «моменте» ${m.on} нет товара ${g}`);
+          if (!Number.isInteger(m.costMin) || m.costMin < 0) errors.push(`${where}: «момент» ${m.on} — минуты целые`);
+        }
+        for (const st of r.stages) {
+          text(`${where}, этап ${st.id}`, st.name);
+          if (st.kind === 'ride' && !(st.km > 0)) errors.push(`${where}, этап ${st.id}: нет километров`);
+        }
+        for (const t of raw.troubles) {
+          const file = readFileSync(join(CONTENT, 'troubles', `${t}.yaml`), 'utf8');
+          for (const m of file.matchAll(/good: ([a-z0-9-]+)/g)) {
+            const g = goods.find(x => x.id === m[1]);
+            if (g && g.massG === undefined) errors.push(`${where}: у товара ${g.id} нет массы (massG) — в поездке вес считается`);
+          }
+        }
+      }
+    }
     scenarios.push({ ...raw, sources: resolve(where, raw.sources) });
   }
 

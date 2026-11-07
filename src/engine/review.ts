@@ -12,7 +12,10 @@ export type ReviewLine =
   | { kind: 'unfinished'; solution: string }
   | { kind: 'injury'; day: number }
   | { kind: 'stuck'; day: number }
-  | { kind: 'allGood'; moneyLeft: number };
+  | { kind: 'allGood'; moneyLeft: number }
+  // поездка: сход с маршрута на этапе и что было не так на этапе
+  | { kind: 'offRoute'; stage: number; reason: NonNullable<Outcome['evacuated']>['reason'] }
+  | { kind: 'stage'; stage: number; what: Shortage; minutes?: number; loadKg?: number };
 
 /** Первый день, когда не хватило `what`. */
 function firstShort(o: Outcome, what: Shortage[]): number | null {
@@ -20,7 +23,29 @@ function firstShort(o: Outcome, what: Shortage[]): number | null {
   return null;
 }
 
+/** Порядок важности того, что было не так на этапе поездки. */
+const RIDE_ORDER: Shortage[] = ['drink', 'food', 'cold', 'tick', 'dark', 'late', 'train', 'flat', 'wet', 'visibility', 'fall'];
+
+/** Разбор поездки: сход, ловушки, а дальше — первая беда каждого вида с этапом и числом. */
+function rideReview(s: PrepState, o: Outcome): ReviewLine[] {
+  const lines: ReviewLine[] = [];
+  if (o.evacuated) lines.push({ kind: 'offRoute', stage: o.evacuated.day, reason: o.evacuated.reason });
+  for (const sid of o.traps) lines.push({ kind: 'trap', solution: sid });
+  for (const sid of o.unfinished) lines.push({ kind: 'unfinished', solution: sid });
+  if (o.late.length) lines.push({ kind: 'late', goods: [...new Set(o.late)] });
+  for (const what of RIDE_ORDER) {
+    const d = o.days.find(x => x.short.includes(what));
+    if (!d?.ride) continue;
+    const r = d.ride;
+    const minutes = what === 'late' || what === 'dark' || what === 'train' ? r.endMin - (r.deadlineMin ?? r.endMin) : undefined;
+    lines.push({ kind: 'stage', stage: d.day, what, minutes, loadKg: what === 'late' || what === 'dark' || what === 'train' ? r.loadKg : undefined });
+  }
+  if (!lines.length) lines.push({ kind: 'allGood', moneyLeft: s.money });
+  return lines.slice(0, 5);
+}
+
 export function review(s: PrepState, o: Outcome): ReviewLine[] {
+  if (o.days[0]?.ride) return rideReview(s, o);
   const lines: ReviewLine[] = [];
   if (o.evacuated) lines.push({ kind: 'evacuated', day: o.evacuated.day, reason: o.evacuated.reason });
   for (const sid of o.traps) lines.push({ kind: 'trap', solution: sid });
@@ -50,6 +75,15 @@ const TROUBLE: Record<string, string> = {
   cold: 'heat', thirst: 'water', hunger: 'food', meds: 'meds', co: 'co', fire: 'fire', injury: 'meds', stuck: 'road',
 };
 
+/** Поездка: о какой беде строка этапа или схода. */
+const RIDE_TROUBLE: Partial<Record<string, string>> = {
+  drink: 'bike-water', food: 'bike-food', cold: 'bike-night', tick: 'bike-ticks', dark: 'bike-light', late: 'bike-bags',
+  train: 'bike-bags', flat: 'bike-repair', wet: 'bike-rain', visibility: 'bike-light', fall: 'bike-bags',
+  break: 'bike-repair', stomach: 'bike-water', co: 'bike-night',
+};
+/** Беда схода, которую принесла ловушка, — источник у ловушки (сырая вода или испорченная еда). */
+const RIDE_RISK: Partial<Record<string, string>> = { stomach: 'stomach', co: 'co', fall: 'fall', tick: 'tick' };
+
 /**
  * Источник строки разбора (спецификация, критерий 7): первый названный источник решения, о котором
  * строка, — выбранного игроком или, если беду не решали, правильного. У строки «всё сработало» и
@@ -57,7 +91,15 @@ const TROUBLE: Record<string, string> = {
  */
 export function sourceOf(w: World, s: PrepState, line: ReviewLine): Extract<Source, { title: string }> | undefined {
   let sid: string | undefined;
-  if (line.kind === 'trap' || line.kind === 'unfinished') sid = line.solution;
+  if (line.kind === 'offRoute' || line.kind === 'stage') {
+    const key = line.kind === 'offRoute' ? line.reason : line.what;
+    const risk = RIDE_RISK[key];
+    const trap = risk ? Object.values(s.chosen).find(x => w.solution(x).tier === 'trap' && (w.solution(x).risks ?? []).includes(risk as never)) : undefined;
+    const t = RIDE_TROUBLE[key];
+    sid = trap ?? (t ? s.chosen[t] ?? w.trouble(t).solutions.find(x => w.solution(x).tier === 'right') : undefined);
+    // выбранное решение без источника по делу (например, «ничего»): источник правильного
+    if (sid && !w.solution(sid).sources.some(x => 'title' in x) && t) sid = w.trouble(t).solutions.find(x => w.solution(x).tier === 'right');
+  } else if (line.kind === 'trap' || line.kind === 'unfinished') sid = line.solution;
   else if (line.kind === 'injury') {
     // о пользе аптечки говорит источник правильного решения, а не выбранного
     sid = w.trouble('meds').solutions.find(x => w.solution(x).tier === 'right');

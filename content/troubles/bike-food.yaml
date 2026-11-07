@@ -1,0 +1,43 @@
+trouble:
+  id: bike-food
+  name: Еда на два дня
+  text: На велосипеде за день тратят сил больше, чем на работе. Обед, ужин у костра, завтрак и обед второго дня.
+solutions:
+  - id: food-sandwiches
+    tier: cheap
+    name: Хлеб и тушёнка
+    text: Батоны и консервы — без готовки.
+    goods: [{ good: bread, qty: 4 }, { good: canned-meat, qty: 4 }]
+    workMin: 0
+    why: Без готовки просто, но на два дня езды этого мало.
+    sources: [mr-energy-2021]
+    review: draft
+  - id: food-cook
+    tier: mid
+    name: Гречка, тушёнка и горелка
+    text: Сварить гречку с тушёнкой на горелке — на ужин и завтрак.
+    goods: [{ good: bread, qty: 3 }, { good: buckwheat, qty: 2 }, { good: canned-meat, qty: 6 }, { good: trail-burner, qty: 1 }, { good: trail-gas, qty: 1 }, { good: camp-pot, qty: 1 }]
+    workMin: 0
+    why: Горячая крупа с мясом даёт силы на второй день; горелка вскипятит и воду.
+    sources: [mr-energy-2021, skurikhin-2002]
+    review: draft
+  - id: food-snacks
+    tier: right
+    name: Гречка, тушёнка, горелка и перекус под рукой
+    text: То же, что на ужин и завтрак, и сушки — есть на ходу.
+    goods: [{ good: bread, qty: 3 }, { good: buckwheat, qty: 2 }, { good: canned-meat, qty: 6 }, { good: trail-burner, qty: 1 }, { good: trail-gas, qty: 1 }, { good: camp-pot, qty: 1 }, { good: trail-snacks, qty: 3 }]
+    workMin: 0
+    why: В дороге есть понемногу между привалами, перекус держат под рукой.
+    sources: [mr-energy-2021, pioner-bike]
+    review: draft
+  - id: food-deli
+    tier: trap
+    name: Колбаса, сыр и салаты
+    text: Как на пикник — нарезка и салаты, готовить не нужно.
+    goods: [{ good: bread, qty: 2 }, { good: deli-picnic, qty: 2 }]
+    workMin: 0
+    keepsPct: 30
+    risks: [stomach]
+    why: Скоропортящееся возят только в сумке-холодильнике — в жару в сумке на багажнике оно портится к вечеру.
+    sources: [rpn-kostroma-nature]
+    review: draft

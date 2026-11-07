@@ -38,3 +38,17 @@ export function dayWhen(days: DayLog[], i: number, total: number, roadDay?: numb
   if (i === roadDay) return 'day:drive';
   return d.short.length ? '' : 'day:ok';
 }
+
+/** Поездка: о чём говорят на этапе — сход, первая беда этапа, дождь, ночь, последний этап, «едем». */
+const RIDE_FIRST: DayLog['short'] = ['drink', 'food', 'cold', 'tick', 'dark', 'late', 'train', 'flat', 'fall', 'wet', 'visibility'];
+export function rideWhen(days: DayLog[], i: number, total: number, off: boolean): string {
+  const d = days[i];
+  if (off) return 'day:off';
+  const first = RIDE_FIRST.find(x => d.short.includes(x));
+  if (first) return `day:${first}`;
+  if (d.ride?.fixed) return 'day:fixed';
+  if (d.ride?.kind === 'night') return 'day:night';
+  if (d.event === 'rain') return 'day:rain';
+  if (i === total - 1) return 'day:last';
+  return 'day:ok';
+}

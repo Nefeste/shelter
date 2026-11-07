@@ -7,6 +7,7 @@ import { bundle } from '../content';
 import { type PrepState, World, choose as chooseCmd, nextDay as nextDayCmd, runDays, startPrep, stars } from '../engine';
 import { type Phase, packRun, unpackRun } from './run';
 import { loadBest, loadRun, loadSettings, saveBest, saveRun, saveSettings } from './storage';
+import { type Picks, missesOf, momentOf } from './moments';
 import { setSoundOn } from '../audio/sound';
 
 export const world = new World(bundle);
@@ -26,6 +27,8 @@ export function useGame() {
   const [best, setBest] = useState<Record<string, number>>({});
   const [loaded, setLoaded] = useState(false);
   const [sound, setSound] = useState(true);
+  /** выборы в «моментах» маршрута: этап → что доставали */
+  const [picks, setPicks] = useState<Picks>({});
 
   useEffect(() => {
     void loadBest().then(setBest);
@@ -35,6 +38,7 @@ export function useGame() {
       if (run) {
         setPrep(run.prep);
         setAttempt(run.attempt);
+        setPicks(run.picks ?? {});
         setPhase(run.phase);
       }
       setLoaded(true);
@@ -44,11 +48,18 @@ export function useGame() {
   // сохранить после каждого шага — но не раньше, чем прочитано сохранённое
   useEffect(() => {
     if (!loaded) return;
-    void saveRun(phase ? packRun({ v: 1, phase, attempt, prep }) : null);
-  }, [loaded, phase, attempt, prep]);
+    void saveRun(phase ? packRun({ v: 1, phase, attempt, prep, picks }) : null);
+  }, [loaded, phase, attempt, prep, picks]);
 
   // 14 дней — расчёт из выборов и зерна, их не нужно хранить
-  const outcome = useMemo(() => (phase === 'days' || phase === 'result' ? runDays(world, prep, attempt) : null), [phase, prep, attempt]);
+  // в поездке промахи в «моментах» прибавляют минуты: сначала расчёт без них — какие моменты были,
+  // потом с промахами (случайность от них не зависит)
+  const outcome = useMemo(() => {
+    if (phase !== 'days' && phase !== 'result') return null;
+    const base = runDays(world, prep, attempt);
+    const misses = missesOf(picks, st => momentOf(world, prep, base, st, attempt, {})?.want ?? []);
+    return misses.some(n => n > 0) ? runDays(world, prep, attempt, misses) : base;
+  }, [phase, prep, attempt, picks]);
 
   const go = useCallback((s: Screen) => {
     setScreen(s);
@@ -56,21 +67,28 @@ export function useGame() {
   }, []);
   const start = useCallback((scenario: string = SCENARIO) => {
     setPrep(startPrep(world, scenario));
+    setPicks({});
     go('intro');
   }, [go]);
   /** вернуться туда, где игрок остановился */
   const resume = useCallback(() => { if (phase) setScreen(phase); }, [phase]);
   const choose = useCallback((solution: string) => setPrep(s => chooseCmd(world, s, solution)), []);
   const nextDay = useCallback(() => setPrep(s => nextDayCmd(world, s)), []);
-  const storm = useCallback(() => {
-    const got = stars(runDays(world, prep, attempt));
-    if (got > (best[prep.scenario] ?? 0)) {
-      const next = { ...best, [prep.scenario]: got };
-      setBest(next);
-      void saveBest(next);
+  const storm = useCallback(() => go('days'), [go]);
+  // лучший результат — при переходе к итогу, когда выборы в «моментах» уже сделаны
+  const show = useCallback((s: Screen) => {
+    if (s === 'result' && outcome) {
+      const got = stars(outcome);
+      if (got > (best[prep.scenario] ?? 0)) {
+        const next = { ...best, [prep.scenario]: got };
+        setBest(next);
+        void saveBest(next);
+      }
     }
-    go('days');
-  }, [prep, attempt, best, go]);
+    go(s);
+  }, [go, outcome, best, prep.scenario]);
+  /** достать вещь в «моменте» этапа */
+  const pick = useCallback((stage: number, good: string) => setPicks(p => ({ ...p, [stage]: [...(p[stage] ?? []), good] })), []);
   const toggleSound = useCallback(() => {
     setSound(v => {
       setSoundOn(!v);
@@ -83,8 +101,8 @@ export function useGame() {
     start(prep.scenario);
   }, [start, prep.scenario]);
 
-  return useMemo(() => ({ screen, setScreen: go, prep, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again }),
-    [screen, go, prep, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again]);
+  return useMemo(() => ({ screen, setScreen: show, prep, attempt, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again, picks, pick }),
+    [screen, show, prep, attempt, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again, picks, pick]);
 }
 
 export type Game = ReturnType<typeof useGame>;

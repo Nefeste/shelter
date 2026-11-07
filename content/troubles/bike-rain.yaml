@@ -1,0 +1,42 @@
+trouble:
+  id: bike-rain
+  name: Если пойдёт дождь
+  text: Прогноз — «возможен кратковременный дождь». Мокрый спальник — холодная ночь.
+solutions:
+  - id: rain-packs
+    tier: cheap
+    name: Вещи в пакеты
+    text: Спальники и одежду — в пакеты, остальное как есть.
+    goods: [{ good: plastic-bags, qty: 1 }]
+    workMin: 15
+    why: В пакетах вещи останутся сухими, а сами промокнете до нитки.
+    sources: [pioner-bike]
+    review: draft
+  - id: rain-ponchos
+    tier: mid
+    name: Дождевики
+    text: По дождевику на каждого — сверху в сумку.
+    goods: [{ good: rain-poncho, qty: 3 }]
+    workMin: 0
+    why: Дождевик спасёт вас, но не вещи в сумках.
+    sources: [pioner-bike]
+    review: draft
+  - id: rain-full
+    tier: right
+    name: Дождевики, чехлы на сумки и вещи в пакетах
+    text: Дождевики под рукой, чехлы на велорюкзаки, спальники в пакетах.
+    goods: [{ good: rain-poncho, qty: 3 }, { good: bag-cover, qty: 3 }, { good: plastic-bags, qty: 1 }]
+    workMin: 15
+    why: Дождевик нужен и себе, и рюкзаку, а мелкое — в пакетах; так советуют собираться в велопоход.
+    sources: [pioner-bike]
+    review: draft
+  - id: rain-tight
+    tier: trap
+    name: Уложить всё поплотнее
+    text: "Дождевики и пакеты — на самое дно, сверху всё остальное: так больше влезет."
+    goods: [{ good: rain-poncho, qty: 3 }, { good: plastic-bags, qty: 1 }]
+    workMin: 15
+    buried: true
+    why: "Дождевик кладут сверху, «в пределах быстрой находимости»: пока его откопаешь со дна, уже промок."
+    sources: [pioner-bike]
+    review: draft

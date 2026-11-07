@@ -14,7 +14,10 @@ export function TroubleIcon({ id, size = 36 }: { id: string; size?: number }) {
 }
 
 /** Беды сценариев поездок рисуются теми же значками, что и домашние. */
-const ALIAS: Record<string, string> = { 'dacha-heat': 'heat', 'dacha-water': 'water', 'dacha-food': 'food' };
+const ALIAS: Record<string, string> = {
+  'dacha-heat': 'heat', 'dacha-water': 'water', 'dacha-food': 'food',
+  'bike-water': 'water', 'bike-food': 'food', 'bike-light': 'light',
+};
 
 function draw(id: string) {
   const ink = C.ink;
@@ -84,6 +87,43 @@ function draw(id: string) {
           <Path d="M11 14 h14 l-2 13 h-10 z" fill={C.paper} stroke={ink} strokeWidth={1.5} />
           <Rect x={10} y={11} width={16} height={3} rx={1} fill={C.spruce} stroke={ink} strokeWidth={1} />
           <Path d="M13 11 a5 4 0 0 1 10 0" fill="none" stroke={ink} strokeWidth={1.5} />
+        </>
+      );
+    case 'bike-bags': // сумка на багажник
+      return (
+        <>
+          <Rect x={10} y={12} width={16} height={15} rx={3} fill="#8a6d4b" stroke={ink} strokeWidth={1.5} />
+          <Line x1={10} y1={17} x2={26} y2={17} stroke={ink} strokeWidth={1.5} />
+          <Path d="M14 12 a4 3 0 0 1 8 0" fill="none" stroke={ink} strokeWidth={1.5} />
+        </>
+      );
+    case 'bike-repair': // колесо и ключ
+      return (
+        <>
+          <Circle cx={15} cy={20} r={7} fill="none" stroke={ink} strokeWidth={2} />
+          <Circle cx={15} cy={20} r={1.5} fill={ink} />
+          <Line x1={20} y1={15} x2={27} y2={8} stroke={C.kumach} strokeWidth={3} strokeLinecap="round" />
+        </>
+      );
+    case 'bike-night': // палатка
+      return (
+        <>
+          <Path d="M8 26 L18 10 L28 26 z" fill="#3f6f5a" stroke={ink} strokeWidth={1.5} />
+          <Line x1={18} y1={10} x2={18} y2={26} stroke={ink} strokeWidth={1.5} />
+        </>
+      );
+    case 'bike-ticks': // лист и точка
+      return (
+        <>
+          <Path d="M9 25 C 11 13, 20 9, 27 10 C 26 18, 20 26, 9 25 z" fill="#4f9a6b" stroke={ink} strokeWidth={1.5} />
+          <Circle cx={19} cy={18} r={2.5} fill={ink} />
+        </>
+      );
+    case 'bike-rain': // туча и капли
+      return (
+        <>
+          <Path d="M10 19 a5 5 0 0 1 2-8 a6 6 0 0 1 11-1 a5 5 0 0 1 3 9 z" fill={C.line} stroke={ink} strokeWidth={1.5} />
+          {[13, 18, 23].map(x => <Line key={x} x1={x} y1={22} x2={x - 2} y2={27} stroke={C.spruce} strokeWidth={2} />)}
         </>
       );
     default:

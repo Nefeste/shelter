@@ -1,0 +1,42 @@
+trouble:
+  id: bike-water
+  name: Вода в дороге
+  text: Жарко, а крутить педали весь день. Магазины — в селе в субботу и в деревне в воскресенье в обед, на стоянке — только озеро.
+solutions:
+  - id: water-one-flask
+    tier: cheap
+    name: По фляге на каждого
+    text: Одна фляга на велосипед — долить в селе.
+    goods: [{ good: bike-flask, qty: 3 }]
+    workMin: 0
+    why: Одной фляги на полдня езды в жару мало — в жару с нагрузкой пьют гораздо больше обычного.
+    sources: [rpn-moscow-water]
+    review: draft
+  - id: water-bottles
+    tier: mid
+    name: Фляги и бутылки в сумках
+    text: По две фляги на велосипед и запас бутылок на стоянку и второй день.
+    goods: [{ good: bike-flask, qty: 6 }, { good: water-1500, qty: 8 }]
+    workMin: 0
+    why: Воды хватит, но двенадцать литров — это двенадцать килограммов в сумках.
+    sources: [rpn-moscow-water]
+    review: draft
+  - id: water-boil
+    tier: right
+    name: Фляги и котелок — кипятить на стоянке
+    text: По две фляги на велосипед и четыре бутылки; на стоянке вскипятить воду из озера и долить.
+    goods: [{ good: bike-flask, qty: 6 }, { good: camp-pot, qty: 1 }, { good: water-1500, qty: 4 }]
+    workMin: 0
+    why: Воду из водоёма пьют только кипячёной — котелок весит меньше бутылок, но без горелки не вскипятить.
+    sources: [rpn-kostroma-nature, rpn-moscow-water]
+    review: draft
+  - id: water-lake
+    tier: trap
+    name: Фляги — и долить из озера
+    text: Вода в озере чистая, зачем её везти — долить фляги прямо с берега.
+    goods: [{ good: bike-flask, qty: 6 }]
+    workMin: 0
+    risks: [stomach]
+    why: Пить воду из водоёма нельзя — даже прозрачная, она может быть заражена.
+    sources: [rpn-kostroma-nature]
+    review: draft
