@@ -13,7 +13,9 @@ export type EvacReason = 'cold' | 'thirst' | 'hunger' | 'meds' | 'co' | 'fire' |
 export type Shortage = 'water' | 'drink' | 'food' | 'light' | 'comms' | 'sanitation' | 'cold' | 'care' | 'road'
   // поездка: опоздали к стоянке, ехали в темноте, промокли, прокол без ремнабора, упали, клещ,
   // опоздали на электричку, в дождь без света
-  | 'late' | 'dark' | 'wet' | 'flat' | 'fall' | 'tick' | 'train' | 'visibility';
+  | 'late' | 'dark' | 'wet' | 'flat' | 'fall' | 'tick' | 'train' | 'visibility'
+  // дом ещё прогревается: первый вечер у печи, которую разогревают постепенно, — прохладно, но не опасно
+  | 'warmup';
 
 /** Этап маршрута в итоге поездки (src/engine/ride.ts). */
 export interface StageLog {
@@ -192,7 +194,10 @@ export function runDays(w: World, s: PrepState, seed: number, misses: readonly n
       for (const k of Object.keys(spoil) as (keyof Stock)[]) stock[k] = Math.max(0, stock[k] - spoil[k]);
     }
 
-    let heat = heatC;
+    // холодную печь после долгого перерыва разогревают постепенно: если в дороге застряли и затопили
+    // поздно, в первый вечер она греет слабее; доехали засветло — к вечеру дом прогрелся
+    const lateStart = d === 0 && stuckDay === 0 && heater?.firstDayHeatC !== undefined;
+    let heat = lateStart ? heater!.firstDayHeatC! : heatC;
     if (fuelPerDay > 0) {
       if (stock.fuelH >= fuelPerDay) stock.fuelH -= fuelPerDay;
       else { stock.fuelH = 0; heat = 0; }
@@ -239,7 +244,8 @@ export function runDays(w: World, s: PrepState, seed: number, misses: readonly n
       if (stuckHard) short.push('road');
     }
 
-    if (indoorC < sc.norms.coldC) short.push('cold');
+    // первый вечер у печи, которую разогревают постепенно: прохладно, это трудный день, но не холод
+    if (indoorC < sc.norms.coldC) short.push(lateStart ? 'warmup' : 'cold');
     coldRun = indoorC < sc.norms.coldEvacC ? coldRun + 1 : 0;
 
     if (riskDay.clog === d) event = 'clog';

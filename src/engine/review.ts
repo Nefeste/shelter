@@ -12,6 +12,7 @@ export type ReviewLine =
   | { kind: 'unfinished'; solution: string }
   | { kind: 'injury'; day: number }
   | { kind: 'stuck'; day: number }
+  | { kind: 'warmup'; day: number; indoorC: number }
   | { kind: 'allGood'; moneyLeft: number }
   // поездка: сход с маршрута на этапе и что было не так на этапе
   | { kind: 'offRoute'; stage: number; reason: NonNullable<Outcome['evacuated']>['reason'] }
@@ -61,6 +62,8 @@ export function review(s: PrepState, o: Outcome): ReviewLine[] {
   if (comms !== null) lines.push({ kind: 'ranOut', what: 'comms', day: comms, had: o.start.commsDays, need: o.need.commsDays });
   const sanitation = firstShort(o, ['sanitation']);
   if (sanitation !== null) lines.push({ kind: 'ranOut', what: 'sanitation', day: sanitation, had: o.start.sanitationDays, need: o.need.sanitationDays });
+  const warm = o.days.find(d => d.short.includes('warmup'));
+  if (warm) lines.push({ kind: 'warmup', day: warm.day, indoorC: warm.indoorC });
   const road = firstShort(o, ['road']);
   if (road !== null) lines.push({ kind: 'stuck', day: road });
   const care = firstShort(o, ['care']);
@@ -103,6 +106,8 @@ export function sourceOf(w: World, s: PrepState, line: ReviewLine): Extract<Sour
   else if (line.kind === 'injury') {
     // о пользе аптечки говорит источник правильного решения, а не выбранного
     sid = w.trouble('meds').solutions.find(x => w.solution(x).tier === 'right');
+  } else if (line.kind === 'warmup') {
+    sid = Object.values(s.chosen).find(x => w.solution(x).firstDayHeatC !== undefined);
   } else if (line.kind === 'stuck') {
     sid = s.chosen.road ?? w.trouble('road').solutions.find(x => w.solution(x).tier === 'right');
   } else if (line.kind === 'ranOut' || line.kind === 'evacuated') {

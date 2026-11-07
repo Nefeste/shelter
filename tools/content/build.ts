@@ -28,7 +28,7 @@ export const SCHEDULE = /раз[аы]?\s+в\s+(день|сутки)|утром\s
 export const LATIN = /[a-z]/i;
 
 /** Поводы реплик в днях — те, что выбирает `dayWhen` в src/state/voices.ts. */
-const DAY = ['cold', 'food', 'water', 'light', 'comms', 'sanitation', 'care', 'injury', 'thaw', 'clog', 'road', 'stuck', 'drive', 'ok', 'last',
+const DAY = ['cold', 'warmup', 'food', 'water', 'light', 'comms', 'sanitation', 'care', 'injury', 'thaw', 'clog', 'road', 'stuck', 'drive', 'ok', 'last',
   // поездка по этапам (rideWhen): сход, беды этапа, починили прокол, дождь, ночь
   'off', 'drink', 'late', 'dark', 'wet', 'flat', 'fall', 'tick', 'train', 'visibility', 'fixed', 'rain', 'night'];
 
