@@ -225,6 +225,22 @@ try {
   await tap(page, 'about');
   await page.getByTestId('assumptions').waitFor();
   await snap(page, 'about');
+  // «меньше движения» (ADR устава 0023, правило 6): выключатель на первом экране, после перезагрузки
+  // — на месте; без выбора игрока — как в системе (prefers-reduced-motion)
+  await tap(page, 'about-back');
+  const motion = page.getByTestId('motion');
+  if ((await motion.innerText()).trim() !== 'Меньше движения: выключено') throw new Error('«меньше движения» включено без причины');
+  await tap(page, 'motion');
+  await page.getByText('Меньше движения: включено').waitFor();
+  await page.reload();
+  await page.getByText('Меньше движения: включено').waitFor();
+  await snap(page, 'title-less-motion');
+  const calm = await browser.newPage({ viewport: { width: 412, height: 915 }, reducedMotion: 'reduce' });
+  calm.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  calm.on('pageerror', e => errors.push(String(e)));
+  await calm.goto(`http://localhost:${server.port}/`);
+  await calm.getByText('Меньше движения: включено').waitFor();
+  await calm.close();
   if (errors.length) throw new Error(`ошибки в консоли:\n${errors.join('\n')}`);
   console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}, дача ${dacha}, велопоход ${bike} (моментов ${moments}), моментов дома ${shownMoments}, бревет ${brevet}; снимков ${shot} в tools/e2e/out/`);
 } finally {

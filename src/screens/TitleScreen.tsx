@@ -36,6 +36,7 @@ export function TitleScreen({ game }: { game: Game }) {
         )}
         <Button testID="about" kind="ghost" label={T.title.about} onPress={() => game.setScreen('about')} />
         <Button testID="sound" kind="ghost" label={T.title.sound(game.sound)} onPress={game.toggleSound} />
+        <Button testID="motion" kind="ghost" label={T.title.motion(game.lessMotion)} onPress={game.toggleMotion} />
       </View>
     </View>
   );

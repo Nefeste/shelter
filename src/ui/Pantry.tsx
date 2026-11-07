@@ -9,6 +9,7 @@ import { pantry } from '../state/pantry';
 import type { PrepState, World } from '../engine';
 import { Card, Txt } from './kit';
 import { C, R, S } from './theme';
+import { useLessMotion } from './motion';
 
 /** Свои цвета игры для разделов кладовой (не из брендбука): только коробки, текст — чернилами. */
 const BOX: Record<Category, string> = {
@@ -53,10 +54,13 @@ export function Pantry({ world, prep }: { world: World; prep: PrepState }) {
 }
 
 function Box({ color }: { color: string }) {
-  const grow = useMemo(() => new Animated.Value(0), []);
+  const still = useLessMotion();
+  const grow = useMemo(() => new Animated.Value(still ? 1 : 0), [still]);
   useEffect(() => {
+    // коробка — отклик на выбор игрока; «меньше движения» — сразу на полке, без пружинки
+    if (still) return;
     Animated.spring(grow, { toValue: 1, friction: 5, useNativeDriver: true }).start();
-  }, [grow]);
+  }, [grow, still]);
   return <Animated.View style={[styles.box, { backgroundColor: color, transform: [{ scale: grow }] }]} />;
 }
 
