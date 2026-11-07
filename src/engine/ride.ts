@@ -29,8 +29,24 @@ export function loadPerAdultG(w: World, s: PrepState, waterDl: number): number {
     const mass = good.provides?.waterDl ? (good.massG ?? 0) - good.provides.waterDl * 100 : (good.massG ?? 0);
     g += Math.max(0, mass) * p.qty;
   }
-  const shares = sc.family.reduce((n, p) => n + r.share[p.kind], 0);
+  const shares = ridersOf(sc).reduce((n, p) => n + r.share[p.kind], 0);
   return Math.floor((g * r.share.adult) / shares);
+}
+
+/** Кто едет: `ride.riders` из семьи; нет списка — все. */
+export function ridersOf(sc: Scenario): Scenario['family'] {
+  const ids = sc.ride?.riders;
+  return ids ? sc.family.filter(p => ids.includes(p.id)) : sc.family;
+}
+
+/**
+ * Бревет (правила ACP, ст. 10): во сколько закрывается КП на `km` от старта — `start` плюс
+ * `closeBaseMin` и путь по быстрой скорости на первых `fastKm`, дальше — по медленной от нуля
+ * (на 60 км обе дают одно время). Округление — до минуты.
+ */
+export function controlClose(b: NonNullable<NonNullable<Scenario['ride']>['brevet']>, startMin: number, km: number): number {
+  const min = km <= b.fastKm ? b.closeBaseMin + (km * 600) / b.fastKmh10 : (km * 600) / b.slowKmh10;
+  return startMin + Math.round(min);
 }
 
 /** На сколько процентов медленнее с таким грузом; за спиной — порог ниже, наклон круче. */
@@ -126,7 +142,7 @@ export function runRide(w: World, s: PrepState, seed: number, misses: readonly n
   }
   const left = (x: Risk) => remains[x] ?? 100;
 
-  const people = sc.family;
+  const people = ridersOf(sc);
   const drinkPerH = people.reduce((n, p) => n + r.drinkDlPerH[p.kind], 0);
   const campDl = people.reduce((n, p) => n + r.campDl[p.kind], 0);
   const kcalPerH = people.reduce((n, p) => n + r.kcal[p.kind], 0);
@@ -151,6 +167,13 @@ export function runRide(w: World, s: PrepState, seed: number, misses: readonly n
   const fl = rng.fork('fall');
   const fallAt = risks.has('fall') ? rides.map(() => fl.chance(r.fallPct * 100)) : rides.map(() => false);
   const stomach = rng.fork('stomach').chance(risks.has('stomach') ? r.stomachPct * 100 : 0);
+  // ночью может сесть фонарь; запасные батарейки — защита
+  const lightOut = rng.fork('lightout').chance(Math.floor(((r.lightOutPct ?? 0) * left('lightout')) / 100) * 100);
+  const vestOn = has(goods, g => g.bikeLight === 'reflect');
+  // по правилам бревета (ст. 6) фары и фонари — прочно на велосипеде: налобный не в счёт
+  const lamps = has(goods, g => g.bikeLight === 'front') && has(goods, g => g.bikeLight === 'rear');
+  const startMin = r.stages.find(x => x.startMin !== undefined)?.startMin ?? 0;
+  let kmDone = 0;
 
   const logs: DayLog[] = [];
   let hardDays = 0;
@@ -196,6 +219,13 @@ export function runRide(w: World, s: PrepState, seed: number, misses: readonly n
       clock = st.startMin ?? clock;
     }
     log.startMin = clock;
+    // к старту бревета не допускают без света по правилам (ст. 6)
+    if (i === 0 && risks.has('rules')) {
+      log.endMin = clock;
+      logs.push({ day: i, outdoorC: sc.outdoorC[i] ?? 0, indoorC: 0, waterDl: water, kcal, lightH: 0, short: [], event: undefined, ride: log });
+      evacuated = { day: i, reason: 'rules' };
+      break;
+    }
     const rain = i === rainAt;
     log.rain = rain;
     log.wind = wind[st.day];
@@ -224,7 +254,10 @@ export function runRide(w: World, s: PrepState, seed: number, misses: readonly n
       event = event ?? 'rain';
       if (!ponchoAtHand) short.push('wet');
       if (!gearDry) wetGear = true;
-      if (!(front && rear)) short.push('visibility');
+      if (r.vest ? !lamps : !(front && rear)) {
+        if (r.vest) reason = 'rules';
+        else short.push('visibility');
+      }
     }
 
     // ошибки в «моменте» — минуты на поиски
@@ -261,7 +294,25 @@ export function runRide(w: World, s: PrepState, seed: number, misses: readonly n
       log.deadlineMin = r.trainMin;
       if (clock > r.trainMin) short.push('train');
     }
+    // бревет: КП закрывается по правилу ст. 10; опоздал — бревет не засчитан
+    kmDone += st.km;
+    if (r.brevet && (st.deadline === 'control' || st.deadline === 'finish')) {
+      log.deadlineMin = st.deadline === 'finish' ? startMin + r.brevet.totalMin : controlClose(r.brevet, startMin, kmDone);
+      if (clock > log.deadlineMin && !reason) reason = 'control';
+    }
+    // правила ночной езды (ст. 6): после заката — фара, задний фонарь и жилет; иначе сняли
+    if (r.vest && clock > r.sunsetMin && !reason) {
+      if (!(lamps && vestOn)) reason = 'rules';
+      else {
+        if (!short.includes('dark')) short.push('dark');
+        if (lightOut && !reason) reason = 'rules';
+      }
+    }
+    // помощь в пути запрещена (ст. 7): на первом же КП бревет не засчитан
+    if (risks.has('support') && st.deadline === 'control' && !reason) reason = 'support';
     if (i === breakAt) { event = 'break'; reason = 'break'; }
+    // без ночёвки расстройство от сырой воды или испорченной еды — на втором этапе
+    if (stomach && !r.stages.some(x => x.kind === 'night') && i === rides[Math.min(1, rides.length - 1)].i && !reason) reason = 'stomach';
     if (st.refill) water = capDl;
     if (st.lunchMin) clock += st.lunchMin;
 

@@ -1,0 +1,45 @@
+trouble:
+  id: brevet-repair
+  name: Поломка в пути
+  text: "Двести километров одному: помочь могут только на контрольных пунктах."
+solutions:
+  - id: brepair-pump
+    tier: cheap
+    name: Насос
+    text: Насос — подкачать колесо.
+    goods: [{ good: bike-pump, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: flat, stopsPct: 20 }]
+    why: Без камеры и заплаток пробитое колесо не починить.
+    sources: [pioner-bike, acp-brm-rules]
+    review: draft
+  - id: brepair-kit
+    tier: mid
+    name: Ремнабор
+    text: Насос, запасная камера, заплатки и мультиключ.
+    goods: [{ good: bike-pump, qty: 1 }, { good: inner-tube, qty: 1 }, { good: patch-kit, qty: 1 }, { good: multitool, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: flat, stopsPct: 100 }]
+    why: С ремнабором прокол чинят за полчаса, но серьёзную поломку в пути не исправить.
+    sources: [pioner-bike]
+    review: draft
+  - id: brepair-service
+    tier: right
+    name: Мастерская до старта и ремнабор
+    text: Отдать велосипед на осмотр в первый вечер, в дорогу — ремнабор.
+    goods: [{ good: bike-service, qty: 1 }, { good: bike-pump, qty: 1 }, { good: inner-tube, qty: 1 }, { good: patch-kit, qty: 1 }, { good: multitool, qty: 1 }]
+    workMin: 30
+    guards: [{ risk: flat, stopsPct: 100 }, { risk: break, stopsPct: 90 }]
+    why: Главный способ избежать ремонта в пути — осмотреть велосипед до старта.
+    sources: [pioner-bike]
+    review: draft
+  - id: brepair-toolbox
+    tier: trap
+    name: Взять весь ящик инструментов
+    text: Чтобы починить что угодно.
+    goods: [{ good: garage-toolbox, qty: 1 }]
+    workMin: 0
+    guards: [{ risk: flat, stopsPct: 30 }]
+    why: Везти с собой целую мастерскую не получится — это килограммы, а камеры в ящике нет.
+    sources: [pioner-bike]
+    review: draft

@@ -180,3 +180,44 @@
 - { scenario: bike-weekend, who: mom, when: "choose:rain-full", text: "Дождевики сверху, чехлы на сумки — дождь не страшен." }
 - { scenario: dacha-new-year, who: gran, when: "day:warmup", text: "Печка только разгорается. Посидим в шубах — к утру будет тепло." }
 - { scenario: dacha-new-year, who: son, when: "day:warmup", text: "Изо рта пар! Мам, а печка точно греет?" }
+# Бревет 200 км: едет папа, мама и сын — дома, пишут ему
+- { scenario: brevet-200, who: dad, when: intro, text: "Двести километров за день. Главное — не опоздать ни на один пункт." }
+- { scenario: brevet-200, who: son, when: intro, text: "Пап, пиши с каждого пункта! Я буду отмечать на карте." }
+- { scenario: brevet-200, who: dad, when: "choose:bbags-backpack", text: "Рюкзак уже есть — и так доеду." }
+- { scenario: brevet-200, who: dad, when: "choose:bbags-saddle", text: "Всё под седло — на спине ничего." }
+- { scenario: brevet-200, who: dad, when: "choose:bbags-frame", text: "На раме — перекус и куртка, достану не слезая." }
+- { scenario: brevet-200, who: mom, when: "choose:bbags-car", text: "Мы поедем следом и всё подвезём, что нужно!" }
+- { scenario: brevet-200, who: dad, when: "choose:blight-lamps", text: "Фара и фонарь есть — до темноты всё равно успею." }
+- { scenario: brevet-200, who: mom, when: "choose:blight-vest", text: "Жилет со светящимися полосами — тебя будет видно." }
+- { scenario: brevet-200, who: dad, when: "choose:blight-spare", text: "Запасные батарейки в сумку — пусть будут." }
+- { scenario: brevet-200, who: son, when: "choose:blight-flash", text: "Пусть задний мигает всю дорогу — так красиво!" }
+- { scenario: brevet-200, who: dad, when: "choose:brepair-pump", text: "Насос беру. Проколов не будет." }
+- { scenario: brevet-200, who: dad, when: "choose:brepair-kit", text: "Камера, заплатки, ключ — прокол не страшен." }
+- { scenario: brevet-200, who: dad, when: "choose:brepair-service", text: "Отдам велосипед на осмотр сегодня, завтра заберу." }
+- { scenario: brevet-200, who: dad, when: "choose:brepair-toolbox", text: "Возьму весь ящик — починю что угодно." }
+- { scenario: brevet-200, who: dad, when: "choose:bwater-one", text: "Одна фляга — дольюсь на пунктах." }
+- { scenario: brevet-200, who: dad, when: "choose:bwater-two", text: "Две фляги на раму — должно хватить." }
+- { scenario: brevet-200, who: mom, when: "choose:bwater-bottle", text: "И бутылку в сумку — вдруг ветер встречный." }
+- { scenario: brevet-200, who: dad, when: "choose:bwater-stream", text: "Ручьёв по дороге полно — зачем везти воду." }
+- { scenario: brevet-200, who: dad, when: "choose:bfood-snacks", text: "Пачка сушек — и вперёд." }
+- { scenario: brevet-200, who: mom, when: "choose:bfood-bread", text: "Бутерброды тебе сделаю, не спорь." }
+- { scenario: brevet-200, who: dad, when: "choose:bfood-lunch", text: "На среднем пункте пообедаю в кафе." }
+- { scenario: brevet-200, who: son, when: "choose:bfood-deli", text: "Колбаса и салат — как в поход!" }
+- { scenario: brevet-200, who: dad, when: "choose:brain-wind", text: "Ветровка — от ветра хватит." }
+- { scenario: brevet-200, who: dad, when: "choose:brain-poncho", text: "Дождевик сверху в сумку." }
+- { scenario: brevet-200, who: dad, when: "choose:brain-jacket", text: "Велокуртка на раме — дождь не страшен." }
+- { scenario: brevet-200, who: dad, when: "choose:brain-tight", text: "Утрамбую поплотнее, дождевик на дно — всё влезет." }
+- { scenario: brevet-200, who: dad, when: "day:ok", text: "Пункт! Отметка в карточке есть, едем дальше." }
+- { scenario: brevet-200, who: son, when: "day:ok", text: "Пап, ты на карте уже у озера!" }
+- { scenario: brevet-200, who: mom, when: "day:ok", text: "Получили сообщение. Не забывай пить!" }
+- { scenario: brevet-200, who: dad, when: "day:rain", text: "Дождь. Ничего, асфальт мокрый, но ехать можно." }
+- { scenario: brevet-200, who: dad, when: "day:last", text: "Последний перегон. Ноги гудят, но финиш близко." }
+- { scenario: brevet-200, who: mom, when: "day:off", text: "Главное — цел. Бревет ещё будут." }
+- { scenario: brevet-200, who: dad, when: "day:drink", text: "Фляга пустая, а до пункта ещё далеко…" }
+- { scenario: brevet-200, who: dad, when: "day:food", text: "Есть хочется так, что педали не крутятся." }
+- { scenario: brevet-200, who: dad, when: "day:dark", text: "Стемнело. Фара, фонарь, жилет — по правилам." }
+- { scenario: brevet-200, who: dad, when: "day:flat", text: "Колесо спустило насовсем — иду пешком до села." }
+- { scenario: brevet-200, who: dad, when: "day:fixed", text: "Прокол. Заплатка, насос — пять минут, и дальше." }
+- { scenario: brevet-200, who: dad, when: "day:wet", text: "Пока доставал дождевик — промок насквозь." }
+- { scenario: brevet-200, who: mom, when: "result:home", text: "Двести километров! Ты молодец. Чай уже горячий." }
+- { scenario: brevet-200, who: son, when: "result:evac", text: "Не засчитали в этот раз. В следующий раз получится!" }

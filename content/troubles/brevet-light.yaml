@@ -1,0 +1,43 @@
+trouble:
+  id: brevet-light
+  name: Свет по правилам
+  text: "Если задержишься, к финишу приедешь после заката, а в дождь видно хуже. Правила бревета строгие."
+solutions:
+  - id: blight-lamps
+    tier: cheap
+    name: Фара и задний фонарь
+    text: Белая фара спереди и красный фонарь сзади.
+    goods: [{ good: bike-front-light, qty: 1 }, { good: bike-rear-light, qty: 1 }]
+    workMin: 20
+    why: Фара и фонарь нужны, но после заката по правилам бревета нужен ещё светоотражающий жилет.
+    sources: [acp-brm-rules, pdd-bike]
+    review: draft
+  - id: blight-vest
+    tier: mid
+    name: Фара, задний фонарь и жилет
+    text: Фара, фонарь постоянного свечения и жилет со светоотражающими полосами.
+    goods: [{ good: bike-front-light, qty: 1 }, { good: bike-rear-light, qty: 1 }, { good: reflectors, qty: 1 }]
+    workMin: 20
+    why: Всё по правилам — но если ночью сядет фонарь, заменить нечем.
+    sources: [acp-brm-rules]
+    review: draft
+  - id: blight-spare
+    tier: right
+    name: Фара, задний фонарь, жилет и запасные батарейки
+    text: Всё по правилам и запасные батарейки к фонарям.
+    goods: [{ good: bike-front-light, qty: 1 }, { good: bike-rear-light, qty: 1 }, { good: reflectors, qty: 1 }, { good: batteries, qty: 1 }]
+    workMin: 20
+    guards: [{ risk: lightout, stopsPct: 95 }]
+    why: Правила бревета требуют фары, задний фонарь постоянного свечения, жилет и запасные к свету.
+    sources: [acp-brm-rules, { assumption: "запасные батарейки спасают ночью в девятнадцати случаях из двадцати — допущение игры" }]
+    review: draft
+  - id: blight-flash
+    tier: trap
+    name: Задний — только мигающий, так заметнее
+    text: Мигающий фонарь видно издалека — пусть мигает всю дорогу.
+    goods: [{ good: bike-front-light, qty: 1 }, { good: bike-rear-light, qty: 1 }, { good: reflectors, qty: 1 }]
+    workMin: 20
+    risks: [rules]
+    why: По правилам бревета хотя бы один задний фонарь горит постоянно; кто не выполнил требования к свету, того не допускают к старту.
+    sources: [acp-brm-rules]
+    review: draft

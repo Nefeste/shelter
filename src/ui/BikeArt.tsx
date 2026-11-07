@@ -37,6 +37,9 @@ export function BikeArt({ v, x = 0, y = 0, scale = 1, rider = false, child = fal
       {v.onRack === 'pannier' ? <Line x1={10} y1={30} x2={40} y2={30} stroke={ART.bagDark} strokeWidth={1.5} /> : null}
       {v.onRack === 'backpack' ? <Rect x={14} y={18} width={22} height={16} rx={6} fill={ART.bag} stroke={ink} strokeWidth={1.5} /> : null}
       {v.onRack === 'backpack' ? <Line x1={12} y1={26} x2={38} y2={26} stroke={C.kumach} strokeWidth={1.5} /> : null}
+      {/* подседельная сумка — клин под седлом; сумка на раму — в треугольнике рамы */}
+      {v.saddle ? <Path d="M30 25 L44 25 L42 33 Q34 36 30 30 z" fill={ART.bag} stroke={ink} strokeWidth={1.5} /> : null}
+      {v.frameBag ? <Path d="M44 34 L76 34 L58 50 z" fill={ART.bagDark} stroke={ink} strokeWidth={1.2} /> : null}
       {/* руль: сумка или привязанная палатка с ковриками */}
       {v.barBag ? <Rect x={84} y={20} width={14} height={11} rx={3} fill={ART.bag} stroke={ink} strokeWidth={1.5} /> : null}
       {v.barRoll ? <Rect x={80} y={12} width={30} height={10} rx={5} fill={ART.tent} stroke={ink} strokeWidth={1.5} /> : null}

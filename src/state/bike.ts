@@ -9,6 +9,9 @@ export interface BikeView {
   onRack: 'pannier' | 'backpack' | null;
   /** рюкзак за спиной */
   onBack: boolean;
+  /** подседельная сумка и сумка на раму (бревет) */
+  saddle: boolean;
+  frameBag: boolean;
   /** сумка на руле; палатка, привязанная к рулю */
   barBag: boolean;
   barRoll: boolean;
@@ -38,6 +41,8 @@ export function bikeView(w: World, s: PrepState): BikeView {
     rack,
     onRack: n(id => g(id).bag?.slot === 'rack') > 0 ? 'pannier' : rack && backpacks && !onBack ? 'backpack' : null,
     onBack: backpacks && onBack,
+    saddle: n(id => g(id).bag?.slot === 'saddle') > 0,
+    frameBag: n(id => g(id).bag?.slot === 'frame') > 0,
     barBag: n(id => g(id).bag?.slot === 'bar' && (g(id).bag?.handL ?? 0) > 0) > 0,
     barRoll: n(id => g(id).bag?.slot === 'bar' && !g(id).bag?.handL) > 0,
     flasks: Math.min(2, Math.ceil(n(id => (g(id).flaskDl ?? 0) > 0) / riders)),

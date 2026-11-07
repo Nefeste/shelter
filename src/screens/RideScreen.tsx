@@ -13,6 +13,7 @@ import { rideWhen, voice } from '../state/voices';
 import { bikeView } from '../state/bike';
 import { RideScene, type Light } from '../ui/RideScene';
 import { momentOf } from '../state/moments';
+import { ridersOf } from '../engine';
 import { MomentPanel } from '../ui/MomentPanel';
 import { RouteStrip } from '../ui/RouteStrip';
 import type { DayLog } from '../engine';
@@ -58,7 +59,9 @@ export function RideScreen({ game }: { game: Game }) {
   const lr = d.ride;
   const light: Light = lr.kind === 'night' || lr.endMin > r.sunsetMin ? 'dark' : lr.endMin > r.sunsetMin - 150 ? 'dusk' : 'day';
   const said = voice(world, sc.id, rideWhen(o.days, page, r.stages.length, off), `${page}`);
-  const sfx = sfxOf(d, off);
+  // бревет: опоздал на КП или сняли по правилам — своя надпись
+  const why = off ? o.evacuated?.reason : undefined;
+  const sfx = why === 'control' ? 'control' : why === 'rules' || why === 'support' ? 'rules' : sfxOf(d, off);
   const mom = momentOf(world, game.prep, o, page, game.attempt, game.picks);
   const cost = mom ? r.moments?.find(m => m.on === mom.on)?.costMin ?? 0 : 0;
   // пока момент не кончен, исход этапа не показываем: реплика и беды — после выбора
@@ -74,7 +77,7 @@ export function RideScreen({ game }: { game: Game }) {
           </View>
           <RouteStrip names={r.stages.map(x => x.name)} at={page} off={o.evacuated?.day} />
           <View style={styles.panel}>
-            <RideScene place={st.id} road={st.road} light={light} rain={lr.rain} night={lr.kind === 'night'} bike={bike} tent={tent} />
+            <RideScene place={st.id} road={st.road} light={light} rain={lr.rain} night={lr.kind === 'night'} bike={bike} tent={tent} riders={ridersOf(sc).length} />
             <View style={styles.sfxWrap} pointerEvents="none">
               <Txt title style={styles.sfx} testID="ride-sfx">{T.ride.sfx[sfx]}</Txt>
             </View>
@@ -95,7 +98,7 @@ export function RideScreen({ game }: { game: Game }) {
             </View>
             <View style={[styles.panel, styles.small]}>
               {lr.kind === 'ride' ? <Txt dim style={styles.note}>{T.ride.load(lr.loadKg, lr.slowPct)}</Txt> : null}
-              {waiting ? <Txt dim style={styles.note}>{T.ride.moment.wait}</Txt> : d.short.length ? <Txt style={styles.noteBad} testID={`ride-short-${page}`}>{d.short.map(x => T.days.short[x]).join(', ')}</Txt> : <Txt dim style={styles.note}>{T.ride.fine}</Txt>}
+              {waiting ? <Txt dim style={styles.note}>{T.ride.moment.wait}</Txt> : d.short.length ? <Txt style={styles.noteBad} testID={`ride-short-${page}`}>{d.short.map(x => T.days.short[x]).join(', ')}</Txt> : off ? null : <Txt dim style={styles.note}>{T.ride.fine}</Txt>}
               {!waiting && off && o.evacuated ? <Txt style={styles.noteBad}>{T.result.offRoute(st.name, o.evacuated.reason)}</Txt> : null}
             </View>
           </View>

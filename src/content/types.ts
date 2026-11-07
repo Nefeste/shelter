@@ -50,8 +50,9 @@ export type Category = 'water' | 'food' | 'heat' | 'light' | 'comms' | 'health' 
 export const CATEGORIES: readonly Category[] = ['bags', 'water', 'food', 'heat', 'camp', 'light', 'comms', 'repair', 'health', 'hygiene', 'safety'];
 
 /** Место сумки на велосипеде (docs/specs/2026-11-bike-weekend.md, «Сумки — это место»). */
-export type BagSlot = 'bar' | 'frame' | 'rack' | 'back';
-export const BAG_SLOTS: readonly BagSlot[] = ['bar', 'frame', 'rack', 'back'];
+/** `car` — не на велосипеде: багажник машины, что едет следом (ловушка бревета). */
+export type BagSlot = 'bar' | 'frame' | 'saddle' | 'rack' | 'back' | 'car';
+export const BAG_SLOTS: readonly BagSlot[] = ['bar', 'frame', 'saddle', 'rack', 'back', 'car'];
 
 export interface Good {
   id: string;
@@ -102,7 +103,8 @@ export const TIERS: readonly Tier[] = ['cheap', 'mid', 'right', 'trap'];
 
 /** Беда, которую решение может создать или от которой защищает. */
 /** `stuck` — машину занесло в дороге (сценарии поездок, `Scenario.stuck`). */
-export type Risk = 'co' | 'fire' | 'clog' | 'stuck' | 'flat' | 'break' | 'tick' | 'fall' | 'stomach';
+/** `rules` — нарушение правил бревета до старта, `support` — помощь в пути, `lightout` — фонарь сел ночью. */
+export type Risk = 'co' | 'fire' | 'clog' | 'stuck' | 'flat' | 'break' | 'tick' | 'fall' | 'stomach' | 'rules' | 'support' | 'lightout';
 
 export interface Solution {
   id: string;
@@ -170,13 +172,21 @@ export interface Stage {
   lunchMin?: number;
   /** в конце этапа можно долить фляги (магазин в селе) */
   refill?: boolean;
-  /** срок прибытия: `camp` — за два часа до заката, `train` — последняя электричка */
-  deadline?: 'camp' | 'train';
+  /** срок прибытия: `camp` — за два часа до заката, `train` — последняя электричка, `control` — КП бревета закрывается, `finish` — лимит бревета */
+  deadline?: 'camp' | 'train' | 'control' | 'finish';
 }
 
 /** Маршрут сценария-поездки (`kind: ride`): числа модели — в записи, их видно в «Об игре». */
 export interface Ride {
   stages: Stage[];
+  /** кто едет (id из семьи); нет — все. Остальные дома — говорят репликами */
+  riders?: string[];
+  /** бревет (правила ACP, ст. 10): время закрытия КП — старт + `closeBaseMin` + путь по `fastKmh10` на первых `fastKm`, дальше по `slowKmh10`; финиш — старт + `totalMin` */
+  brevet?: { closeBaseMin: number; fastKm: number; fastKmh10: number; slowKmh10: number; totalMin: number };
+  /** ночью и в дождь по правилам нужны фара, задний фонарь и светоотражающий жилет; без них — сход */
+  vest?: boolean;
+  /** шанс, что ночью сядет фонарь, проценты; защита — запасные батарейки */
+  lightOutPct?: number;
   /** кто сколько везёт: доля в весе, у взрослого 2, у ребёнка 1 */
   share: Record<PersonKind, number>;
   /** литры «на себе и в карманах», когда сумок нет */

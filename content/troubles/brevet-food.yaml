@@ -1,0 +1,43 @@
+trouble:
+  id: brevet-food
+  name: Еда в пути
+  text: "Двести километров — это целый день работы ногами."
+solutions:
+  - id: bfood-snacks
+    tier: cheap
+    name: Сушки
+    text: Пачка сушек в сумке.
+    goods: [{ good: trail-snacks, qty: 1 }]
+    workMin: 0
+    why: Одной пачки на целый день езды мало.
+    sources: [mr-energy-2021, gost-7128]
+    review: draft
+  - id: bfood-bread
+    tier: mid
+    name: Сушки и бутерброды
+    text: Сушки и батон — на весь день.
+    goods: [{ good: trail-snacks, qty: 2 }, { good: bread, qty: 1 }]
+    workMin: 0
+    why: Еды хватит, если ехать без задержек.
+    sources: [mr-energy-2021, gost-7128]
+    review: draft
+  - id: bfood-lunch
+    tier: right
+    name: Сушки, бутерброды и обед на КП
+    text: Перекус под рукой и горячий обед в кафе на среднем КП.
+    goods: [{ good: trail-snacks, qty: 2 }, { good: bread, qty: 1 }, { good: cafe-lunch, qty: 1 }]
+    workMin: 0
+    why: На длинной дистанции едят понемногу и часто, а на КП можно пообедать.
+    sources: [mr-energy-2021, acp-brm-rules]
+    review: draft
+  - id: bfood-deli
+    tier: trap
+    name: Колбаса и салаты
+    text: Нарезка и салаты в контейнере — сытно.
+    goods: [{ good: deli-picnic, qty: 1 }]
+    workMin: 0
+    keepsPct: 30
+    risks: [stomach]
+    why: Скоропортящееся возят только в сумке-холодильнике — в сумке под седлом оно портится к обеду.
+    sources: [rpn-kostroma-nature]
+    review: draft

@@ -1,0 +1,42 @@
+trouble:
+  id: brevet-rain
+  name: Дождь и холод
+  text: "Конец апреля: утром прохладно, днём может пойти дождь."
+solutions:
+  - id: brain-wind
+    tier: cheap
+    name: Ветровка
+    text: Яркая ветровка — от ветра и прохлады.
+    goods: [{ good: windbreaker, qty: 1 }]
+    workMin: 0
+    why: Ветровка греет на ветру, но под дождём промокает.
+    sources: [pioner-bike]
+    review: draft
+  - id: brain-poncho
+    tier: mid
+    name: Дождевик
+    text: Дождевик-плащ — сверху в сумку.
+    goods: [{ good: rain-poncho, qty: 1 }, { good: plastic-bags, qty: 1 }]
+    workMin: 0
+    why: Дождевик спасает от дождя, но на ходу парусит.
+    sources: [pioner-bike]
+    review: draft
+  - id: brain-jacket
+    tier: right
+    name: Велокуртка от дождя под рукой
+    text: Велокуртка от дождя — под рукой, вещи — в пакетах.
+    goods: [{ good: rain-jacket, qty: 1 }, { good: plastic-bags, qty: 1 }]
+    workMin: 0
+    why: Одежда велосипедиста в дождь не должна пропускать влагу, а дождевик держат под рукой.
+    sources: [pioner-bike]
+    review: draft
+  - id: brain-tight
+    tier: trap
+    name: Уложить поплотнее, дождевик на дно
+    text: Сверху еда и камера, дождевик — на самое дно.
+    goods: [{ good: rain-poncho, qty: 1 }, { good: plastic-bags, qty: 1 }]
+    workMin: 0
+    buried: true
+    why: "Дождевик кладут сверху, «в пределах быстрой находимости»: пока его откопаешь, уже промок."
+    sources: [pioner-bike]
+    review: draft
