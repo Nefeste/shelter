@@ -107,6 +107,7 @@ const SHORT: Record<Shortage, string> = {
   tick: 'укусил клещ — к врачу после похода',
   train: 'опоздали на последнюю электричку',
   visibility: 'в дождь без фары и заднего фонаря',
+  warmup: 'дом ещё прогревается — первый вечер прохладно',
 };
 
 /** «13:20» */
@@ -256,6 +257,7 @@ export const T = {
         case 'allGood': return `Всё сработало. Осталось ${rub(l.moneyLeft)}.`;
         case 'injury': return `${dayN(l.day)} — порез или простуда, а аптечки дома не было.`;
         case 'stuck': return `${dayN(l.day)} — машину занесло в сугроб, полдня ждали помощи в холодной машине.`;
+        case 'warmup': return `${dayN(l.day)} — печь разогревали постепенно, в доме к вечеру только ${deg(l.indoorC)}: первый вечер прохладно.`;
         case 'offRoute': return `${stage(l.stage)} — сошли с маршрута: ${OFF[l.reason]}.`;
         case 'stage':
           if (l.what === 'late') return `${stage(l.stage)}: к стоянке приехали на ${minutes(Math.max(0, l.minutes ?? 0))} позже, чем за два часа до заката; груз — ${l.loadKg} кг на взрослый велосипед.`;

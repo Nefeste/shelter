@@ -14,7 +14,7 @@ function trip(days: string[][]): PrepState {
   return s;
 }
 
-/** Три звезды: аварийный набор, печь с проверенной тягой и датчик, вода из дома, гречка на печи. */
+/** Три звезды, если в дороге не застряли: аварийный набор, печь с проверенной тягой и датчик, вода из дома, гречка на печи. */
 export const DACHA_GOOD = [
   ['road-kit', 'dacha-stove', 'co-detector-airing'],
   ['dacha-water-full', 'dacha-food-stove'],
@@ -29,7 +29,8 @@ describe('новогодние на даче', () => {
       for (const d of o.days) for (const x of ['light', 'comms', 'sanitation']) expect(d.short).not.toContain(x);
       if (stars(o) === 3) top += 1;
     }
-    expect(top).toBeGreaterThanOrEqual(27);
+    // застряли в дороге — затопили поздно, первый вечер прохладно: две звезды; иначе три
+    expect(top).toBeGreaterThanOrEqual(18);
   });
 
   test('ехать в метель — машину заносит наверняка, и без набора это трудный день с источником', () => {
@@ -60,5 +61,23 @@ describe('новогодние на даче', () => {
     expect(heater.start.kcal).toBe(20 * world.good('canned-meat').provides!.kcal!);
     const indoor = runDays(world, trip([['road-kit', 'dacha-stove', 'co-detector-airing'], ['dacha-water-drink', 'dacha-food-indoor']]), 1);
     expect(indoor.traps).toContain('dacha-food-indoor');
+  });
+
+  test('развилка тепла: застряли в дороге — печь не успела, первый вечер прохладно, но не холод; обогреватель греет сразу', () => {
+    const stove = trip(DACHA_GOOD);
+    const seed = Array.from({ length: 50 }, (_, i) => i + 1).find(x => runDays(world, stove, x).days[0].event === 'stuck')!;
+    const o = runDays(world, stove, seed);
+    expect(o.days[0].short).toContain('warmup');
+    expect(o.days[0].short).not.toContain('cold');
+    expect(stars(o)).toBeLessThanOrEqual(2);
+    expect(stars(o)).toBeGreaterThanOrEqual(1);
+    const line = review(stove, o).find(l => l.kind === 'warmup')!;
+    expect(sourceOf(world, stove, line)?.title).toContain('Адыге');
+    // доехали без приключений — к вечеру дом прогрелся
+    const calm = Array.from({ length: 50 }, (_, i) => i + 1).find(x => runDays(world, stove, x).days[0].event !== 'stuck')!;
+    expect(runDays(world, stove, calm).days[0].short).not.toContain('warmup');
+    // обогреватель греет с первого вечера, даже если застряли
+    const heater = trip([['road-shovel', 'dacha-oil-heater'], ['dacha-water-full', 'dacha-food-burner']]);
+    expect(runDays(world, heater, seed).days[0].short).not.toContain('warmup');
   });
 });

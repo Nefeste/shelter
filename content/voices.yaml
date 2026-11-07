@@ -178,3 +178,5 @@
 - { scenario: bike-weekend, who: mom, when: "choose:rain-packs", text: "Спальники в пакеты — пусть хоть они будут сухие." }
 - { scenario: bike-weekend, who: dad, when: "choose:rain-ponchos", text: "Дождевики есть — пусть себе капает." }
 - { scenario: bike-weekend, who: mom, when: "choose:rain-full", text: "Дождевики сверху, чехлы на сумки — дождь не страшен." }
+- { scenario: dacha-new-year, who: gran, when: "day:warmup", text: "Печка только разгорается. Посидим в шубах — к утру будет тепло." }
+- { scenario: dacha-new-year, who: son, when: "day:warmup", text: "Изо рта пар! Мам, а печка точно греет?" }

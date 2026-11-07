@@ -16,7 +16,7 @@ export function voice(w: World, scenario: string, when: string, salt = ''): Said
 }
 
 /** Порядок поводов дня: важное — раньше. */
-const FIRST: DayLog['short'] = ['cold', 'food', 'water', 'light', 'comms', 'sanitation'];
+const FIRST: DayLog['short'] = ['cold', 'warmup', 'food', 'water', 'light', 'comms', 'sanitation'];
 
 /**
  * О чём говорят в этот день: случай дня; новая нехватка (которой не было вчера); последний день;
