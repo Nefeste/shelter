@@ -131,6 +131,10 @@ export function build(): BuildReport {
       if (!r) errors.push(`${where}: у поездки нет маршрута (ride)`);
       else {
         if (r.stages.length !== raw.eventDays) errors.push(`${where}: этапов ${r.stages.length}, а eventDays ${raw.eventDays}`);
+        for (const m of r.moments ?? []) {
+          for (const g of m.want) if (!goods.some(x => x.id === g)) errors.push(`${where}: в «моменте» ${m.on} нет товара ${g}`);
+          if (!Number.isInteger(m.costMin) || m.costMin < 0) errors.push(`${where}: «момент» ${m.on} — минуты целые`);
+        }
         for (const st of r.stages) {
           text(`${where}, этап ${st.id}`, st.name);
           if (st.kind === 'ride' && !(st.km > 0)) errors.push(`${where}, этап ${st.id}: нет километров`);

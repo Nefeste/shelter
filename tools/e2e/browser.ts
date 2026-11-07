@@ -86,7 +86,8 @@ async function run(p: Page, plan: string[][][], label: string, prepDays = 3) {
   return (await p.getByTestId('stars').innerText()).trim();
 }
 
-const browser = await chromium.launch();
+// своя сборка Chromium в среде (CHROMIUM_PATH), если версия Playwright проекта её не находит
+const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 try {
   const page = await browser.newPage({ viewport: { width: 412, height: 915 } });
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
@@ -146,11 +147,24 @@ try {
     }
     await tap(page, day === 0 ? 'next-day' : 'storm');
   }
+  let moments = 0;
   for (let i = 0; i < 5; i++) {
     await page.getByTestId(`ride-page-${i}`).waitFor();
     await page.getByTestId('ride-sfx').waitFor();
     await page.waitForTimeout(400);
     await snap(page, `bike-ride-${i}`);
+    // «момент»: «Что достать?» — пока он не кончен, листать дальше нельзя; доставать по карточке
+    if (await page.getByTestId(`moment-${i}`).count()) {
+      moments += 1;
+      if (i < 4 && (await page.getByTestId('ride-next').isEnabled())) throw new Error('момент не кончен, а «Дальше» доступна');
+      const cards = page.locator('[data-testid^="moment-card-"]');
+      for (let k = 0; k < (await cards.count()) && !(await page.getByTestId('moment-done').count()); k++) {
+        const card = cards.nth(k);
+        if (await card.isEnabled()) await card.click();
+      }
+      await page.getByTestId('moment-done').waitFor();
+      await snap(page, `bike-moment-${i}`);
+    }
     if (i < 4) await tap(page, 'ride-next');
   }
   await tap(page, 'to-result');
@@ -164,7 +178,7 @@ try {
   await page.getByTestId('assumptions').waitFor();
   await snap(page, 'about');
   if (errors.length) throw new Error(`ошибки в консоли:\n${errors.join('\n')}`);
-  console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}, дача ${dacha}, велопоход ${bike}; снимков ${shot} в tools/e2e/out/`);
+  console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}, дача ${dacha}, велопоход ${bike} (моментов ${moments}); снимков ${shot} в tools/e2e/out/`);
 } finally {
   await browser.close();
   server.stop();

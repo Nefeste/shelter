@@ -60,7 +60,11 @@ export function handLitres(w: World, pack: { good: string; qty: number }[], onBa
   return l;
 }
 
-export function runRide(w: World, s: PrepState, seed: number): Outcome {
+/**
+ * Маршрут. `misses[этап]` — сколько раз в «моменте» этапа достали не то: столько раз минуты
+ * поиска (`costMin`) прибавляются к этапу. Случайность от них не зависит.
+ */
+export function runRide(w: World, s: PrepState, seed: number, misses: readonly number[] = []): Outcome {
   const sc = w.scenario(s.scenario);
   const r = sc.ride!;
   const rng = Rng.seeded(seed).fork('ride');
@@ -212,12 +216,20 @@ export function runRide(w: World, s: PrepState, seed: number): Outcome {
     }
     if (fallAt[ri]) { event = 'fall'; short.push('fall'); }
     if (i === tickAt) { event = 'tick'; short.push('tick'); }
+    // «момент» этапа: самый заметный случай с вещью, которую достают руками
+    const flatHappened = flatAt[ri];
+    const mo: StageLog['moment'] = flatHappened ? { on: 'flat', ok: !!flatFixed[ri] } : rain ? { on: 'rain', ok: ponchoAtHand } : undefined;
+    if (mo && r.moments?.some(m => m.on === mo.on)) log.moment = mo;
     if (rain) {
       event = event ?? 'rain';
       if (!ponchoAtHand) short.push('wet');
       if (!gearDry) wetGear = true;
       if (!(front && rear)) short.push('visibility');
     }
+
+    // ошибки в «моменте» — минуты на поиски
+    const cost = (on: string) => r.moments?.find(m => m.on === on)?.costMin ?? 0;
+    if (log.moment) total += (misses[i] ?? 0) * cost(log.moment.on);
 
     // вода и еда — по часам в пути
     const drink = Math.ceil((total * drinkPerH) / 60);
@@ -234,7 +246,15 @@ export function runRide(w: World, s: PrepState, seed: number): Outcome {
       log.deadlineMin = r.sunsetMin - 120;
       if (clock > r.sunsetMin) {
         if (!anyLight) reason = 'dark';
-        else short.push('dark');
+        else {
+          short.push('dark');
+          if (!log.moment && r.moments?.some(m => m.on === 'dark')) {
+            // в темноте искали фонарь: минуты после заката, к стоянке ещё позже
+            log.moment = { on: 'dark', ok: true };
+            clock += (misses[i] ?? 0) * cost('dark');
+            log.endMin = clock;
+          }
+        }
       } else if (clock > r.sunsetMin - 120) short.push('late');
     }
     if (st.deadline === 'train') {

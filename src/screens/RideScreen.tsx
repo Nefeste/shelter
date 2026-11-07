@@ -3,7 +3,7 @@
 // («ПШШШ!»); реплика семьи пузырём; внизу два маленьких кадра — часы против срока и груз.
 // Страницу листает игрок — без таймера (устав, «Без давления»). Расчёт уже сделан движком.
 import React, { useEffect, useMemo, useState } from 'react';
-import { Animated, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { T, clock } from '../i18n';
 import { Button, Txt } from '../ui/kit';
 import { C, R, S } from '../ui/theme';
@@ -12,6 +12,7 @@ import { type Game, world } from '../state/game';
 import { rideWhen, voice } from '../state/voices';
 import { bikeView } from '../state/bike';
 import { RideScene, type Light } from '../ui/RideScene';
+import { momentOf } from '../state/moments';
 import type { DayLog } from '../engine';
 
 /** Звук-надпись кадра: самое громкое, что случилось на этапе. */
@@ -56,6 +57,11 @@ export function RideScreen({ game }: { game: Game }) {
   const light: Light = lr.kind === 'night' || lr.endMin > r.sunsetMin ? 'dark' : lr.endMin > r.sunsetMin - 150 ? 'dusk' : 'day';
   const said = voice(world, sc.id, rideWhen(o.days, page, r.stages.length, off), `${page}`);
   const sfx = sfxOf(d, off);
+  const mom = momentOf(world, game.prep, o, page, game.attempt, game.picks);
+  const cost = mom ? r.moments?.find(m => m.on === mom.on)?.costMin ?? 0 : 0;
+  const lastTried = mom?.tried[mom.tried.length - 1];
+  // пока момент не кончен, исход этапа не показываем: реплика и беды — после выбора
+  const waiting = !!mom && !mom.done;
   const tent = game.prep.chosen['bike-night'] !== undefined && !!world.solution(game.prep.chosen['bike-night']).goods.some(g => g.good.startsWith('tent'));
   return (
     <View style={styles.screen}>
@@ -71,7 +77,7 @@ export function RideScreen({ game }: { game: Game }) {
             <View style={styles.sfxWrap} pointerEvents="none">
               <Txt title style={styles.sfx} testID="ride-sfx">{T.ride.sfx[sfx]}</Txt>
             </View>
-            {said ? (
+            {said && !waiting ? (
               <View style={styles.bubble} testID={`voice-stage-${page}`}>
                 <Txt dim style={styles.who}>{said.name}</Txt>
                 <Txt style={styles.said}>{said.text}</Txt>
@@ -79,6 +85,25 @@ export function RideScreen({ game }: { game: Game }) {
               </View>
             ) : null}
           </View>
+          {mom ? (
+            <View style={[styles.panel, styles.moment]} testID={`moment-${page}`}>
+              <Txt style={styles.momentAsk}>{T.ride.moment.ask[mom.on]}</Txt>
+              {mom.done ? null : <Txt dim style={styles.note}>{T.ride.moment.hint}</Txt>}
+              <View style={styles.cards}>
+                {mom.cards.map(g => {
+                  const tried = mom.tried.includes(g);
+                  const right = tried && mom.want.includes(g);
+                  return (
+                    <Pressable key={g} testID={`moment-card-${g}`} accessibilityRole="button" disabled={mom.done || tried} onPress={() => { play(mom.want.includes(g) ? 'choose' : 'tap'); game.pick(page, g); }} style={[styles.card, tried && !right && styles.cardOff, right && styles.cardOk]}>
+                      <Txt style={styles.cardText}>{world.good(g).name}</Txt>
+                    </Pressable>
+                  );
+                })}
+              </View>
+              {lastTried && !mom.done && !mom.want.includes(lastTried) ? <Txt style={styles.noteBad} testID="moment-miss">{T.ride.moment.miss(cost)}</Txt> : null}
+              {mom.done ? <Txt style={mom.found && mom.ok ? styles.noteOk : styles.noteBad} testID="moment-done">{mom.found ? (mom.ok ? T.ride.moment.found[mom.on] : T.ride.moment.broken) : T.ride.moment.none[mom.on]}</Txt> : null}
+            </View>
+          ) : null}
           <View style={styles.row}>
             <View style={[styles.panel, styles.small]}>
               <Txt style={styles.big}>{lr.kind === 'night' ? '☾' : clock(lr.endMin)}</Txt>
@@ -87,14 +112,14 @@ export function RideScreen({ game }: { game: Game }) {
             </View>
             <View style={[styles.panel, styles.small]}>
               {lr.kind === 'ride' ? <Txt dim style={styles.note}>{T.ride.load(lr.loadKg, lr.slowPct)}</Txt> : null}
-              {d.short.length ? <Txt style={styles.noteBad} testID={`ride-short-${page}`}>{d.short.map(x => T.days.short[x]).join(', ')}</Txt> : <Txt dim style={styles.note}>{T.ride.fine}</Txt>}
-              {off && o.evacuated ? <Txt style={styles.noteBad}>{T.result.offRoute(st.name, o.evacuated.reason)}</Txt> : null}
+              {waiting ? <Txt dim style={styles.note}>{T.ride.moment.wait}</Txt> : d.short.length ? <Txt style={styles.noteBad} testID={`ride-short-${page}`}>{d.short.map(x => T.days.short[x]).join(', ')}</Txt> : <Txt dim style={styles.note}>{T.ride.fine}</Txt>}
+              {!waiting && off && o.evacuated ? <Txt style={styles.noteBad}>{T.result.offRoute(st.name, o.evacuated.reason)}</Txt> : null}
             </View>
           </View>
         </Animated.View>
       </ScrollView>
       <View style={styles.buttons}>
-        {last ? null : <Button testID="ride-next" label={T.ride.next} onPress={() => setPage(p => p + 1)} />}
+        {last ? null : <Button testID="ride-next" label={T.ride.next} disabled={!!mom && !mom.done} onPress={() => setPage(p => p + 1)} />}
         <Button testID="to-result" kind={last ? 'primary' : 'ghost'} label={T.ride.toResult} onPress={() => game.setScreen('result')} />
       </View>
     </View>
@@ -128,6 +153,14 @@ const styles = StyleSheet.create({
   note: { fontSize: S.small, lineHeight: 20 },
   noteBad: { fontSize: S.small, lineHeight: 20, color: C.kumach },
   buttons: { padding: 14, gap: 8 },
+  moment: { padding: 10, gap: 8, transform: [{ rotate: '0.6deg' }] },
+  momentAsk: { fontWeight: '700', fontSize: S.lead, lineHeight: 26 },
+  cards: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  card: { flexBasis: '47%', flexGrow: 1, minHeight: 56, justifyContent: 'center', borderWidth: 2, borderColor: C.ink, borderRadius: R.button, backgroundColor: C.lamp, padding: 8 },
+  cardOff: { opacity: 0.35, backgroundColor: C.line },
+  cardOk: { backgroundColor: '#9fd3b0' },
+  cardText: { fontSize: S.small, lineHeight: 18, fontWeight: '600' },
+  noteOk: { fontSize: S.small, lineHeight: 20, color: C.spruce, fontWeight: '700' },
 });
 
 /** Полоска маршрута над кадром: пройденные этапы, этот, впереди; где сошли — чёрная точка. */

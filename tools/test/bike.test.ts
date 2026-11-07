@@ -4,6 +4,8 @@ import { describe, expect, test } from 'bun:test';
 import { type PrepState, canChoose, choose, nextDay, review, runDays, slowPct, sourceOf, stars, startPrep } from '../../src/engine';
 import { bikeView } from '../../src/state/bike';
 import { packList } from '../../src/state/checklist';
+import { missesOf, momentOf } from '../../src/state/moments';
+import { packRun, unpackRun } from '../../src/state/run';
 import { world } from './plans';
 
 const BIKE = 'bike-weekend';
@@ -139,5 +141,49 @@ describe('велопоход выходного дня', () => {
     expect(list.massG).toBe(list.groups.reduce((a, g) => a + g.massG, 0));
     // в список — то, что едет; дома только сумма денег совпадает с потраченным, когда ничего не меняли
     expect(list.total).toBe(sc.money.reduce((a, b) => a + b, 0) - s.money);
+  });
+
+  test('«моменты»: ошибка прибавляет минуты поиска, но не меняет случаев; верный выбор — как без моментов', () => {
+    const s = trip(BIKE_GOOD);
+    const seed = seedWhere(s, o => o.days.some(d => d.ride?.moment?.on === 'flat' && d.ride.moment.ok));
+    const base = runDays(world, s, seed);
+    const at = base.days.findIndex(d => d.ride?.moment?.on === 'flat' && d.ride.moment.ok);
+    const m = momentOf(world, s, base, at, seed, {})!;
+    expect(m.want.length).toBeGreaterThan(0);
+    for (const g of m.want) expect(m.cards).toContain(g);
+    expect(m.cards.length).toBeLessThanOrEqual(4);
+    const wrong = m.cards.find(g => !m.want.includes(g))!;
+    // верно с первого раза — промахов нет, итог тот же
+    expect(missesOf({ [at]: [m.want[0]] }, () => m.want)[at]).toBe(0);
+    const picks = { [at]: [wrong, m.want[0]] };
+    const misses = missesOf(picks, () => m.want);
+    expect(misses[at]).toBe(1);
+    const slow = runDays(world, s, seed, misses);
+    const cost = sc.ride!.moments!.find(x => x.on === 'flat')!.costMin;
+    expect(slow.days[at].ride!.endMin - base.days[at].ride!.endMin).toBe(cost);
+    expect(slow.days.map(d => d.event)).toEqual(base.days.map(d => d.event));
+    const done = momentOf(world, s, slow, at, seed, picks)!;
+    expect(done.done && done.found).toBe(true);
+  });
+
+  test('«моменты»: дождевика нет под рукой — нужного нет на карточках, момент кончается после первой попытки', () => {
+    const s = trip(swap('bags-panniers', 'bags-strapped'));
+    const seed = seedWhere(s, o => o.days.some(d => d.ride?.moment?.on === 'rain'));
+    const o = runDays(world, s, seed);
+    const at = o.days.findIndex(d => d.ride?.moment?.on === 'rain');
+    const m = momentOf(world, s, o, at, seed, {})!;
+    expect(m.ok).toBe(false);
+    expect(m.cards).not.toContain('rain-poncho');
+    const after = momentOf(world, s, o, at, seed, { [at]: [m.cards[0]] })!;
+    expect(after.done && !after.found).toBe(true);
+    expect(missesOf({ [at]: [m.cards[0]] }, () => m.want)[at]).toBe(0);
+  });
+
+  test('сохранение с выборами в «моментах» восстанавливается; старое — без них', () => {
+    const s = trip(BIKE_GOOD);
+    const run = { v: 1 as const, phase: 'days' as const, attempt: 2, prep: s, picks: { 0: ['inner-tube'] } };
+    expect(unpackRun(world, packRun(run))).toEqual(run);
+    const old = unpackRun(world, packRun({ v: 1, phase: 'days', attempt: 2, prep: s }))!;
+    expect(old.picks).toBeUndefined();
   });
 });

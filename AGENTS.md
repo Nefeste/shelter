@@ -115,7 +115,7 @@ tag by `android.yml`, with the kit's signing and contents actions).
   troubles `road`, `dacha-*`, shared `co`) and «Велопоход выходного дня» (`kind: ride`, troubles
   `bike-*`): bags are the place, every good has `massG`, the event is a route of stages
   (`src/engine/ride.ts`) shown as comic pages (`src/screens/RideScreen.tsx`, `src/ui/RideScene.tsx`,
-  `src/ui/BikeArt.tsx`; the bike on the prep screen — `src/ui/Bike.tsx`, `src/state/bike.ts`); a failed
+  `src/ui/BikeArt.tsx`; «моменты» — `src/state/moments.ts`, a miss adds search minutes through `runDays(…, misses)`, picks are saved with the run; the bike on the prep screen — `src/ui/Bike.tsx`, `src/state/bike.ts`); a failed
   ride is «сход с маршрута», not an evacuation. A scenario carries its own words, order and checks.
 - `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world, dacha, bike; `tools/e2e/browser.ts` — the browser scenario.
 - `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes; `--scenario <id>` for

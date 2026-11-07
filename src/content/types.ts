@@ -226,6 +226,17 @@ export interface Ride {
   /** прокол: сколько минут чинить с ремнабором и сколько идти пешком без него */
   fixMin: number;
   walkMin: number;
+  /** «моменты» комикса: в кадре случая игрок достаёт нужное; ошибка — минуты поиска (docs/specs/2026-11-moments.md) */
+  moments?: Moment[];
+}
+
+export type MomentKind = 'flat' | 'rain' | 'dark';
+export interface Moment {
+  on: MomentKind;
+  /** что из уложенного помогает: хватит любого */
+  want: string[];
+  /** минут на поиски за каждую ошибку */
+  costMin: number;
 }
 
 export interface Scenario {

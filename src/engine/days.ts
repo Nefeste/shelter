@@ -35,6 +35,8 @@ export interface StageLog {
   loadKg: number;
   /** прокол починили на привале */
   fixed?: boolean;
+  /** «момент» этапа: что случилось и есть ли под рукой нужное (src/state/moments.ts) */
+  moment?: { on: 'flat' | 'rain' | 'dark'; ok: boolean };
 }
 
 export interface DayLog {
@@ -89,9 +91,9 @@ function active(w: World, s: PrepState): Solution[] {
  * Расчёт события. `seed` — зерно случайности сценария: те же решения и то же зерно дают те же
  * 14 дней. Случайность — только день оттепели и день, когда случается беда без защиты.
  */
-export function runDays(w: World, s: PrepState, seed: number): Outcome {
+export function runDays(w: World, s: PrepState, seed: number, misses: readonly number[] = []): Outcome {
   const sc = w.scenario(s.scenario);
-  if (sc.kind === 'ride') return runRide(w, s, seed);
+  if (sc.kind === 'ride') return runRide(w, s, seed, misses);
   const rng = Rng.seeded(seed).fork('days');
   const sols = active(w, s);
   const late = s.bought.filter(p => p.arrivesDay >= sc.prepDays).map(p => p.good);

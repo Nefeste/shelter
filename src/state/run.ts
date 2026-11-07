@@ -10,6 +10,8 @@ export interface SavedRun {
   phase: Phase;
   attempt: number;
   prep: PrepState;
+  /** выборы в «моментах» маршрута; в сохранениях до 0.10.0 их нет */
+  picks?: Record<number, string[]>;
 }
 
 export function packRun(run: SavedRun): string {
