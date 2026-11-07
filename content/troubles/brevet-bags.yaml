@@ -1,0 +1,43 @@
+trouble:
+  id: brevet-bags
+  name: Куда сложить вещи
+  text: "Двести километров одному, своими силами: всё нужное в дороге — с собой на велосипеде."
+solutions:
+  - id: bbags-backpack
+    tier: cheap
+    name: Рюкзак за спиной
+    text: Свой походный рюкзак — ничего покупать не нужно.
+    goods: [{ good: own-backpack, qty: 1 }]
+    workMin: 0
+    onBack: true
+    why: Рюкзак за спиной — это вес на спине весь день; груз возят на велосипеде, а не на себе.
+    sources: [pioner-bike]
+    review: draft
+  - id: bbags-saddle
+    tier: mid
+    name: Подседельная сумка
+    text: Сумка под седлом — всё в ней, на спине ничего.
+    goods: [{ good: saddle-bag, qty: 1 }]
+    workMin: 10
+    why: Под седлом вещи не давят на спину, но достать что-то на ходу нельзя.
+    sources: [pioner-bike]
+    review: draft
+  - id: bbags-frame
+    tier: right
+    name: Подседельная сумка и сумка на раму
+    text: Под седлом — запас, на раме — то, что нужно на ходу.
+    goods: [{ good: saddle-bag, qty: 1 }, { good: frame-bag, qty: 1 }]
+    workMin: 15
+    why: Дождевик, перекус и телефон держат под рукой, остальное — под седлом.
+    sources: [pioner-bike]
+    review: draft
+  - id: bbags-car
+    tier: trap
+    name: Вещи повезёт семья на машине следом
+    text: Ехать налегке — мама с сыном поедут следом и дадут, что нужно.
+    goods: [{ good: family-car, qty: 1 }]
+    workMin: 0
+    risks: [support]
+    why: Бревет едут своими силами — машина сопровождения запрещена, помощь только на контрольных пунктах; иначе бревет не засчитают.
+    sources: [acp-brm-rules]
+    review: draft

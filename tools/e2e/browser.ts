@@ -47,6 +47,11 @@ const BIKE = [
   [['bike-bags', 'bags-panniers'], ['bike-repair', 'repair-service'], ['bike-night', 'night-bags'], ['bike-ticks', 'ticks-spray']],
   [['bike-water', 'water-boil'], ['bike-food', 'food-cook'], ['bike-light', 'blight-bike'], ['bike-rain', 'rain-full']],
 ];
+// тот же план, что BREVET_GOOD в tools/test/brevet.test.ts
+const BREVET = [
+  [['brevet-bags', 'bbags-frame'], ['brevet-light', 'blight-vest'], ['brevet-repair', 'brepair-kit'], ['brevet-water', 'bwater-bottle']],
+  [['brevet-food', 'bfood-lunch'], ['brevet-rain', 'brain-jacket']],
+];
 const CHEAP = [[['heat', 'heat-one-room'], ['water', 'water-drink'], ['food', 'food-cold'], ['light', 'light-candles'], ['fire', 'fire-holders'], ['comms', 'comms-saving'], ['meds', 'meds-home'], ['toilet', 'toilet-bucket']]];
 
 let shownMoments = 0;
@@ -189,12 +194,39 @@ try {
   await snap(page, 'bike-result');
   await page.getByTestId('list-mass').scrollIntoViewIfNeeded();
   await snap(page, 'bike-list');
+  // бревет: едет один, КП со временем закрытия, комикс страницами
+  await tap(page, 'home');
+  await tap(page, 'play-brevet-200');
+  await snap(page, 'brevet-intro');
+  await tap(page, 'start-prep');
+  for (let day = 0; day < 2; day++) {
+    for (const [t, sid] of BREVET[day]) await pick(page, t, sid);
+    if (day === 0) await snap(page, 'brevet-prep');
+    await tap(page, day === 0 ? 'next-day' : 'storm');
+  }
+  for (let i = 0; i < 4; i++) {
+    await page.getByTestId(`ride-page-${i}`).waitFor();
+    if (await page.getByTestId(`moment-${i}`).count()) {
+      const cards = page.locator('[data-testid^="moment-card-"]');
+      for (let k = 0; k < (await cards.count()) && !(await page.getByTestId('moment-done').count()); k++) {
+        if (await cards.nth(k).isEnabled()) await cards.nth(k).click();
+      }
+      await page.getByTestId('moment-done').waitFor();
+    }
+    await page.waitForTimeout(400);
+    if (i === 0 || i === 3) await snap(page, `brevet-ride-${i}`);
+    if (!(await page.getByTestId('ride-next').count())) break;
+    await tap(page, 'ride-next');
+  }
+  await tap(page, 'to-result');
+  const brevet = (await page.getByTestId('stars').innerText()).trim();
+  await snap(page, 'brevet-result');
   await tap(page, 'home');
   await tap(page, 'about');
   await page.getByTestId('assumptions').waitFor();
   await snap(page, 'about');
   if (errors.length) throw new Error(`ошибки в консоли:\n${errors.join('\n')}`);
-  console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}, дача ${dacha}, велопоход ${bike} (моментов ${moments}), моментов дома ${shownMoments}; снимков ${shot} в tools/e2e/out/`);
+  console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}, дача ${dacha}, велопоход ${bike} (моментов ${moments}), моментов дома ${shownMoments}, бревет ${brevet}; снимков ${shot} в tools/e2e/out/`);
 } finally {
   await browser.close();
   server.stop();

@@ -7,7 +7,7 @@ import { type PrepState, type World } from './prep';
 import { runRide } from './ride';
 
 /** Дома — эвакуация; в поездке — сход с маршрута (`break`, `dark`, `stomach`, `co`). */
-export type EvacReason = 'cold' | 'thirst' | 'hunger' | 'meds' | 'co' | 'fire' | 'break' | 'dark' | 'stomach';
+export type EvacReason = 'cold' | 'thirst' | 'hunger' | 'meds' | 'co' | 'fire' | 'break' | 'dark' | 'stomach' | 'control' | 'rules' | 'support';
 
 /** Чего не хватило в день — для разбора. */
 export type Shortage = 'water' | 'drink' | 'food' | 'light' | 'comms' | 'sanitation' | 'cold' | 'care' | 'road'

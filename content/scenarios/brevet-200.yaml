@@ -1,0 +1,93 @@
+id: brevet-200
+name: Бревет 200 км
+kind: ride
+order: 4
+words: { until: до старта, start: На старт, place: сумки, card: сумки }
+text: >-
+  Конец апреля, суббота. Папа впервые едет бревет: двести километров за день, одному, своими
+  силами. Старт в семь утра, три контрольных пункта в сёлах — у магазина или заправки, финиш там
+  же, где старт. Каждый пункт закрывается в своё время: опоздал — бревет не засчитают. Мама с сыном
+  дома ждут сообщений с каждого пункта. На сборы — два вечера; всё, что взял, — везти на себе.
+family:
+  - { id: dad, name: Папа, kind: adult }
+  - { id: mom, name: Мама, kind: adult }
+  - { id: son, name: Сын, kind: child }
+prepDays: 2
+minutesPerDay: 240
+money: [10000, 4000]
+pantryL: 0
+porchL: 0
+# старт — КП1 — КП2 — КП3 — финиш
+eventDays: 4
+outdoorC: [6, 12, 14, 9]
+houseC: 0
+troubles: [brevet-bags, brevet-light, brevet-repair, brevet-water, brevet-food, brevet-rain]
+norms:
+  waterDl: { adult: 0, child: 0, elder: 0 }
+  drinkDl: { adult: 0, child: 0, elder: 0 }
+  kcal: 0
+  lightH: 0
+  comms: false
+  sanitation: false
+  coldC: 0
+  coldEvacC: -50
+  maxC: 40
+needsMeds: []
+ride:
+  riders: [dad]
+  stages:
+    - { id: cp1, name: Старт — КП 1 «Сосновка», day: 0, kind: ride, km: 60, road: asphalt, startMin: 420, lunchMin: 15, refill: true, deadline: control }
+    - { id: cp2, name: КП 1 — КП 2 «Озёрки», day: 0, kind: ride, km: 55, road: asphalt, lunchMin: 30, refill: true, deadline: control }
+    - { id: cp3, name: КП 2 — КП 3 «Липки», day: 0, kind: ride, km: 45, road: asphalt, lunchMin: 15, refill: true, deadline: control }
+    - { id: finish, name: КП 3 — финиш, day: 0, kind: ride, km: 44, road: asphalt, deadline: finish }
+  brevet: { closeBaseMin: 60, fastKm: 60, fastKmh10: 200, slowKmh10: 150, totalMin: 810 }
+  vest: true
+  lightOutPct: 40
+  share: { adult: 2, child: 1, elder: 1 }
+  onBodyL: 4
+  baseKg: 3
+  lightKg: 8
+  slowPctPerKg: 3
+  backFactor: 2
+  slowMaxPct: 60
+  speed: { asphalt: 250, dirt: 160 }
+  rainDirtPct: 70
+  windPct: 15
+  restEvery: 90
+  restMin: 5
+  rainPct: 50
+  flatPer100: 40
+  breakPct: 20
+  tickPct: 0
+  fallPct: 0
+  sunsetMin: 1200
+  trainMin: 1440
+  nightC: [4, 8]
+  sleepOkC: 0
+  drinkDlPerH: { adult: 5, child: 4, elder: 5 }
+  campDl: { adult: 0, child: 0, elder: 0 }
+  kcal: { adult: 250, child: 180, elder: 200 }
+  campKcal: { adult: 0, child: 0, elder: 0 }
+  stomachPct: 60
+  fixMin: 25
+  walkMin: 120
+  moments:
+    - { on: flat, want: [inner-tube, patch-kit], costMin: 10 }
+    - { on: rain, want: [rain-jacket, rain-poncho], costMin: 5 }
+sources:
+  - acp-brm-rules
+  - acp-brm-organizers
+  - rpn-moscow-water
+  - mr-energy-2021
+  - pdd-bike
+  - { assumption: "маршрут, сёла и время заката (20:00) вымышлены; старт в 7:00, три КП на 60, 115 и 160 км, финиш на 204 км" }
+  - { assumption: "скорость одного ездока в движении — 25 км/ч по асфальту; остановка — 5 минут через полтора часа езды, на КП — 15 минут, на среднем — 30" }
+  - { assumption: "груз до 8 кг не замедляет; дальше — на 3 % за килограмм, за спиной — вдвое быстрее и вдвое сильнее, не больше 60 %" }
+  - { assumption: "одежда, телефон и мелочи — 3 кг; на себе и в карманах — 4 л" }
+  - { assumption: "дождь — на одном из перегонов с вероятностью 50 %; ветер — встречный, попутный или тихо" }
+  - { assumption: "прокол — 40 % на сто километров; серьёзная поломка без осмотра — 20 % за бревет; ночью фонарь садится с вероятностью 40 %" }
+  - { assumption: "питьё — 0,5 л в час езды: в пределах 4–6 л в сутки по Роспотребнадзору" }
+  - { assumption: "250 ккал в час езды — из суточной нормы МР для высокой активности" }
+  - { assumption: "прокол с ремнабором чинят за 25 минут, без него — два часа пешком до села; в «моменте» не то — 10 минут на прокол, 5 на дождь" }
+  - { assumption: "после сырой воды или испорченной еды живот болит в шести случаях из десяти" }
+review: draft

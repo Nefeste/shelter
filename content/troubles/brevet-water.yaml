@@ -1,0 +1,42 @@
+trouble:
+  id: brevet-water
+  name: Вода
+  text: "Контрольные пункты — у магазинов: там можно долить. Между ними — по полсотни километров."
+solutions:
+  - id: bwater-one
+    tier: cheap
+    name: Одна фляга
+    text: Одна фляга — долить на каждом КП.
+    goods: [{ good: bike-flask, qty: 1 }]
+    workMin: 0
+    why: Одной фляги на полсотни километров мало — с нагрузкой пьют гораздо больше обычного.
+    sources: [rpn-moscow-water]
+    review: draft
+  - id: bwater-two
+    tier: mid
+    name: Две фляги
+    text: Две фляги на раме — долить на КП.
+    goods: [{ good: bike-flask, qty: 2 }]
+    workMin: 0
+    why: Двух фляг хватает между КП, если не задержишься.
+    sources: [rpn-moscow-water]
+    review: draft
+  - id: bwater-bottle
+    tier: right
+    name: Две фляги и бутылка в сумке
+    text: Две фляги и запасная бутылка — на долгий перегон.
+    goods: [{ good: bike-flask, qty: 2 }, { good: water-1500, qty: 1 }]
+    workMin: 0
+    why: Запас воды выручает, если перегон затянулся из-за ветра или прокола.
+    sources: [rpn-moscow-water]
+    review: draft
+  - id: bwater-stream
+    tier: trap
+    name: Фляга — и долить из ручья
+    text: Ручьёв по дороге много, зачем везти воду.
+    goods: [{ good: bike-flask, qty: 1 }]
+    workMin: 0
+    risks: [stomach]
+    why: Пить воду из водоёма нельзя — даже прозрачная, она может быть заражена.
+    sources: [rpn-kostroma-nature]
+    review: draft

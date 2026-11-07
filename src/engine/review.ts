@@ -78,14 +78,17 @@ const TROUBLE: Record<string, string> = {
   cold: 'heat', thirst: 'water', hunger: 'food', meds: 'meds', co: 'co', fire: 'fire', injury: 'meds', stuck: 'road',
 };
 
-/** Поездка: о какой беде строка этапа или схода. */
+/**
+ * Поездка: о какой беде строка этапа или схода — по окончанию id беды сценария («bike-water»,
+ * «brevet-water»), так одни строки служат и велопоходу, и бревету.
+ */
 const RIDE_TROUBLE: Partial<Record<string, string>> = {
-  drink: 'bike-water', food: 'bike-food', cold: 'bike-night', tick: 'bike-ticks', dark: 'bike-light', late: 'bike-bags',
-  train: 'bike-bags', flat: 'bike-repair', wet: 'bike-rain', visibility: 'bike-light', fall: 'bike-bags',
-  break: 'bike-repair', stomach: 'bike-water', co: 'bike-night',
+  drink: 'water', food: 'food', cold: 'night', tick: 'ticks', dark: 'light', late: 'bags',
+  train: 'bags', flat: 'repair', wet: 'rain', visibility: 'light', fall: 'bags',
+  break: 'repair', stomach: 'water', co: 'night', control: 'bags', rules: 'light', support: 'bags',
 };
-/** Беда схода, которую принесла ловушка, — источник у ловушки (сырая вода или испорченная еда). */
-const RIDE_RISK: Partial<Record<string, string>> = { stomach: 'stomach', co: 'co', fall: 'fall', tick: 'tick' };
+/** Беда схода, которую принесла ловушка, — источник у ловушки (сырая вода, испорченная еда, правила бревета). */
+const RIDE_RISK: Partial<Record<string, string>> = { stomach: 'stomach', co: 'co', fall: 'fall', tick: 'tick', rules: 'rules', support: 'support' };
 
 /**
  * Источник строки разбора (спецификация, критерий 7): первый названный источник решения, о котором
@@ -94,11 +97,16 @@ const RIDE_RISK: Partial<Record<string, string>> = { stomach: 'stomach', co: 'co
  */
 export function sourceOf(w: World, s: PrepState, line: ReviewLine): Extract<Source, { title: string }> | undefined {
   let sid: string | undefined;
+  if (line.kind === 'offRoute' && line.reason === 'control') {
+    // опоздание на КП — правило бревета: источник — правила, на которых стоит сценарий
+    return w.scenario(s.scenario).sources.find((x): x is Extract<Source, { title: string }> => 'title' in x);
+  }
   if (line.kind === 'offRoute' || line.kind === 'stage') {
     const key = line.kind === 'offRoute' ? line.reason : line.what;
     const risk = RIDE_RISK[key];
     const trap = risk ? Object.values(s.chosen).find(x => w.solution(x).tier === 'trap' && (w.solution(x).risks ?? []).includes(risk as never)) : undefined;
-    const t = RIDE_TROUBLE[key];
+    const suffix = RIDE_TROUBLE[key];
+    const t = suffix ? w.scenario(s.scenario).troubles.find(x => x.endsWith(`-${suffix}`)) : undefined;
     sid = trap ?? (t ? s.chosen[t] ?? w.trouble(t).solutions.find(x => w.solution(x).tier === 'right') : undefined);
     // выбранное решение без источника по делу (например, «ничего»): источник правильного
     if (sid && !w.solution(sid).sources.some(x => 'title' in x) && t) sid = w.trouble(t).solutions.find(x => w.solution(x).tier === 'right');

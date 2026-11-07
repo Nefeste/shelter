@@ -687,3 +687,65 @@
   massG: 370
   sources: [pioner-bike]
   review: draft
+# Бревет 200 км (docs/specs/2026-11-brevet.md)
+- id: saddle-bag
+  name: Подседельная сумка, 10 л
+  shop: sport
+  category: bags
+  price: { rub: 1800, basis: estimate, note: "оценка: обычно 900–3500 ₽" }
+  volumeL: 0
+  massG: 350
+  bag: { slot: saddle, liters: 10 }
+  sources: [{ assumption: "подседельная сумка — 10 л и около 0,35 кг" }]
+  review: draft
+- id: frame-bag
+  name: Сумка на раму, 2 л
+  shop: sport
+  category: bags
+  price: { rub: 900, basis: estimate, note: "оценка: обычно 500–1800 ₽" }
+  volumeL: 0
+  massG: 150
+  bag: { slot: frame, liters: 2, handL: 2 }
+  sources: [pioner-bike, { assumption: "сумка на раму — 2 л под рукой и около 0,15 кг" }]
+  review: draft
+- id: windbreaker
+  name: Ветровка яркая
+  shop: sport
+  category: camp
+  atHand: true
+  price: { rub: 1500, basis: estimate, note: "оценка: обычно 800–3000 ₽" }
+  volumeL: 1
+  massG: 200
+  sources: [pioner-bike]
+  review: draft
+- id: rain-jacket
+  name: Велокуртка от дождя
+  shop: sport
+  category: camp
+  rain: people
+  atHand: true
+  price: { rub: 3500, basis: estimate, note: "оценка: обычно 2000–7000 ₽" }
+  volumeL: 1
+  massG: 250
+  sources: [pioner-bike]
+  review: draft
+- id: cafe-lunch
+  name: Обед в кафе на контрольном пункте
+  shop: home
+  category: food
+  price: { rub: 600, basis: estimate, note: "оценка: обычно 400–900 ₽ — деньги с собой, платят на месте" }
+  volumeL: 0
+  massG: 0
+  provides: { kcal: 900 }
+  sources: [acp-brm-rules, { assumption: "обед на КП — около 900 ккал" }]
+  review: draft
+- id: family-car
+  name: Багажник семейной машины — едет следом
+  shop: home
+  category: bags
+  price: { rub: 0, basis: estimate, note: "уже есть" }
+  volumeL: 0
+  massG: 0
+  bag: { slot: car, liters: 60 }
+  sources: [acp-brm-rules]
+  review: draft

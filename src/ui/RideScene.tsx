@@ -18,7 +18,9 @@ const TREE = '#3f6f5a';
 
 export type Light = 'day' | 'dusk' | 'dark';
 
-export function RideScene({ place, road, light, rain, night, bike, tent }: { place: string; road: 'asphalt' | 'dirt'; light: Light; rain: boolean; night: boolean; bike: BikeView; tent: boolean }) {
+/** `riders` — сколько едет: семья — трое, бревет — один. Место — по id этапа: КП и финиш бревета — село. */
+export function RideScene({ place: id, road, light, rain, night, bike, tent, riders = 3 }: { place: string; road: 'asphalt' | 'dirt'; light: Light; rain: boolean; night: boolean; bike: BikeView; tent: boolean; riders?: number }) {
+  const place = id.startsWith('cp') || id === 'finish' ? 'village' : id;
   const ground = light === 'dark' ? '#2c3a2c' : '#8fb07a';
   return (
     <View style={[styles.wrap, { backgroundColor: SKY[light] }]}>
@@ -68,9 +70,15 @@ export function RideScene({ place, road, light, rain, night, bike, tent }: { pla
         {/* трое на велосипедах */}
         {night ? null : (
           <>
-            <BikeArt v={bike} x={6} y={104} scale={0.78} rider jersey={C.kumach} />
-            <BikeArt v={bike} x={112} y={108} scale={0.74} rider jersey={C.spruce} />
-            <BikeArt v={bike} x={218} y={118} scale={0.62} rider child jersey={'#d0703a'} />
+            {riders === 1 ? (
+              <BikeArt v={bike} x={90} y={92} scale={0.95} rider jersey={C.kumach} />
+            ) : (
+              <>
+                <BikeArt v={bike} x={6} y={104} scale={0.78} rider jersey={C.kumach} />
+                <BikeArt v={bike} x={112} y={108} scale={0.74} rider jersey={C.spruce} />
+                <BikeArt v={bike} x={218} y={118} scale={0.62} rider child jersey={'#d0703a'} />
+              </>
+            )}
           </>
         )}
         {/* дождь косыми штрихами */}

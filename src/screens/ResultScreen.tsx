@@ -12,7 +12,7 @@ import { checklist, packList, stillToBuy } from '../state/checklist';
 import { RideScene } from '../ui/RideScene';
 import { bikeView } from '../state/bike';
 import { loadHave, saveHave } from '../state/storage';
-import { review, sourceOf, stars } from '../engine';
+import { review, ridersOf, sourceOf, stars } from '../engine';
 import { type Game, world } from '../state/game';
 import { play } from '../audio/sound';
 import { Scene } from '../ui/Scene';
@@ -53,7 +53,7 @@ export function ResultScreen({ game }: { game: Game }) {
       <Txt title>{T.result.title}</Txt>
       {/* все дома — свет в окне и тихо; эвакуация — дом пустой, а непогода ещё идёт */}
       {ride ? (
-        <View style={styles.panel}><RideScene place={evacuated ? 'village' : 'station'} road="asphalt" light="dusk" rain={false} night={false} bike={bikeView(world, s)} tent={false} /></View>
+        <View style={styles.panel}><RideScene place={evacuated ? 'village' : 'station'} road="asphalt" light="dusk" rain={false} night={false} bike={bikeView(world, s)} tent={false} riders={ridersOf(sc).length} /></View>
       ) : (
         <Scene lit={!evacuated} smoke={false} cold={false} night={false} ice={false} away={evacuated} calm={!evacuated} />
       )}
