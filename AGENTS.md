@@ -101,7 +101,7 @@ tag by `android.yml`, with the kit's signing and contents actions).
 - `src/state/game.ts` — the run; `src/screens/` — title, intro, prep, days, result, about;
   `src/ui/` — tokens from the studio brand, kit, drawings in `react-native-svg` (`Scene.tsx` — the
   house of the 14 days and the result, `icons.tsx` — trouble icons, `Snow.tsx`); `src/audio/sound.ts`
-  — expo-audio, sound on/off in settings; `src/i18n/` — all UI text. `src/state/checklist.ts` —
+  — expo-audio, sound on/off in settings; `src/state/settings.ts` + `src/ui/motion.ts` — «Меньше движения» (charter ADR 0023, rule 6; follows the OS until the player picks), read by the drawings with `useLessMotion()`; `src/i18n/` — all UI text. `src/state/checklist.ts` —
   «Мой список» by category with prices and totals; `src/state/voices.ts` + `src/ui/Bubble.tsx` — the
   family's lines from `content/voices.yaml` (flavour, not facts: no numbers, no sources);
   `src/state/radio.ts` — district radio lines from `content/radio.yaml` when a receiver arrived in time;
@@ -119,7 +119,7 @@ tag by `android.yml`, with the kit's signing and contents actions).
   ride is «сход с маршрута», not an evacuation. A scenario carries its own words, order and checks.
 - «Бревет 200 км» (`brevet-200`, troubles `brevet-*`): one rider (`ride.riders`), each control closes by ACP rule art. 10 (`controlClose`), night rules — front and rear lamps and a vest (`ride.vest`), new off-route reasons `control`, `rules`, `support`; ride review lines find their trouble by id suffix (`*-light`, `*-bags`…).
 - Days at home are comic pages too (`src/screens/DaysScreen.tsx`; `src/state/comic.ts` merges quiet days; home «моменты» in `Scenario.moments`, a miss costs light hours; `src/ui/MomentPanel.tsx`, `src/ui/RouteStrip.tsx` are shared with the ride).
-- `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world, dacha, bike, comic, brevet; `tools/e2e/browser.ts` — the browser scenario.
+- `tools/test/` — engine, content, guardrails, i18n, sound, version, list, world, dacha, bike, comic, brevet, settings; `tools/e2e/browser.ts` — the browser scenario.
 - `tools/sim/player.ts` — the «virtual player» (`npm run sim`, a few minutes; `--scenario <id>` for
   another scenario): every combination of solutions, four ordering habits, seeds 1…30; writes
   `docs/reports/2026-11-virtual-player[-<scenario>].md`. Any

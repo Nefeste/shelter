@@ -15,6 +15,7 @@ import { RideScene, type Light } from '../ui/RideScene';
 import { momentOf } from '../state/moments';
 import { ridersOf } from '../engine';
 import { MomentPanel } from '../ui/MomentPanel';
+import { useLessMotion } from '../ui/motion';
 import { RouteStrip } from '../ui/RouteStrip';
 import type { DayLog } from '../engine';
 
@@ -37,6 +38,7 @@ export function RideScreen({ game }: { game: Game }) {
   const o = game.outcome;
   const [page, setPage] = useState(0);
   const slide = useMemo(() => new Animated.Value(1), []);
+  const still = useLessMotion();
   const sc = world.scenario(game.prep.scenario);
   const r = sc.ride!;
   const bike = useMemo(() => bikeView(world, game.prep), [game.prep]);
@@ -48,9 +50,11 @@ export function RideScreen({ game }: { game: Game }) {
   }, [rain]);
   useEffect(() => {
     play('day');
+    // «меньше движения»: страница сразу на месте, без въезда и пружины
+    if (still) { slide.setValue(1); return; }
     slide.setValue(0);
     Animated.spring(slide, { toValue: 1, friction: 7, useNativeDriver: true }).start();
-  }, [page, slide]);
+  }, [page, slide, still]);
   if (!o || !d?.ride) return null;
   const st = r.stages[page];
   const total = o.days.length;

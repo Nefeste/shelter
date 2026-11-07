@@ -3,12 +3,15 @@
 // Начатая партия сохраняется на телефоне после каждого шага: «Назад» и закрытие приложения
 // прогресс не теряют, на первом экране — «Продолжить».
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AccessibilityInfo } from 'react-native';
 import { bundle } from '../content';
 import { type PrepState, World, choose as chooseCmd, nextDay as nextDayCmd, runDays, startPrep, stars } from '../engine';
 import { type Phase, packRun, unpackRun } from './run';
 import { loadBest, loadRun, loadSettings, saveBest, saveRun, saveSettings } from './storage';
 import { type Picks, missesOf, momentOf } from './moments';
 import { setSoundOn } from '../audio/sound';
+import { DEFAULT_SETTINGS, type Settings, lessMotionOf } from './settings';
+import { setLessMotion } from '../ui/motion';
 
 export const world = new World(bundle);
 /** Сценарий по умолчанию — первый в линейке. */
@@ -26,13 +29,17 @@ export function useGame() {
   const [phase, setPhase] = useState<Phase | null>(null);
   const [best, setBest] = useState<Record<string, number>>({});
   const [loaded, setLoaded] = useState(false);
-  const [sound, setSound] = useState(true);
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  /** «уменьшить движение» в системе телефона — пока игрок не выбрал сам */
+  const [systemLess, setSystemLess] = useState(false);
   /** выборы в «моментах» маршрута: этап → что доставали */
   const [picks, setPicks] = useState<Picks>({});
 
   useEffect(() => {
     void loadBest().then(setBest);
-    void loadSettings().then(st => { setSound(st.sound); setSoundOn(st.sound); });
+    void loadSettings().then(st => { setSettings(st); setSoundOn(st.sound); });
+    AccessibilityInfo.isReduceMotionEnabled().then(setSystemLess, () => undefined);
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setSystemLess);
     void loadRun().then(raw => {
       const run = unpackRun(world, raw);
       if (run) {
@@ -43,6 +50,7 @@ export function useGame() {
       }
       setLoaded(true);
     });
+    return () => sub.remove();
   }, []);
 
   // сохранить после каждого шага — но не раньше, чем прочитано сохранённое
@@ -89,20 +97,28 @@ export function useGame() {
   }, [go, outcome, best, prep.scenario]);
   /** достать вещь в «моменте» этапа */
   const pick = useCallback((stage: number, good: string) => setPicks(p => ({ ...p, [stage]: [...(p[stage] ?? []), good] })), []);
+  const sound = settings.sound;
+  const lessMotion = lessMotionOf(settings, systemLess);
+  useEffect(() => setLessMotion(lessMotion), [lessMotion]);
   const toggleSound = useCallback(() => {
-    setSound(v => {
-      setSoundOn(!v);
-      void saveSettings({ sound: !v });
-      return !v;
-    });
-  }, []);
+    const next = { ...settings, sound: !settings.sound };
+    setSettings(next);
+    setSoundOn(next.sound);
+    void saveSettings(next);
+  }, [settings]);
+  /** «Меньше движения»: после первого нажатия — выбор игрока, системная настройка больше не важна */
+  const toggleMotion = useCallback(() => {
+    const next = { ...settings, lessMotion: !lessMotion };
+    setSettings(next);
+    void saveSettings(next);
+  }, [settings, lessMotion]);
   const again = useCallback(() => {
     setAttempt(a => a + 1);
     start(prep.scenario);
   }, [start, prep.scenario]);
 
-  return useMemo(() => ({ screen, setScreen: show, prep, attempt, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again, picks, pick }),
-    [screen, show, prep, attempt, outcome, phase, best, sound, toggleSound, start, resume, choose, nextDay, storm, again, picks, pick]);
+  return useMemo(() => ({ screen, setScreen: show, prep, attempt, outcome, phase, best, sound, toggleSound, lessMotion, toggleMotion, start, resume, choose, nextDay, storm, again, picks, pick }),
+    [screen, show, prep, attempt, outcome, phase, best, sound, toggleSound, lessMotion, toggleMotion, start, resume, choose, nextDay, storm, again, picks, pick]);
 }
 
 export type Game = ReturnType<typeof useGame>;

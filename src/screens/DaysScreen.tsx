@@ -16,6 +16,7 @@ import { hasTorch, neighbours } from '../state/scene';
 import { homePages } from '../state/comic';
 import { momentOf } from '../state/moments';
 import { MomentPanel } from '../ui/MomentPanel';
+import { useLessMotion } from '../ui/motion';
 import { RouteStrip } from '../ui/RouteStrip';
 import type { DayLog } from '../engine';
 
@@ -37,6 +38,7 @@ export function DaysScreen({ game }: { game: Game }) {
   const o = game.outcome;
   const [page, setPage] = useState(0);
   const slide = useMemo(() => new Animated.Value(1), []);
+  const still = useLessMotion();
   const stove = game.prep.chosen.heat === STOVE;
   const pages = useMemo(() => (o ? homePages(o) : []), [o]);
   useEffect(() => {
@@ -47,9 +49,11 @@ export function DaysScreen({ game }: { game: Game }) {
   const torch = hasTorch(world, game.prep);
   useEffect(() => {
     play('day');
+    // «меньше движения»: страница сразу на месте, без въезда и пружины
+    if (still) { slide.setValue(1); return; }
     slide.setValue(0);
     Animated.spring(slide, { toValue: 1, friction: 7, useNativeDriver: true }).start();
-  }, [page, slide]);
+  }, [page, slide, still]);
   if (!o || !pages[page]) return null;
   const sc = world.scenario(game.prep.scenario);
   const pg = pages[page];
