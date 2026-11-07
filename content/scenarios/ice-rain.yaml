@@ -31,7 +31,12 @@ norms:
 needsMeds: [gran]
 # мелкая травма или простуда за две недели — по зерну; без аптечки этот день трудный
 injury: { pct: 50, from: 2, to: 9 }
+# «моменты» дней дома (docs/specs/2026-11-home-comic.md): промах — час света, пока искали
+moments:
+  - { on: light, want: [headlamp, lantern, candles], costLightH: 1 }
+  - { on: injury, want: [first-aid], costLightH: 1 }
 sources:
+  - { assumption: "в «моменте» достали не то — час света на поиски" }
   - mchs-norms
   - mchs-evacuation
   - pp-354

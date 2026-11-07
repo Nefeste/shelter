@@ -159,7 +159,7 @@ describe('велопоход выходного дня', () => {
     const misses = missesOf(picks, () => m.want);
     expect(misses[at]).toBe(1);
     const slow = runDays(world, s, seed, misses);
-    const cost = sc.ride!.moments!.find(x => x.on === 'flat')!.costMin;
+    const cost = sc.ride!.moments!.find(x => x.on === 'flat')!.costMin!;
     expect(slow.days[at].ride!.endMin - base.days[at].ride!.endMin).toBe(cost);
     expect(slow.days.map(d => d.event)).toEqual(base.days.map(d => d.event));
     const done = momentOf(world, s, slow, at, seed, picks)!;

@@ -3,7 +3,7 @@
 // («ПШШШ!»); реплика семьи пузырём; внизу два маленьких кадра — часы против срока и груз.
 // Страницу листает игрок — без таймера (устав, «Без давления»). Расчёт уже сделан движком.
 import React, { useEffect, useMemo, useState } from 'react';
-import { Animated, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, ScrollView, StyleSheet, View } from 'react-native';
 import { T, clock } from '../i18n';
 import { Button, Txt } from '../ui/kit';
 import { C, R, S } from '../ui/theme';
@@ -13,6 +13,8 @@ import { rideWhen, voice } from '../state/voices';
 import { bikeView } from '../state/bike';
 import { RideScene, type Light } from '../ui/RideScene';
 import { momentOf } from '../state/moments';
+import { MomentPanel } from '../ui/MomentPanel';
+import { RouteStrip } from '../ui/RouteStrip';
 import type { DayLog } from '../engine';
 
 /** Звук-надпись кадра: самое громкое, что случилось на этапе. */
@@ -59,7 +61,6 @@ export function RideScreen({ game }: { game: Game }) {
   const sfx = sfxOf(d, off);
   const mom = momentOf(world, game.prep, o, page, game.attempt, game.picks);
   const cost = mom ? r.moments?.find(m => m.on === mom.on)?.costMin ?? 0 : 0;
-  const lastTried = mom?.tried[mom.tried.length - 1];
   // пока момент не кончен, исход этапа не показываем: реплика и беды — после выбора
   const waiting = !!mom && !mom.done;
   const tent = game.prep.chosen['bike-night'] !== undefined && !!world.solution(game.prep.chosen['bike-night']).goods.some(g => g.good.startsWith('tent'));
@@ -85,25 +86,7 @@ export function RideScreen({ game }: { game: Game }) {
               </View>
             ) : null}
           </View>
-          {mom ? (
-            <View style={[styles.panel, styles.moment]} testID={`moment-${page}`}>
-              <Txt style={styles.momentAsk}>{T.ride.moment.ask[mom.on]}</Txt>
-              {mom.done ? null : <Txt dim style={styles.note}>{T.ride.moment.hint}</Txt>}
-              <View style={styles.cards}>
-                {mom.cards.map(g => {
-                  const tried = mom.tried.includes(g);
-                  const right = tried && mom.want.includes(g);
-                  return (
-                    <Pressable key={g} testID={`moment-card-${g}`} accessibilityRole="button" disabled={mom.done || tried} onPress={() => { play(mom.want.includes(g) ? 'choose' : 'tap'); game.pick(page, g); }} style={[styles.card, tried && !right && styles.cardOff, right && styles.cardOk]}>
-                      <Txt style={styles.cardText}>{world.good(g).name}</Txt>
-                    </Pressable>
-                  );
-                })}
-              </View>
-              {lastTried && !mom.done && !mom.want.includes(lastTried) ? <Txt style={styles.noteBad} testID="moment-miss">{T.ride.moment.miss(cost)}</Txt> : null}
-              {mom.done ? <Txt style={mom.found && mom.ok ? styles.noteOk : styles.noteBad} testID="moment-done">{mom.found ? (mom.ok ? T.ride.moment.found[mom.on] : T.ride.moment.broken) : T.ride.moment.none[mom.on]}</Txt> : null}
-            </View>
-          ) : null}
+          {mom ? <MomentPanel world={world} mom={mom} page={page} missText={T.ride.moment.miss(cost)} onPick={g => game.pick(page, g)} /> : null}
           <View style={styles.row}>
             <View style={[styles.panel, styles.small]}>
               <Txt style={styles.big}>{lr.kind === 'night' ? '☾' : clock(lr.endMin)}</Txt>
@@ -138,13 +121,6 @@ const styles = StyleSheet.create({
   sfx: { color: C.kumach, fontSize: 30, lineHeight: 36, textShadowColor: C.paper, textShadowRadius: 6, textShadowOffset: { width: 2, height: 2 } },
   bubble: { position: 'absolute', left: 10, top: 10, maxWidth: '62%', backgroundColor: C.paper, borderWidth: 2, borderColor: C.ink, borderRadius: R.card * 2, paddingHorizontal: 12, paddingVertical: 6 },
   tail: { position: 'absolute', left: 30, bottom: -9, width: 14, height: 14, backgroundColor: C.paper, borderRightWidth: 2, borderBottomWidth: 2, borderColor: C.ink, transform: [{ rotate: '45deg' }] },
-  strip: { flexDirection: 'row', alignItems: 'center', paddingVertical: 4 },
-  dot: { width: 14, height: 14, borderRadius: R.pill, borderWidth: 2, borderColor: C.ink, backgroundColor: C.paper },
-  dotNow: { backgroundColor: C.kumach, width: 20, height: 20 },
-  dotDone: { backgroundColor: C.spruce },
-  dotOff: { backgroundColor: C.ink },
-  link: { flex: 1, height: 3, backgroundColor: C.ink },
-  linkTodo: { backgroundColor: C.line },
   who: { fontSize: 12, lineHeight: 16 },
   said: { fontSize: S.small, lineHeight: 20 },
   row: { flexDirection: 'row', gap: 10 },
@@ -153,26 +129,5 @@ const styles = StyleSheet.create({
   note: { fontSize: S.small, lineHeight: 20 },
   noteBad: { fontSize: S.small, lineHeight: 20, color: C.kumach },
   buttons: { padding: 14, gap: 8 },
-  moment: { padding: 10, gap: 8, transform: [{ rotate: '0.6deg' }] },
-  momentAsk: { fontWeight: '700', fontSize: S.lead, lineHeight: 26 },
-  cards: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  card: { flexBasis: '47%', flexGrow: 1, minHeight: 56, justifyContent: 'center', borderWidth: 2, borderColor: C.ink, borderRadius: R.button, backgroundColor: C.lamp, padding: 8 },
-  cardOff: { opacity: 0.35, backgroundColor: C.line },
-  cardOk: { backgroundColor: '#9fd3b0' },
-  cardText: { fontSize: S.small, lineHeight: 18, fontWeight: '600' },
-  noteOk: { fontSize: S.small, lineHeight: 20, color: C.spruce, fontWeight: '700' },
 });
 
-/** Полоска маршрута над кадром: пройденные этапы, этот, впереди; где сошли — чёрная точка. */
-function RouteStrip({ names, at, off }: { names: string[]; at: number; off?: number }) {
-  return (
-    <View style={styles.strip} accessibilityLabel={names[at]}>
-      {names.map((n, i) => (
-        <React.Fragment key={n}>
-          {i > 0 ? <View style={[styles.link, i > at && styles.linkTodo]} /> : null}
-          <View style={[styles.dot, i < at && styles.dotDone, i === at && styles.dotNow, off !== undefined && i === off && i !== at && styles.dotOff]} />
-        </React.Fragment>
-      ))}
-    </View>
-  );
-}

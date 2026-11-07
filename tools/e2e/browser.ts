@@ -49,6 +49,7 @@ const BIKE = [
 ];
 const CHEAP = [[['heat', 'heat-one-room'], ['water', 'water-drink'], ['food', 'food-cold'], ['light', 'light-candles'], ['fire', 'fire-holders'], ['comms', 'comms-saving'], ['meds', 'meds-home'], ['toilet', 'toilet-bucket']]];
 
+let shownMoments = 0;
 async function run(p: Page, plan: string[][][], label: string, prepDays = 3) {
   await tap(p, 'start-prep');
   await snap(p, `${label}-prep`);
@@ -70,17 +71,32 @@ async function run(p: Page, plan: string[][][], label: string, prepDays = 3) {
     }
     await tap(p, day < prepDays - 1 ? 'next-day' : 'storm');
   }
+  await p.getByTestId('day-page-0').waitFor();
+  await p.waitForTimeout(400);
   await snap(p, `${label}-days`);
-  if (label === 'good') {
-    // первый вечер: соседи без света, семья ложится спать
-    await p.waitForTimeout(2000);
-    await snap(p, 'good-night');
-  }
   // районное радио — только с приёмником
   const radio = await p.getByTestId('radio-day-0').count();
   if (label === 'good' && !radio) throw new Error('хороший план с приёмником: радио молчит');
   if (label === 'cheap' && radio) throw new Error('без приёмника играет радио');
-  await tap(p, 'faster');
+  // комикс дней: листать страницы, в «моменте» доставать по карточке, пока не найдётся
+  for (let i = 0; i < 20; i++) {
+    await p.getByTestId('day-sfx').waitFor();
+    if (await p.locator('[data-testid^="moment-card-"]').count()) {
+      shownMoments += 1;
+      const cards = p.locator('[data-testid^="moment-card-"]');
+      for (let k = 0; k < (await cards.count()) && !(await p.getByTestId('moment-done').count()); k++) {
+        if (await cards.nth(k).isEnabled()) await cards.nth(k).click();
+      }
+      await p.getByTestId('moment-done').waitFor();
+      if (shownMoments === 1) await snap(p, `${label}-moment`);
+    }
+    if (!(await p.getByTestId('day-next').count())) break;
+    await tap(p, 'day-next');
+    if (i === 1) {
+      await p.waitForTimeout(600);
+      await snap(p, `${label}-page`);
+    }
+  }
   await tap(p, 'to-result');
   await snap(p, `${label}-result`);
   return (await p.getByTestId('stars').innerText()).trim();
@@ -178,7 +194,7 @@ try {
   await page.getByTestId('assumptions').waitFor();
   await snap(page, 'about');
   if (errors.length) throw new Error(`ошибки в консоли:\n${errors.join('\n')}`);
-  console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}, дача ${dacha}, велопоход ${bike} (моментов ${moments}); снимков ${shot} в tools/e2e/out/`);
+  console.log(`Сценарий пройден: хороший план ${good}, всё дешёвое ${cheap}, дача ${dacha}, велопоход ${bike} (моментов ${moments}), моментов дома ${shownMoments}; снимков ${shot} в tools/e2e/out/`);
 } finally {
   await browser.close();
   server.stop();

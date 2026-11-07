@@ -36,6 +36,10 @@ norms:
 needsMeds: []
 injury: { pct: 50, from: 1, to: 4 }
 stuck: { pct: 40, day: 0 }
+# «моменты»: на даче не считаются ни свет, ни время — промах ничего не стоит
+moments:
+  - { on: stuck, want: [shovel, tow-rope] }
+  - { on: injury, want: [first-aid] }
 sources:
   - mchs-norms
   - mchs-evacuation
