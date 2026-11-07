@@ -1,5 +1,6 @@
-// Лучший результат по сценарию — на телефоне. Не прочиталось — игра идёт без него.
+// Лучший результат по сценарию, начатая партия, настройки — на телефоне. Не прочиталось — игра идёт без него.
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEFAULT_SETTINGS, type Settings, parseSettings } from './settings';
 
 const KEY = 'shelter.best.v1';
 const RUN = 'shelter.run.v1';
@@ -40,15 +41,11 @@ export async function saveRun(raw: string | null): Promise<void> {
   }
 }
 
-export interface Settings { sound: boolean }
-
 export async function loadSettings(): Promise<Settings> {
   try {
-    const raw = await AsyncStorage.getItem(SETTINGS);
-    const s = raw ? (JSON.parse(raw) as Partial<Settings>) : {};
-    return { sound: s.sound !== false };
+    return parseSettings(await AsyncStorage.getItem(SETTINGS));
   } catch {
-    return { sound: true };
+    return { ...DEFAULT_SETTINGS };
   }
 }
 

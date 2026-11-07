@@ -6,6 +6,7 @@ import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Polygon, Rect } from 'react-native-svg';
 import { C } from './theme';
 import { Snow } from './Snow';
+import { useLessMotion } from './motion';
 import type { Windows } from '../state/scene';
 
 const H = 200;
@@ -26,12 +27,15 @@ export function Scene({ lit, smoke, cold, night, ice, away = false, calm = false
   // днём — пасмурное небо бури, ночью — тёмное: снег и дом видны на обоих
   const sky = night ? C.spruce : C.line;
   const puff = useMemo(() => new Animated.Value(0), []);
+  const still = useLessMotion();
   useEffect(() => {
     if (!smoke) return;
+    // «меньше движения»: дым стоит над трубой одним облачком
+    if (still) { puff.setValue(0.3); return; }
     const a = Animated.loop(Animated.timing(puff, { toValue: 1, duration: 2600, easing: Easing.out(Easing.quad), useNativeDriver: true }));
     a.start();
     return () => a.stop();
-  }, [smoke, puff]);
+  }, [smoke, puff, still]);
   return (
     <View style={[styles.wrap, { backgroundColor: sky }]}>
       <View style={styles.ground} />
